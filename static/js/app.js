@@ -9,46 +9,33 @@ let lessonFinished = false;
 
 function updateMission(){
 
-    document.querySelectorAll(".step").forEach(step=>{
+    const steps = document.querySelectorAll(".step");
 
+    steps.forEach(step => {
         step.classList.remove("active");
-
+        step.classList.remove("done");
     });
 
-    if(pushCount===0){
-
-        step1.classList.add("active");
-
+    if(pushCount === 0){
+        steps[0].classList.add("active");
     }
-
-    else if(pushCount===1){
-
-        step1.classList.add("done");
-
-        step2.classList.add("active");
-
+    else if(pushCount === 1){
+        steps[0].classList.add("done");
+        steps[1].classList.add("active");
     }
-
-    else if(pushCount===2){
-
-        step2.classList.add("done");
-
-        step3.classList.add("active");
-
+    else if(pushCount === 2){
+        steps[0].classList.add("done");
+        steps[1].classList.add("done");
+        steps[2].classList.add("active");
     }
-
-    else if(pushCount===3 && popCount===0){
-
-        step3.classList.add("done");
-
-        step4.classList.add("active");
-
+    else if(pushCount >= 3 && popCount === 0){
+        steps[0].classList.add("done");
+        steps[1].classList.add("done");
+        steps[2].classList.add("done");
+        steps[3].classList.add("active");
     }
-
-    else if(pushCount>=3 && popCount>=1){
-
-        step4.classList.add("done");
-
+    else if(pushCount >= 3 && popCount >= 1){
+        steps.forEach(step => step.classList.add("done"));
     }
 
 }
@@ -71,6 +58,25 @@ function render() {
         stackDiv.appendChild(block);
 
     });
+
+}
+
+function resetLesson(){
+
+    stack.length = 0;
+
+    pushCount = 0;
+
+    popCount = 0;
+
+    lessonFinished = false;
+
+    render();
+
+    updateMission();
+
+    message.innerHTML =
+    "Welcome! Let's discover how a Stack works.";
 
 }
 
@@ -175,6 +181,12 @@ function checkAnswer(answer){
 
 <h3>Last In First Out</h3>
 
+<br>
+
+<button onclick="resetLesson()">
+Try Again
+</button>
+
 `;
 
     }
@@ -185,7 +197,13 @@ function checkAnswer(answer){
 
 <h2>❌ Not quite.</h2>
 
-<p>Refresh the page and try again.</p>
+<p>Watch the blocks again.</p>
+
+<br>
+
+<button onclick="resetLesson()">
+Try Again
+</button>
 
 `;
 
