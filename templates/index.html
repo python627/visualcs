@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VisualCS</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <header>
+        <h1>VisualCS</h1>
+        <p>Learn Computer Science by seeing it happen.</p>
+    </header>
+
+    <main>
+
+        <section class="stack-section">
+
+            <h2>Can you figure out the rule?</h2>
+
+            <div id="stack">
+
+            </div>
+
+            <div class="buttons">
+                <button id="pushBtn">PUSH</button>
+                <button id="popBtn">POP</button>
+            </div>
+
+        </section>
+
+        <section class="info">
+
+            <h2>Today's Discovery</h2>
+
+            <p id="message">
+                Press PUSH to begin.
+            </p>
+
+        </section>
+
+    </main>
+
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+
+</body>
+</html>
