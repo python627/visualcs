@@ -9,39 +9,106 @@
 </head>
 <body>
 
-    <header>
-        <h1>VisualCS</h1>
-        <p>Learn Computer Science by seeing it happen.</p>
-    </header>
+    <header class="topbar">
+    <h1>🎓 VisualCS</h1>
 
-    <main>
+    <div class="progress-box">
+        <span>Mission 1</span>
+        <progress value="20" max="100"></progress>
+    </div>
+</header>
 
-        <section class="stack-section">
+<main class="dashboard">
 
-            <h2>Can you figure out the rule?</h2>
+    <aside class="mission-card">
 
-            <div id="stack">
+        <h2>🎯 Mission</h2>
 
+        <h3>Discover LIFO</h3>
+
+        <p>
+            Your goal is to figure out the rule behind a Stack
+            without being told.
+        </p>
+
+        <div class="meta">
+            ⭐ Beginner<br>
+            ⏱ 8 minutes
+        </div>
+
+    </aside>
+
+    <section class="playground">
+
+        <h2>📦 Playground</h2>
+
+        <div id="stack"></div>
+
+        <div class="buttons">
+
+            <button id="pushBtn">PUSH</button>
+
+            <button id="popBtn">POP</button>
+
+        </div>
+
+    </section>
+
+    <aside class="byte-card">
+
+    <h2>🤖 Byte</h2>
+
+    <div class="mission-status">
+
+        <div class="status-title">
+            Mission Progress
+        </div>
+
+        <div class="steps">
+
+            <div id="step1" class="step active">
+                1. Press PUSH
             </div>
 
-            <div class="buttons">
-                <button id="pushBtn">PUSH</button>
-                <button id="popBtn">POP</button>
+            <div id="step2" class="step">
+                2. Press PUSH again
             </div>
 
-        </section>
+            <div id="step3" class="step">
+                3. Press PUSH one last time
+            </div>
 
-        <section class="info">
+            <div id="step4" class="step">
+                4. Press POP
+            </div>
 
-            <h2>Today's Discovery</h2>
+        </div>
 
-            <p id="message">
-                Press PUSH to begin.
-            </p>
+    </div>
 
-        </section>
+    <hr>
 
-    </main>
+    <div id="message">
+
+        Welcome! Let's discover how a Stack works.
+
+    </div>
+
+</aside>
+
+</main>
+
+<section class="discoveries">
+
+    <h2>🏆 Discoveries</h2>
+
+    <div id="discoveries">
+
+        Nothing discovered yet...
+
+    </div>
+
+</section>
 
 <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 

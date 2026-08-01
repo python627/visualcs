@@ -1,0 +1,123 @@
+.mission-card,
+.playground,
+.byte-card,
+.discoveries{
+
+    background:#172036;
+    border:1px solid #26334f;
+    border-radius:18px;
+    padding:25px;
+}
+
+.mission-card h2,
+.playground h2,
+.byte-card h2,
+.discoveries h2{
+    margin-bottom:20px;
+}
+
+.meta{
+    margin-top:25px;
+    color:#94a3b8;
+    line-height:1.8;
+}
+
+.playground{
+    text-align:center;
+}
+
+#stack{
+    width:200px;
+    height:360px;
+    margin:25px auto;
+    border:3px solid white;
+    border-radius:12px;
+    padding:10px;
+    display:flex;
+    flex-direction:column-reverse;
+    gap:8px;
+    overflow:hidden;
+}
+
+.block{
+    height:50px;
+    background:#38bdf8;
+    border-radius:10px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:22px;
+    font-weight:bold;
+}
+
+.buttons{
+    display:flex;
+    gap:15px;
+}
+
+.buttons button{
+    flex:1;
+    padding:15px;
+    background:#2563eb;
+    color:white;
+    font-size:18px;
+    transition:.25s;
+}
+
+.buttons button:hover{
+    background:#1d4ed8;
+}
+
+.mission-status{
+
+    margin-bottom:20px;
+
+}
+
+.status-title{
+
+    font-weight:bold;
+
+    margin-bottom:15px;
+
+}
+
+.step{
+
+    background:#1e293b;
+
+    padding:12px;
+
+    margin-bottom:10px;
+
+    border-radius:10px;
+
+    color:#94a3b8;
+
+    transition:.3s;
+
+}
+
+.step.active{
+
+    background:#2563eb;
+
+    color:white;
+
+}
+
+.step.done{
+
+    background:#16a34a;
+
+    color:white;
+
+}
+
+.byte-card hr{
+
+    margin:20px 0;
+
+    border:1px solid #26334f;
+
+}

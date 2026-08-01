@@ -1,0 +1,26 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Arial, Helvetica, sans-serif;
+    background:#0f172a;
+    color:white;
+    min-height:100vh;
+}
+
+h1,h2,h3{
+    font-weight:700;
+}
+
+p{
+    color:#cbd5e1;
+}
+
+button{
+    cursor:pointer;
+    border:none;
+    border-radius:12px;
+}
