@@ -21,10 +21,10 @@
     },
 
     "actions": [
-        "enqueue",
-        "enqueue",
-        "enqueue",
-        "dequeue"
+        { "label": "Enqueue", "operation": "enqueue" },
+        { "label": "Enqueue again", "operation": "enqueue" },
+        { "label": "Enqueue final item", "operation": "enqueue" },
+        { "label": "Dequeue", "operation": "dequeue" }
     ]
 },
     "quiz": {

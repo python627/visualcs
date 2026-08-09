@@ -3,79 +3,51 @@ function createStackPlayground() {
     const stack = [];
 
     function render() {
-
         stackDiv.innerHTML = "";
         stackDiv.classList.remove("linked-list-view");
 
-        stack.forEach((number, index) => {
-
+        stack.forEach(number => {
             const block = document.createElement("div");
             block.className = "block";
-
-            if (index === stack.length - 1) {
-                block.classList.add("new");
-            }
-
             block.innerText = number;
             stackDiv.appendChild(block);
-
         });
-
     }
 
     function add() {
-
-        if (lessonFinished) return;
-
         const value = Math.floor(Math.random() * 90) + 10;
 
-        pushCount++;
+        stack.push(value);
+        render();
+        animateBlockAddition(value, getBlockElements().at(-1));
 
-        const block = document.createElement("div");
-        block.className = "block falling-block";
-        block.innerText = value;
-        animationLayer.appendChild(block);
+        const missionResult = completeAction("push");
 
-        setTimeout(() => {
-
-            if (animationLayer.contains(block)) {
-                animationLayer.removeChild(block);
-            }
-
-            stack.push(value);
-            render();
-
-        }, 600);
-
-        message.innerHTML =
-            "\uD83E\uDD16 Byte<br><br>" +
-            (pushCount < 3
-                ? "Great! Press PUSH again."
-                : "Excellent! Now press POP once.");
-
-        updateMission();
-
+        if (!missionResult.complete) {
+            setByteMessage(
+                missionResult.nextOperation === "push"
+                    ? "Great! Press PUSH again."
+                    : "Excellent! Now press POP once."
+            );
+        }
     }
 
     function remove() {
-
-        if (lessonFinished) return;
-
         if (stack.length === 0) {
-            message.innerHTML = "\uD83E\uDD16 Byte<br><br>The structure is empty.";
+            setByteMessage("The structure is empty.");
             return;
         }
 
+        const previousRects = captureBlockRects();
+        const removedValue = stack.at(-1);
+
         stack.pop();
-        popCount++;
-
         render();
-        updateMission();
 
-        if (pushCount >= 3 && popCount >= 1) {
-            showQuiz();
-        }
+        animateRemainingBlocks(previousRects, 0);
+        animateBlockRemoval(removedValue, previousRects.at(-1), { x: 0, y: -90 });
 
+        completeAction("pop");
     }
 
     return {
@@ -88,5 +60,4 @@ function createStackPlayground() {
             render();
         }
     };
-
 }

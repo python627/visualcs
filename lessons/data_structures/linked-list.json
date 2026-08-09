@@ -20,11 +20,11 @@
             "secondary": "REMOVE NODE"
         },
 
-        "actions": [
-            "add node",
-            "add another node",
-            "add final node",
-            "remove node"
+    "actions": [
+            { "label": "Add node", "operation": "add" },
+            { "label": "Add another node", "operation": "add" },
+            { "label": "Add final node", "operation": "add" },
+            { "label": "Remove node", "operation": "remove" }
         ]
     },
 

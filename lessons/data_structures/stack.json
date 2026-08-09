@@ -21,10 +21,10 @@
     },
 
     "actions": [
-        "push",
-        "push",
-        "push",
-        "pop"
+        { "label": "Push", "operation": "push" },
+        { "label": "Push again", "operation": "push" },
+        { "label": "Push final block", "operation": "push" },
+        { "label": "Pop", "operation": "pop" }
     ]
 },
 

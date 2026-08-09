@@ -4,4 +4,4 @@ const playground = createPlayground(
 
 playground.mount();
 
-updateMission();
+resetMission();

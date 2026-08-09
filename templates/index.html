@@ -79,7 +79,7 @@
             id="step{{ loop.index }}"
             class="step {% if loop.first %}active{% endif %}"
         >
-            {{ loop.index }}. {{ action|capitalize }}
+            {{ loop.index }}. {{ action.label }}
         </div>
 
     {% endfor %}
@@ -122,6 +122,8 @@
 <script src="{{ url_for('static', filename='js/lesson.js') }}"></script>
 
 <script src="{{ url_for('static', filename='js/quiz.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/animations.js') }}"></script>
 
 <script src="{{ url_for('static', filename='js/engine/stack_playground.js') }}"></script>
 

@@ -1,38 +1,57 @@
-let pushCount = 0;
-let popCount = 0;
+let missionStepIndex = 0;
+let missionCompleted = false;
 
 
-function updateMission() {
-
+function renderMission() {
     const steps = document.querySelectorAll(".step");
 
-    const actions = LESSON.playground.actions;
-
-    const completedActions = pushCount + popCount;
-
-
-    steps.forEach(step => {
-
-        step.classList.remove("active");
-        step.classList.remove("done");
-
-    });
-
-
     steps.forEach((step, index) => {
+        step.classList.remove("active", "done");
 
-        if (index < completedActions) {
-
+        if (index < missionStepIndex) {
             step.classList.add("done");
-
         }
-
-        else if (index === completedActions) {
-
+        else if (index === missionStepIndex) {
             step.classList.add("active");
-
         }
-
     });
+}
 
+
+function getExpectedOperation() {
+    return LESSON.playground.actions[missionStepIndex]?.operation ?? null;
+}
+
+
+function completeAction(operation) {
+    if (missionCompleted || operation !== getExpectedOperation()) {
+        return {
+            accepted: false,
+            complete: missionCompleted,
+            nextOperation: getExpectedOperation()
+        };
+    }
+
+    missionStepIndex++;
+    renderMission();
+
+    const complete = missionStepIndex === LESSON.playground.actions.length;
+
+    if (complete) {
+        missionCompleted = true;
+        showQuiz();
+    }
+
+    return {
+        accepted: true,
+        complete,
+        nextOperation: getExpectedOperation()
+    };
+}
+
+
+function resetMission() {
+    missionStepIndex = 0;
+    missionCompleted = false;
+    renderMission();
 }

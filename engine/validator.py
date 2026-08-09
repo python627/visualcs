@@ -73,6 +73,31 @@ class LessonValidator:
                     "playground.actions is missing"
                 )
 
+            elif not isinstance(lesson["playground"]["actions"], list):
+                errors.append(
+                    "playground.actions must be a list"
+                )
+
+            else:
+                for index, action in enumerate(lesson["playground"]["actions"]):
+
+                    if not isinstance(action, dict):
+                        errors.append(
+                            f"playground.actions[{index}] must be an object"
+                        )
+
+                        continue
+
+                    if not isinstance(action.get("label"), str):
+                        errors.append(
+                            f"playground.actions[{index}].label must be a string"
+                        )
+
+                    if not isinstance(action.get("operation"), str):
+                        errors.append(
+                            f"playground.actions[{index}].operation must be a string"
+                        )
+
 
         # Validate quiz
         if not isinstance(lesson["quiz"], dict):
