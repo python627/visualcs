@@ -99,8 +99,8 @@ function createLinkedListPlayground() {
 
     return {
         mount() {
-            pushBtn.onclick = add;
-            popBtn.onclick = remove;
+            getControl("add").onclick = add;
+            getControl("remove").onclick = remove;
             render();
         },
         reset() {
@@ -110,3 +110,6 @@ function createLinkedListPlayground() {
         }
     };
 }
+
+
+registerPlayground("linked-list", createLinkedListPlayground);

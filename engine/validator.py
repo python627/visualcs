@@ -68,6 +68,32 @@ class LessonValidator:
                     "playground.type is missing"
                 )
 
+            if "controls" not in lesson["playground"]:
+                errors.append(
+                    "playground.controls is missing"
+                )
+
+            elif not isinstance(lesson["playground"]["controls"], list):
+                errors.append(
+                    "playground.controls must be a list"
+                )
+
+            else:
+                for index, control in enumerate(lesson["playground"]["controls"]):
+
+                    if not isinstance(control, dict):
+                        errors.append(
+                            f"playground.controls[{index}] must be an object"
+                        )
+
+                        continue
+
+                    for field in ("id", "label", "operation"):
+                        if not isinstance(control.get(field), str):
+                            errors.append(
+                                f"playground.controls[{index}].{field} must be a string"
+                            )
+
             if "actions" not in lesson["playground"]:
                 errors.append(
                     "playground.actions is missing"

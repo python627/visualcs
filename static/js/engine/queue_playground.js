@@ -52,8 +52,8 @@ function createQueuePlayground() {
 
     return {
         mount() {
-            pushBtn.onclick = add;
-            popBtn.onclick = remove;
+            getControl("enqueue").onclick = add;
+            getControl("dequeue").onclick = remove;
         },
         reset() {
             queue.length = 0;
@@ -61,3 +61,6 @@ function createQueuePlayground() {
         }
     };
 }
+
+
+registerPlayground("queue", createQueuePlayground);

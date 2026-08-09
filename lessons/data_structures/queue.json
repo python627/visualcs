@@ -15,10 +15,10 @@
     "playground": {
     "type": "queue",
 
-    "controls": {
-        "primary": "ENQUEUE",
-        "secondary": "DEQUEUE"
-    },
+    "controls": [
+        { "id": "enqueue", "label": "ENQUEUE", "operation": "enqueue" },
+        { "id": "dequeue", "label": "DEQUEUE", "operation": "dequeue" }
+    ],
 
     "actions": [
         { "label": "Enqueue", "operation": "enqueue" },

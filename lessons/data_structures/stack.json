@@ -15,10 +15,10 @@
     "playground": {
     "type": "stack",
 
-    "controls": {
-        "primary": "PUSH",
-        "secondary": "POP"
-    },
+    "controls": [
+        { "id": "push", "label": "PUSH", "operation": "push" },
+        { "id": "pop", "label": "POP", "operation": "pop" }
+    ],
 
     "actions": [
         { "label": "Push", "operation": "push" },

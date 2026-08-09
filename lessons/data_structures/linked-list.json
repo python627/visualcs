@@ -15,10 +15,10 @@
     "playground": {
         "type": "linked-list",
 
-        "controls": {
-            "primary": "ADD NODE",
-            "secondary": "REMOVE NODE"
-        },
+        "controls": [
+            { "id": "add", "label": "ADD NODE", "operation": "add" },
+            { "id": "remove", "label": "REMOVE NODE", "operation": "remove" }
+        ],
 
     "actions": [
             { "label": "Add node", "operation": "add" },

@@ -52,8 +52,8 @@ function createStackPlayground() {
 
     return {
         mount() {
-            pushBtn.onclick = add;
-            popBtn.onclick = remove;
+            getControl("push").onclick = add;
+            getControl("pop").onclick = remove;
         },
         reset() {
             stack.length = 0;
@@ -61,3 +61,6 @@ function createStackPlayground() {
         }
     };
 }
+
+
+registerPlayground("stack", createStackPlayground);
