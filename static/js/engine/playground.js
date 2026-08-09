@@ -3,21 +3,15 @@ function createPlayground(type) {
     switch (type) {
 
         case "stack":
-            return {
-                type: "stack",
-                addAction: "PUSH",
-                removeAction: "POP"
-            };
+            return createStackPlayground();
 
         case "queue":
-            return {
-                type: "queue",
-                addAction: "ENQUEUE",
-                removeAction: "DEQUEUE"
-            };
+            return createQueuePlayground();
+
+        case "linked-list":
+            return createLinkedListPlayground();
 
         default:
-
             console.error(
                 `Unknown playground type: ${type}`
             );

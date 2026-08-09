@@ -21,20 +21,20 @@
         },
 
         "actions": [
-            "add",
-            "add",
-            "add",
-            "remove"
+            "add node",
+            "add another node",
+            "add final node",
+            "remove node"
         ]
     },
 
     "quiz": {
-        "question": "What connects one node to the next?",
+        "question": "After removing the first node, where does HEAD point?",
 
         "options": [
-            "A pointer/reference",
-            "A random number",
-            "The node's position"
+            "The next node in the chain",
+            "The node that was removed",
+            "The last node in the chain"
         ],
 
         "correct": 0

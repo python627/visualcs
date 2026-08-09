@@ -3,15 +3,13 @@ let lessonFinished = false;
 
 function resetLesson() {
 
-    stack.length = 0;
+    playground.reset();
 
     pushCount = 0;
 
     popCount = 0;
 
     lessonFinished = false;
-
-    render();
 
     updateMission();
 

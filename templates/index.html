@@ -90,7 +90,7 @@
 
     <div id="message">
 
-        Welcome! Let's discover how a Stack works.
+        Welcome! Let's discover how a {{ lesson.topic }} works.
 
     </div>
 
@@ -116,16 +116,22 @@
 
 <script src="{{ url_for('static', filename='js/dom.js') }}"></script>
 
-<script src="{{ url_for('static', filename='js/engine/playground.js') }}"></script>
-
 <script src="{{ url_for('static', filename='js/mission.js') }}"></script>
-<script src="{{ url_for('static', filename='js/objects/structures.js') }}"></script>
+
 
 <script src="{{ url_for('static', filename='js/lesson.js') }}"></script>
 
 <script src="{{ url_for('static', filename='js/quiz.js') }}"></script>
 
-<script src="{{ url_for('static', filename='js/stack.js') }}"></script>
+<script src="{{ url_for('static', filename='js/engine/stack_playground.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/engine/queue_playground.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/objects/linked_list.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/engine/linked_list_playground.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/engine/playground.js') }}"></script>
 
 <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
