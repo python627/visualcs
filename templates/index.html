@@ -24,35 +24,42 @@
 
         <h2>🎯 Mission</h2>
 
-        <h3>Discover LIFO</h3>
+        <h3>{{ lesson.mission.title }}</h3>
 
-        <p>
-            Your goal is to figure out the rule behind a Stack
-            without being told.
-        </p>
+        <p>{{ lesson.mission.description }}</p>
 
         <div class="meta">
-            ⭐ Beginner<br>
-            ⏱ 8 minutes
+           ⭐ {{ lesson.difficulty }}
+           ⏱ {{ lesson.estimated_time }}
         </div>
 
     </aside>
 
     <section class="playground">
 
-        <h2>📦 Playground</h2>
+    <h2>📦 Playground</h2>
+
+    <div class="playground-area">
+
+        <div id="animation-layer"></div>
 
         <div id="stack"></div>
 
-        <div class="buttons">
+    </div>
 
-            <button id="pushBtn">PUSH</button>
+   <div class="buttons">
 
-            <button id="popBtn">POP</button>
+    <button id="pushBtn">
+        {{ lesson.playground.controls.primary }}
+    </button>
 
-        </div>
+    <button id="popBtn">
+        {{ lesson.playground.controls.secondary }}
+    </button>
 
-    </section>
+</div>
+
+</section>
 
     <aside class="byte-card">
 
@@ -66,25 +73,18 @@
 
         <div class="steps">
 
-            <div id="step1" class="step active">
-                1. Press PUSH
-            </div>
+    {% for action in lesson.playground.actions %}
 
-            <div id="step2" class="step">
-                2. Press PUSH again
-            </div>
-
-            <div id="step3" class="step">
-                3. Press PUSH one last time
-            </div>
-
-            <div id="step4" class="step">
-                4. Press POP
-            </div>
-
+        <div
+            id="step{{ loop.index }}"
+            class="step {% if loop.first %}active{% endif %}"
+        >
+            {{ loop.index }}. {{ action|capitalize }}
         </div>
 
-    </div>
+    {% endfor %}
+
+</div>
 
     <hr>
 
@@ -110,7 +110,23 @@
 
 </section>
 
-<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+<script>
+    const LESSON = {{ lesson | tojson }};
+</script>
 
+<script src="{{ url_for('static', filename='js/dom.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/engine/playground.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/mission.js') }}"></script>
+<script src="{{ url_for('static', filename='js/objects/structures.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/lesson.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/quiz.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/stack.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
 </html>

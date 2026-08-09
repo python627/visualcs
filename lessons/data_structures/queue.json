@@ -1,0 +1,46 @@
+{
+    "id": "queue",
+    "subject": "Data Structures",
+    "topic": "Queue",
+    "title": "Discover Queues",
+    "description": "Discover how a Queue stores and removes data.",
+    "difficulty": "Beginner",
+    "estimated_time": "8 min",
+
+    "mission": {
+        "title": "Discover FIFO",
+        "description": "Find the hidden rule behind a Queue."
+    },
+
+    "playground": {
+    "type": "queue",
+
+    "controls": {
+        "primary": "ENQUEUE",
+        "secondary": "DEQUEUE"
+    },
+
+    "actions": [
+        "enqueue",
+        "enqueue",
+        "enqueue",
+        "dequeue"
+    ]
+},
+    "quiz": {
+        "question": "Which item was removed first?",
+
+        "options": [
+            "The first item added",
+            "The last item added",
+            "A random item"
+        ],
+
+        "correct": 0
+    },
+
+    "discovery": {
+        "title": "First In First Out",
+        "summary": "The first item added to a Queue is the first item removed."
+    }
+}

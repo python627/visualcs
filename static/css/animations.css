@@ -15,3 +15,100 @@
 .block{
     animation:appear .3s ease;
 }
+@keyframes dropBlock{
+
+    0%{
+        transform:translateY(-120px);
+        opacity:0;
+    }
+
+    70%{
+        transform:translateY(10px);
+        opacity:1;
+    }
+
+    100%{
+        transform:translateY(0);
+        opacity:1;
+    }
+
+}
+
+.block.new{
+
+    animation:dropBlock .45s ease-out;
+
+}
+.playground-area{
+
+    position:relative;
+
+    width:220px;
+
+    margin:30px auto;
+
+}
+
+#animation-layer{
+
+    position:absolute;
+
+    left:0;
+
+    top:0;
+
+    width:100%;
+
+    height:100%;
+
+    pointer-events:none;
+
+}
+
+.falling-block{
+
+    position:absolute;
+
+    width:100%;
+
+    height:50px;
+
+    background:#38bdf8;
+
+    border-radius:10px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:22px;
+
+    font-weight:bold;
+
+    animation:dropToStack .6s ease-out forwards;
+
+}
+
+@keyframes dropToStack{
+
+    0%{
+        transform:translateY(-80px);
+        opacity:0;
+    }
+
+    80%{
+        transform:translateY(0);
+        opacity:1;
+    }
+
+    90%{
+        transform:translateY(8px);
+    }
+
+    100%{
+        transform:translateY(0);
+    }
+
+}

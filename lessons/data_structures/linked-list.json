@@ -1,0 +1,47 @@
+{
+    "id": "linked-list",
+    "subject": "Data Structures",
+    "topic": "Linked List",
+    "title": "Discover Linked Lists",
+    "description": "Discover how nodes connect to form a Linked List.",
+    "difficulty": "Beginner",
+    "estimated_time": "10 min",
+
+    "mission": {
+        "title": "Discover the Chain",
+        "description": "Find out how one node connects to another."
+    },
+
+    "playground": {
+        "type": "linked-list",
+
+        "controls": {
+            "primary": "ADD NODE",
+            "secondary": "REMOVE NODE"
+        },
+
+        "actions": [
+            "add",
+            "add",
+            "add",
+            "remove"
+        ]
+    },
+
+    "quiz": {
+        "question": "What connects one node to the next?",
+
+        "options": [
+            "A pointer/reference",
+            "A random number",
+            "The node's position"
+        ],
+
+        "correct": 0
+    },
+
+    "discovery": {
+        "title": "Nodes Connected by Links",
+        "summary": "A Linked List stores data in nodes where each node keeps a reference to another node."
+    }
+}

@@ -1,0 +1,47 @@
+{
+    "id": "stack",
+    "subject": "Data Structures",
+    "topic": "Stack",
+    "title": "Discover Stacks",
+    "description": "Discover how a Stack stores and removes data.",
+    "difficulty": "Beginner",
+    "estimated_time": "8 min",
+
+    "mission": {
+        "title": "Discover LIFO",
+        "description": "Find the hidden rule behind a Stack."
+    },
+
+    "playground": {
+    "type": "stack",
+
+    "controls": {
+        "primary": "PUSH",
+        "secondary": "POP"
+    },
+
+    "actions": [
+        "push",
+        "push",
+        "push",
+        "pop"
+    ]
+},
+
+    "quiz": {
+        "question": "Which block was removed from the Stack?",
+
+        "options": [
+            "The first one added",
+            "The last one added",
+            "A random block"
+        ],
+
+        "correct": 1
+    },
+
+    "discovery": {
+        "title": "Last In First Out",
+        "summary": "The last item pushed onto a Stack is the first item removed."
+    }
+}

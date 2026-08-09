@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>VisualCS | Lessons</title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='css/style.css') }}"
+    >
+
+</head>
+
+<body>
+
+<header class="topbar">
+
+    <h1>🎓 VisualCS</h1>
+
+    <span>Choose your lesson</span>
+
+</header>
+
+
+<main class="library">
+
+    <div class="library-header">
+
+        <h2>Explore Computer Science</h2>
+
+        <p>
+            Learn through missions, interaction, and discovery.
+        </p>
+
+    </div>
+
+
+    <div class="lesson-grid">
+
+        {% for lesson in lessons %}
+
+        <article class="lesson-card">
+
+            <div class="lesson-icon">
+                📚
+            </div>
+
+            <div class="lesson-content">
+
+                <div class="lesson-subject">
+                    {{ lesson.subject }}
+                </div>
+
+                <h3>
+                    {{ lesson.title }}
+                </h3>
+
+                <p>
+                    {{ lesson.description }}
+                </p>
+
+                <div class="lesson-meta">
+
+                    <span>
+                        ⭐ {{ lesson.difficulty }}
+                    </span>
+
+                    <span>
+                        ⏱ {{ lesson.estimated_time }}
+                    </span>
+
+                </div>
+
+                <a
+                    class="start-lesson"
+                    href="{{ url_for(
+                        'lesson',
+                        subject=lesson.subject|lower|replace(' ', '_'),
+                        lesson=lesson.id
+                    ) }}"
+                >
+                    Start Lesson →
+                </a>
+
+            </div>
+
+        </article>
+
+        {% endfor %}
+
+    </div>
+
+</main>
+
+</body>
+
+</html>
