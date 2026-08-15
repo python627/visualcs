@@ -125,6 +125,69 @@
     box-shadow:0 0 18px rgba(34, 197, 94, .5);
 }
 
+.playground-area:has(#stack.bubble-sort-view){
+    width:min(100%, 720px);
+}
+
+#stack.bubble-sort-view{
+    width:100%;
+    min-height:190px;
+    height:auto;
+    margin:25px 0;
+    border-color:#38bdf8;
+    padding:24px 20px;
+    flex-direction:column;
+    align-items:stretch;
+    justify-content:center;
+    gap:18px;
+    overflow-x:auto;
+}
+
+.bubble-sort-instruction{
+    color:#7dd3fc;
+    font-size:16px;
+    font-weight:bold;
+}
+
+.bubble-sort-array{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+    min-width:max-content;
+}
+
+.sort-value{
+    width:64px;
+    height:54px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border:2px solid #7dd3fc;
+    border-radius:12px;
+    background:#0c4a6e;
+    color:white;
+    font-size:18px;
+    font-weight:bold;
+    transition:background .3s, border-color .3s, opacity .3s, transform .3s;
+}
+
+.sort-value.comparing{
+    background:#1d4ed8;
+    border-color:#bfdbfe;
+    transform:translateY(-7px);
+}
+
+.sort-value.swapping{
+    border-color:#fde68a;
+    box-shadow:0 0 16px rgba(250, 204, 21, .45);
+}
+
+.sort-value.sorted{
+    background:#15803d;
+    border-color:#86efac;
+}
+
 .linked-node{
     display:flex;
     align-items:center;

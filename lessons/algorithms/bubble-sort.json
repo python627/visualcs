@@ -1,0 +1,69 @@
+{
+    "id": "bubble-sort",
+    "subject": "Algorithms",
+    "topic": "Bubble Sort",
+    "title": "Discover Bubble Sort",
+    "description": "Discover how Bubble Sort compares neighboring values and swaps them into order.",
+    "difficulty": "Beginner",
+    "estimated_time": "12 min",
+
+    "mission": {
+        "title": "Sort the Values",
+        "description": "Compare neighbors and let the largest values bubble to the end."
+    },
+
+    "playground": {
+        "type": "bubble-sort",
+        "values": [50, 20, 40, 10, 30],
+        "controls": [
+            { "id": "next-step", "label": "NEXT STEP", "operation": "next-step" }
+        ],
+        "actions": [
+            { "label": "Compare adjacent values", "operation": "compare-adjacent" },
+            { "label": "Swap when necessary", "operation": "swap" },
+            { "label": "Continue through the pass", "operation": "continue-pass" },
+            { "label": "Complete a pass", "operation": "complete-pass" },
+            { "label": "Reach the sorted array", "operation": "sorted-array" }
+        ]
+    },
+
+    "quiz": {
+        "question": "What does Bubble Sort compare at each step?",
+        "options": [
+            "Two adjacent values",
+            "Only the first and last values",
+            "Every value at the same time"
+        ],
+        "correct": 0
+    },
+
+    "discovery": {
+        "title": "Values Bubble Into Place",
+        "summary": "Bubble Sort repeatedly compares neighboring values. Larger values swap right until each pass places one value in its final position."
+    },
+
+    "notes": {
+        "sections": [
+            {
+                "title": "What is Bubble Sort?",
+                "content": "Bubble Sort is a sorting algorithm that repeatedly compares neighboring values."
+            },
+            {
+                "title": "Adjacent comparisons",
+                "content": "The algorithm looks at two values next to each other and checks whether they are in the correct order."
+            },
+            {
+                "title": "Swapping",
+                "content": "If the left value is larger, the two values swap positions."
+            },
+            {
+                "title": "Passes",
+                "content": "One pass moves the largest remaining value to the end of the unsorted area."
+            },
+            {
+                "title": "Time complexity",
+                "content": "Bubble Sort takes O(n²) time in the typical unsorted case because it may compare many pairs over many passes."
+            }
+        ]
+    }
+}
