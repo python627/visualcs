@@ -88,3 +88,20 @@ class LessonRegistry:
 
 
         return lessons
+
+
+    def get_lessons_by_subject(self):
+
+        subjects = {}
+
+        for lesson in self.get_all_lessons():
+
+            subject = lesson["subject"]
+
+            if subject not in subjects:
+                subjects[subject] = []
+
+            subjects[subject].append(lesson)
+
+
+        return dict(sorted(subjects.items()))

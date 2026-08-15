@@ -40,21 +40,29 @@
     </div>
 
 
-    <div class="lesson-grid">
+    {% for subject, lessons in subjects.items() %}
 
-        {% for lesson in lessons %}
+    <section class="subject-section">
 
-        <article class="lesson-card">
+        <div class="subject-header">
+
+            <h2>{{ subject }}</h2>
+
+            <span>{{ lessons|length }} lesson{% if lessons|length != 1 %}s{% endif %}</span>
+
+        </div>
+
+        <div class="lesson-grid">
+
+            {% for lesson in lessons %}
+
+            <article class="lesson-card">
 
             <div class="lesson-icon">
                 📚
             </div>
 
             <div class="lesson-content">
-
-                <div class="lesson-subject">
-                    {{ lesson.subject }}
-                </div>
 
                 <h3>
                     {{ lesson.title }}
@@ -89,11 +97,15 @@
 
             </div>
 
-        </article>
+            </article>
 
-        {% endfor %}
+            {% endfor %}
 
-    </div>
+        </div>
+
+    </section>
+
+    {% endfor %}
 
 </main>
 

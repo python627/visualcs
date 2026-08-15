@@ -14,11 +14,11 @@ lesson_registry = LessonRegistry()
 @app.route("/")
 def home():
 
-    lessons = lesson_registry.get_all_lessons()
+    subjects = lesson_registry.get_lessons_by_subject()
 
     return render_template(
         "library.html",
-        lessons=lessons
+        subjects=subjects
     )
 
 
