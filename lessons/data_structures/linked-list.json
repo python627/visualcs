@@ -43,5 +43,30 @@
     "discovery": {
         "title": "Nodes Connected by Links",
         "summary": "A Linked List stores data in nodes where each node keeps a reference to another node."
+    },
+
+    "notes": {
+        "sections": [
+            {
+                "title": "What is a Linked List?",
+                "content": "A Linked List stores items in a chain instead of placing them next to each other."
+            },
+            {
+                "title": "Nodes",
+                "content": "Each item is stored in a node. A node holds data and information about the next node."
+            },
+            {
+                "title": "Links and references",
+                "content": "A link, also called a reference, connects one node to the next node in the chain."
+            },
+            {
+                "title": "Operations",
+                "content": "ADD creates a new node in the chain. REMOVE takes a node out and updates the link."
+            },
+            {
+                "title": "Real-world example",
+                "content": "Think of a treasure hunt: each clue points to the next clue until the trail ends."
+            }
+        ]
     }
 }

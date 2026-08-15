@@ -42,5 +42,26 @@
     "discovery": {
         "title": "First In First Out",
         "summary": "The first item added to a Queue is the first item removed."
+    },
+
+    "notes": {
+        "sections": [
+            {
+                "title": "What is a Queue?",
+                "content": "A Queue is a linear data structure that keeps items in the order they arrive."
+            },
+            {
+                "title": "FIFO",
+                "content": "FIFO means First In, First Out: the first item added is the first one removed."
+            },
+            {
+                "title": "Operations",
+                "content": "ENQUEUE adds an item at the back. DEQUEUE removes an item from the front."
+            },
+            {
+                "title": "Real-world example",
+                "content": "People waiting in a line are served in the same order that they joined the line."
+            }
+        ]
     }
 }
