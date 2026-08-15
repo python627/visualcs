@@ -188,6 +188,102 @@
     border-color:#86efac;
 }
 
+.playground-area:has(#stack.binary-search-tree-view){
+    width:min(100%, 720px);
+}
+
+#stack.binary-search-tree-view{
+    width:100%;
+    min-height:390px;
+    height:auto;
+    margin:25px 0;
+    border-color:#38bdf8;
+    padding:20px;
+    display:block;
+    overflow:hidden;
+}
+
+.bst-status{
+    color:#7dd3fc;
+    font-size:16px;
+    font-weight:bold;
+    text-align:center;
+}
+
+.bst-canvas{
+    display:block;
+    width:100%;
+    height:330px;
+    margin-top:10px;
+}
+
+.bst-edge{
+    stroke:#7dd3fc;
+    stroke-width:3;
+}
+
+.bst-new-edge{
+    stroke-dasharray:170;
+    animation:bstEdgeEnter .5s ease-out;
+}
+
+.bst-node-circle{
+    fill:#0c4a6e;
+    stroke:#7dd3fc;
+    stroke-width:3;
+}
+
+.bst-node-text{
+    fill:white;
+    font-size:18px;
+    font-weight:bold;
+}
+
+.bst-comparing .bst-node-circle{
+    fill:#1d4ed8;
+    stroke:#bfdbfe;
+    filter:drop-shadow(0 0 7px rgba(147, 197, 253, .75));
+}
+
+.bst-new-node .bst-node-circle{
+    fill:#15803d;
+    stroke:#86efac;
+    animation:bstNodeEnter .5s ease-out;
+    transform-box:fill-box;
+    transform-origin:center;
+}
+
+.bst-direction{
+    fill:#fde68a;
+    font-size:14px;
+    font-weight:bold;
+    text-anchor:middle;
+}
+
+@keyframes bstNodeEnter{
+    from{
+        opacity:0;
+        transform:scale(.45);
+    }
+
+    to{
+        opacity:1;
+        transform:scale(1);
+    }
+}
+
+@keyframes bstEdgeEnter{
+    from{
+        stroke-dashoffset:170;
+        opacity:0;
+    }
+
+    to{
+        stroke-dashoffset:0;
+        opacity:1;
+    }
+}
+
 .linked-node{
     display:flex;
     align-items:center;

@@ -1,0 +1,78 @@
+{
+    "id": "binary-search-tree",
+    "subject": "Data Structures",
+    "topic": "Binary Search Tree",
+    "title": "Discover Binary Search Trees",
+    "description": "Discover how a Binary Search Tree places values by comparing them with existing nodes.",
+    "difficulty": "Beginner",
+    "estimated_time": "12 min",
+
+    "mission": {
+        "title": "Build the Search Tree",
+        "description": "Use comparisons to place each value on the left or right side of the tree."
+    },
+
+    "playground": {
+        "type": "binary-search-tree",
+        "values": [50, 30, 70, 20, 40, 60, 80],
+        "controls": [
+            { "id": "insert", "label": "INSERT", "operation": "insert" }
+        ],
+        "actions": [
+            { "label": "Insert the root", "operation": "insert-root" },
+            { "label": "Insert a smaller value", "operation": "insert-smaller" },
+            { "label": "Insert a larger value", "operation": "insert-larger" },
+            { "label": "Follow comparisons", "operation": "follow-comparisons" },
+            { "label": "Build the tree", "operation": "build-tree" }
+        ]
+    },
+
+    "quiz": {
+        "question": "A BST node contains 50. Where should 30 be placed?",
+        "options": [
+            "Left",
+            "Right",
+            "Above",
+            "Anywhere"
+        ],
+        "correct": 0
+    },
+
+    "discovery": {
+        "title": "Comparisons Organize the Tree",
+        "summary": "A Binary Search Tree organizes values using comparisons. Smaller values go into the left subtree and larger values go into the right subtree."
+    },
+
+    "notes": {
+        "sections": [
+            {
+                "title": "What is a Binary Search Tree?",
+                "content": "A Binary Search Tree, or BST, stores values in nodes arranged by comparison."
+            },
+            {
+                "title": "Root, parent, and child",
+                "content": "The first node is the root. A node above another is its parent, and the connected node below is its child."
+            },
+            {
+                "title": "Left and right children",
+                "content": "Each node can have a left child and a right child."
+            },
+            {
+                "title": "Smaller values go left",
+                "content": "When inserting a smaller value, move to the left child."
+            },
+            {
+                "title": "Larger values go right",
+                "content": "When inserting a larger value, move to the right child."
+            },
+            {
+                "title": "Searching and inserting",
+                "content": "Both searching and inserting follow comparisons from the root until the correct position is reached."
+            },
+            {
+                "title": "Search complexity",
+                "content": "A balanced BST has average search time O(log n). A badly unbalanced tree can degrade to O(n)."
+            }
+        ]
+    }
+}
