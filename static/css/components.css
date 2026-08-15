@@ -284,6 +284,156 @@
     }
 }
 
+.playground-area:has(#stack.fcfs-scheduling-view){
+    width:min(100%, 850px);
+}
+
+#stack.fcfs-scheduling-view{
+    width:100%;
+    min-height:290px;
+    height:auto;
+    margin:25px 0;
+    border-color:#38bdf8;
+    padding:22px;
+    display:block;
+    overflow-x:auto;
+}
+
+.fcfs-status{
+    color:#7dd3fc;
+    font-size:16px;
+    font-weight:bold;
+    text-align:center;
+}
+
+.fcfs-flow{
+    display:flex;
+    align-items:stretch;
+    justify-content:center;
+    gap:14px;
+    min-width:690px;
+    margin-top:20px;
+}
+
+.fcfs-stage{
+    flex:1;
+    min-width:180px;
+    padding:14px;
+    border:1px solid #26334f;
+    border-radius:12px;
+    background:#1e293b;
+}
+
+.fcfs-stage h3{
+    color:#7dd3fc;
+    font-size:14px;
+    text-align:center;
+}
+
+.fcfs-stage-content{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    min-height:142px;
+    margin-top:12px;
+}
+
+.fcfs-arrow{
+    display:flex;
+    align-items:center;
+    color:#7dd3fc;
+    font-size:28px;
+    font-weight:bold;
+}
+
+.fcfs-process{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:10px;
+    border:2px solid #7dd3fc;
+    border-radius:10px;
+    background:#0c4a6e;
+    color:white;
+    transition:transform .3s, background .3s, border-color .3s, opacity .3s;
+}
+
+.fcfs-process span{
+    color:#dbeafe;
+    font-size:13px;
+}
+
+.fcfs-highlighted{
+    border-color:#fde68a;
+    box-shadow:0 0 14px rgba(250, 204, 21, .4);
+}
+
+.fcfs-running{
+    background:#1d4ed8;
+    border-color:#bfdbfe;
+}
+
+.fcfs-executing{
+    box-shadow:0 0 16px rgba(96, 165, 250, .7);
+    animation:fcfsExecute .65s ease-in-out infinite alternate;
+}
+
+.fcfs-entering{
+    animation:fcfsEnterCpu .45s ease-out;
+}
+
+.fcfs-completed{
+    background:#15803d;
+    border-color:#86efac;
+}
+
+.fcfs-completing{
+    animation:fcfsComplete .45s ease-out;
+}
+
+.fcfs-empty{
+    display:flex;
+    flex:1;
+    align-items:center;
+    justify-content:center;
+    color:#94a3b8;
+    font-style:italic;
+}
+
+@keyframes fcfsEnterCpu{
+    from{
+        opacity:0;
+        transform:translateX(-36px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateX(0);
+    }
+}
+
+@keyframes fcfsExecute{
+    from{
+        transform:scale(1);
+    }
+
+    to{
+        transform:scale(1.04);
+    }
+}
+
+@keyframes fcfsComplete{
+    from{
+        opacity:0;
+        transform:translateX(-32px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateX(0);
+    }
+}
+
 .linked-node{
     display:flex;
     align-items:center;

@@ -84,6 +84,8 @@ class LessonRegistry:
                     continue
 
 
+                lesson["subject_slug"] = subject
+
                 lessons.append(lesson)
 
 

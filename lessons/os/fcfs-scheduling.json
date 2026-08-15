@@ -1,0 +1,86 @@
+{
+    "id": "fcfs-scheduling",
+    "subject": "Operating Systems",
+    "topic": "FCFS CPU Scheduling",
+    "title": "Discover FCFS Scheduling",
+    "description": "Discover how the CPU runs ready processes in their arrival order.",
+    "difficulty": "Beginner",
+    "estimated_time": "12 min",
+
+    "mission": {
+        "title": "Run the Ready Queue",
+        "description": "Follow each process from the ready queue to the CPU and then to completion."
+    },
+
+    "playground": {
+        "type": "fcfs-scheduling",
+        "processes": [
+            { "id": "P1", "burst": 4 },
+            { "id": "P2", "burst": 2 },
+            { "id": "P3", "burst": 3 }
+        ],
+        "controls": [
+            { "id": "next-step", "label": "NEXT STEP", "operation": "next-step" }
+        ],
+        "actions": [
+            { "label": "Observe the ready queue", "operation": "observe-ready-queue" },
+            { "label": "Run the first process", "operation": "run-first-process" },
+            { "label": "Finish P1", "operation": "finish-p1" },
+            { "label": "Run the next process", "operation": "run-next-process" },
+            { "label": "Complete all processes", "operation": "complete-all" }
+        ]
+    },
+
+    "quiz": {
+        "question": "In FCFS scheduling, which process runs first?",
+        "options": [
+            "The shortest process",
+            "The process that arrived first",
+            "A random process",
+            "The longest process"
+        ],
+        "correct": 1
+    },
+
+    "discovery": {
+        "title": "Arrival Order Decides",
+        "summary": "FCFS scheduling runs processes in the same order they arrive in the ready queue."
+    },
+
+    "notes": {
+        "sections": [
+            {
+                "title": "What is a process?",
+                "content": "A process is a program that is currently ready to run or is running on the computer."
+            },
+            {
+                "title": "What is CPU scheduling?",
+                "content": "CPU scheduling decides which ready process gets to use the CPU next."
+            },
+            {
+                "title": "Ready queue",
+                "content": "The ready queue holds processes that are waiting for CPU time."
+            },
+            {
+                "title": "What is FCFS?",
+                "content": "FCFS means First Come, First Served."
+            },
+            {
+                "title": "Arrival order",
+                "content": "Processes run in the same order that they arrive in the ready queue."
+            },
+            {
+                "title": "Advantage",
+                "content": "FCFS is simple to understand and easy to implement."
+            },
+            {
+                "title": "Disadvantage",
+                "content": "A long process at the front can make short processes wait for a long time."
+            },
+            {
+                "title": "Convoy effect",
+                "content": "The convoy effect happens when many short processes are stuck waiting behind one long process, like cars behind a slow truck."
+            }
+        ]
+    }
+}
