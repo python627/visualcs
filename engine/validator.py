@@ -170,4 +170,34 @@ class LessonValidator:
                 )
 
 
+        # Validate optional notes
+        if "notes" in lesson:
+
+            if not isinstance(lesson["notes"], dict):
+                errors.append(
+                    "notes must be an object"
+                )
+
+            elif not isinstance(lesson["notes"].get("sections"), list):
+                errors.append(
+                    "notes.sections must be a list"
+                )
+
+            else:
+                for index, section in enumerate(lesson["notes"]["sections"]):
+
+                    if not isinstance(section, dict):
+                        errors.append(
+                            f"notes.sections[{index}] must be an object"
+                        )
+
+                        continue
+
+                    for field in ("title", "content"):
+                        if not isinstance(section.get(field), str):
+                            errors.append(
+                                f"notes.sections[{index}].{field} must be a string"
+                            )
+
+
         return errors

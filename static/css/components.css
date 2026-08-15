@@ -1,7 +1,8 @@
 .mission-card,
 .playground,
 .byte-card,
-.discoveries{
+.discoveries,
+.notes{
 
     background:#172036;
     border:1px solid #26334f;
@@ -12,7 +13,8 @@
 .mission-card h2,
 .playground h2,
 .byte-card h2,
-.discoveries h2{
+.discoveries h2,
+.notes h2{
     margin-bottom:20px;
 }
 
@@ -301,4 +303,36 @@
 
     border-color:#ef4444;
 
+}
+
+.notes{
+    margin:0 30px 30px;
+}
+
+.notes-list{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+    gap:12px;
+}
+
+.note-section{
+    background:#1e293b;
+    border:1px solid #26334f;
+    border-radius:12px;
+    padding:14px 16px;
+}
+
+.note-section[open]{
+    border-color:#3b82f6;
+}
+
+.note-section summary{
+    cursor:pointer;
+    color:white;
+    font-weight:bold;
+}
+
+.note-section p{
+    margin-top:12px;
+    line-height:1.6;
 }

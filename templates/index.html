@@ -113,6 +113,32 @@
 
 </section>
 
+{% if lesson.notes and lesson.notes.sections %}
+
+<section class="notes">
+
+    <h2>Notes</h2>
+
+    <div class="notes-list">
+
+        {% for note in lesson.notes.sections %}
+
+        <details class="note-section">
+
+            <summary>{{ note.title }}</summary>
+
+            <p>{{ note.content }}</p>
+
+        </details>
+
+        {% endfor %}
+
+    </div>
+
+</section>
+
+{% endif %}
+
 <script>
     const LESSON = {{ lesson | tojson }};
 </script>

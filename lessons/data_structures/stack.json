@@ -43,5 +43,26 @@
     "discovery": {
         "title": "Last In First Out",
         "summary": "The last item pushed onto a Stack is the first item removed."
+    },
+
+    "notes": {
+        "sections": [
+            {
+                "title": "What is a Stack?",
+                "content": "A Stack is a linear data structure where the last element added is the first element removed."
+            },
+            {
+                "title": "LIFO",
+                "content": "LIFO means Last In, First Out."
+            },
+            {
+                "title": "Operations",
+                "content": "PUSH adds an element to the top. POP removes the top element."
+            },
+            {
+                "title": "Real-world example",
+                "content": "A stack of plates follows the same rule. Plates are added and removed from the top."
+            }
+        ]
     }
 }
