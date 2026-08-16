@@ -1,0 +1,95 @@
+{
+    "id": "packet-routing",
+    "subject": "Computer Networks",
+    "topic": "Packet Routing",
+    "title": "Discover Packet Routing",
+    "description": "Discover how a packet travels through routers toward its destination.",
+    "difficulty": "Beginner",
+    "estimated_time": "12 min",
+
+    "mission": {
+        "title": "Route a Packet",
+        "description": "Follow one packet as routers choose a path from Computer A to Server C."
+    },
+
+    "playground": {
+        "type": "packet-routing",
+        "source": "computer-a",
+        "destination": "server-c",
+        "nodes": [
+            { "id": "computer-a", "label": "Computer A", "type": "computer", "x": 300, "y": 40 },
+            { "id": "router-1", "label": "Router 1", "type": "router", "x": 300, "y": 120 },
+            { "id": "router-2", "label": "Router 2", "type": "router", "x": 180, "y": 215 },
+            { "id": "router-3", "label": "Router 3", "type": "router", "x": 420, "y": 215 },
+            { "id": "server-b", "label": "Server B", "type": "server", "x": 180, "y": 330 },
+            { "id": "server-c", "label": "Server C", "type": "server", "x": 420, "y": 330 }
+        ],
+        "edges": [
+            { "from": "computer-a", "to": "router-1" },
+            { "from": "router-1", "to": "router-2" },
+            { "from": "router-1", "to": "router-3" },
+            { "from": "router-2", "to": "server-b" },
+            { "from": "router-3", "to": "server-c" }
+        ],
+        "route": ["computer-a", "router-1", "router-3", "server-c"],
+        "controls": [
+            { "id": "next-step", "label": "NEXT STEP", "operation": "next-step" }
+        ],
+        "actions": [
+            { "label": "Send the packet", "operation": "send-packet" },
+            { "label": "Reach the first router", "operation": "reach-first-router" },
+            { "label": "Choose the correct route", "operation": "choose-correct-route" },
+            { "label": "Forward the packet", "operation": "forward-packet" },
+            { "label": "Reach the destination", "operation": "reach-destination" }
+        ]
+    },
+
+    "quiz": {
+        "question": "A packet reaches a router. What does the router mainly use to decide where to forward it?",
+        "options": [
+            "Screen size",
+            "Destination network/address information",
+            "File name",
+            "Keyboard input"
+        ],
+        "correct": 1
+    },
+
+    "discovery": {
+        "title": "Routers Forward by Destination",
+        "summary": "Routers examine destination information and forward packets along a path toward their destination."
+    },
+
+    "notes": {
+        "sections": [
+            {
+                "title": "What is a packet?",
+                "content": "A packet is a small piece of data sent across a network. Large messages are often split into many packets."
+            },
+            {
+                "title": "What is a router?",
+                "content": "A router connects networks and forwards packets toward the network where they need to go."
+            },
+            {
+                "title": "Source and destination",
+                "content": "The source sends the packet. The destination is the device or network the packet is trying to reach."
+            },
+            {
+                "title": "What routing means",
+                "content": "Routing is the process of choosing a path for a packet through connected networks."
+            },
+            {
+                "title": "Why routers choose paths",
+                "content": "A router can have more than one outgoing path, so it uses destination information to choose the useful next hop."
+            },
+            {
+                "title": "IP address idea",
+                "content": "An IP address is a network address that helps identify where a packet should be delivered."
+            },
+            {
+                "title": "Router and end device",
+                "content": "Computers and servers are end devices that send or receive data. Routers mainly move packets between networks."
+            }
+        ]
+    }
+}

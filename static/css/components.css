@@ -874,6 +874,235 @@
     }
 }
 
+.playground-area:has(#stack.packet-routing-view){
+    width:min(100%, 920px);
+}
+
+#stack.packet-routing-view{
+    width:100%;
+    min-height:480px;
+    height:auto;
+    margin:25px 0;
+    padding:22px;
+    display:block;
+    overflow-x:auto;
+    border-color:#60a5fa;
+}
+
+.nr-status{
+    margin:0;
+    color:#93c5fd;
+    font-size:16px;
+    font-weight:bold;
+    text-align:center;
+}
+
+.nr-route-info{
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:10px 16px;
+    margin:10px 0;
+    color:#cbd5e1;
+    font-size:13px;
+}
+
+.nr-route-info b{
+    margin-right:5px;
+    padding:2px 6px;
+    border-radius:5px;
+    background:#1e3a8a;
+    color:#bfdbfe;
+    font-size:10px;
+    letter-spacing:.05em;
+}
+
+.nr-decision{
+    max-width:690px;
+    margin:0 auto 10px;
+    padding:9px 12px;
+    border:1px solid #475569;
+    border-radius:9px;
+    background:#172554;
+    color:#dbeafe;
+    font-size:13px;
+    line-height:1.45;
+    text-align:center;
+}
+
+.nr-decision strong{
+    color:#67e8f9;
+}
+
+.nr-network-canvas{
+    position:relative;
+    min-width:620px;
+    height:390px;
+    overflow:hidden;
+    border-radius:14px;
+    background:linear-gradient(180deg, #101d36 0%, #172554 100%);
+}
+
+.nr-connections{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    overflow:visible;
+}
+
+.nr-edge{
+    stroke:#475569;
+    stroke-width:4;
+    stroke-linecap:round;
+    transition:stroke .35s, stroke-width .35s, opacity .35s, filter .35s;
+}
+
+.nr-edge.nr-traversed{
+    stroke:#38bdf8;
+    stroke-width:5;
+    filter:drop-shadow(0 0 4px rgba(56, 189, 248, .75));
+}
+
+.nr-edge.nr-choice{
+    stroke:#fbbf24;
+    stroke-dasharray:8 7;
+    opacity:.92;
+}
+
+.nr-edge.nr-selected-route{
+    stroke:#22d3ee;
+    stroke-width:6;
+    stroke-dasharray:none;
+    filter:drop-shadow(0 0 7px rgba(34, 211, 238, .85));
+    animation:nrRouteSelected .7s ease-out;
+}
+
+.nr-node{
+    position:absolute;
+    z-index:1;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    width:116px;
+    min-height:58px;
+    padding:7px;
+    border:2px solid #64748b;
+    border-radius:12px;
+    background:#1e293b;
+    color:white;
+    text-align:center;
+    transform:translate(-50%, -50%);
+    transition:border-color .35s, background .35s, box-shadow .35s, transform .35s;
+}
+
+.nr-node-type{
+    margin-bottom:3px;
+    color:#94a3b8;
+    font-size:10px;
+    font-weight:bold;
+    letter-spacing:.08em;
+}
+
+.nr-node strong{
+    font-size:14px;
+}
+
+.nr-computer{
+    border-color:#60a5fa;
+    background:#1e3a8a;
+}
+
+.nr-server{
+    border-color:#34d399;
+    background:#14532d;
+}
+
+.nr-router{
+    border-color:#a78bfa;
+    background:#312e81;
+}
+
+.nr-current{
+    border-color:#facc15;
+    box-shadow:0 0 18px rgba(250, 204, 21, .55);
+}
+
+.nr-examining{
+    animation:nrRouterExamine .7s ease-in-out infinite alternate;
+}
+
+.nr-packet{
+    position:absolute;
+    z-index:3;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:35px;
+    height:23px;
+    border:2px solid #fef08a;
+    border-radius:7px;
+    background:#ca8a04;
+    box-shadow:0 0 12px rgba(250, 204, 21, .65);
+    color:#fff;
+    font-size:9px;
+    font-weight:bold;
+    letter-spacing:.05em;
+    transform:translate(24%, -116%);
+    transition:left .6s cubic-bezier(.2, .8, .3, 1), top .6s cubic-bezier(.2, .8, .3, 1);
+}
+
+.nr-packet-moving{
+    animation:nrPacketMove .6s ease-out;
+}
+
+.nr-packet-sending{
+    animation:nrPacketSend .55s ease-in-out;
+}
+
+@keyframes nrPacketMove{
+    0%{
+        opacity:.35;
+        filter:brightness(1.8);
+    }
+
+    100%{
+        opacity:1;
+        filter:brightness(1);
+    }
+}
+
+@keyframes nrPacketSend{
+    0%, 100%{
+        transform:translate(24%, -116%) scale(1);
+    }
+
+    50%{
+        transform:translate(24%, -116%) scale(1.25);
+    }
+}
+
+@keyframes nrRouterExamine{
+    from{
+        transform:translate(-50%, -50%) scale(1);
+    }
+
+    to{
+        transform:translate(-50%, -50%) scale(1.05);
+    }
+}
+
+@keyframes nrRouteSelected{
+    from{
+        opacity:.3;
+    }
+
+    to{
+        opacity:1;
+    }
+}
+
 .linked-node{
     display:flex;
     align-items:center;
