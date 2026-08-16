@@ -434,6 +434,187 @@
     }
 }
 
+.playground-area:has(#stack.round-robin-scheduling-view){
+    width:min(100%, 850px);
+}
+
+#stack.round-robin-scheduling-view{
+    width:100%;
+    min-height:330px;
+    height:auto;
+    margin:25px 0;
+    padding:22px;
+    display:block;
+    overflow-x:auto;
+    border-color:#a78bfa;
+}
+
+.rr-status{
+    margin:0;
+    color:#c4b5fd;
+    font-size:16px;
+    font-weight:bold;
+    text-align:center;
+}
+
+.rr-quantum{
+    width:max-content;
+    margin:10px auto 0;
+    padding:6px 11px;
+    border:1px solid #8b5cf6;
+    border-radius:999px;
+    background:#312e81;
+    color:#ede9fe;
+    font-size:12px;
+    font-weight:bold;
+    letter-spacing:.06em;
+}
+
+.rr-flow{
+    display:flex;
+    align-items:stretch;
+    justify-content:center;
+    gap:14px;
+    min-width:690px;
+    margin-top:18px;
+}
+
+.rr-stage{
+    flex:1;
+    min-width:180px;
+    padding:14px;
+    border:1px solid #3b3563;
+    border-radius:12px;
+    background:#1e293b;
+}
+
+.rr-stage h3{
+    margin:0;
+    color:#c4b5fd;
+    font-size:14px;
+    text-align:center;
+}
+
+.rr-stage-content{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    min-height:142px;
+    margin-top:12px;
+}
+
+.rr-arrow{
+    display:flex;
+    align-items:center;
+    color:#c4b5fd;
+    font-size:28px;
+    font-weight:bold;
+}
+
+.rr-process{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:10px;
+    border:2px solid #c4b5fd;
+    border-radius:10px;
+    background:#4c1d95;
+    color:white;
+    transition:transform .3s, background .3s, border-color .3s, opacity .3s;
+}
+
+.rr-process span{
+    color:#ede9fe;
+    font-size:13px;
+}
+
+.rr-highlighted{
+    border-color:#fde68a;
+    box-shadow:0 0 14px rgba(250, 204, 21, .4);
+}
+
+.rr-running{
+    background:#1d4ed8;
+    border-color:#bfdbfe;
+}
+
+.rr-entering{
+    animation:rrEnterCpu .45s ease-out;
+}
+
+.rr-executing{
+    box-shadow:0 0 16px rgba(96, 165, 250, .7);
+    animation:rrExecute .65s ease-in-out infinite alternate;
+}
+
+.rr-returning{
+    animation:rrReturnQueue .5s ease-out;
+}
+
+.rr-completed{
+    background:#15803d;
+    border-color:#86efac;
+}
+
+.rr-completing{
+    animation:rrComplete .45s ease-out;
+}
+
+.rr-empty{
+    display:flex;
+    flex:1;
+    align-items:center;
+    justify-content:center;
+    color:#94a3b8;
+    font-style:italic;
+}
+
+@keyframes rrEnterCpu{
+    from{
+        opacity:0;
+        transform:translateX(-36px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateX(0);
+    }
+}
+
+@keyframes rrExecute{
+    from{
+        transform:scale(1);
+    }
+
+    to{
+        transform:scale(1.04);
+    }
+}
+
+@keyframes rrReturnQueue{
+    from{
+        opacity:0;
+        transform:translateX(42px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateX(0);
+    }
+}
+
+@keyframes rrComplete{
+    from{
+        opacity:0;
+        transform:translateX(-32px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateX(0);
+    }
+}
+
 .linked-node{
     display:flex;
     align-items:center;

@@ -1,0 +1,84 @@
+{
+    "id": "round-robin-scheduling",
+    "subject": "Operating Systems",
+    "topic": "Round Robin CPU Scheduling",
+    "title": "Discover Round Robin Scheduling",
+    "description": "Discover how processes share CPU time by taking turns with a fixed time quantum.",
+    "difficulty": "Beginner",
+    "estimated_time": "14 min",
+
+    "mission": {
+        "title": "Rotate the Ready Queue",
+        "description": "Give each process a time slice, then return unfinished work to the back of the queue."
+    },
+
+    "playground": {
+        "type": "round-robin-scheduling",
+        "time_quantum": 2,
+        "processes": [
+            { "id": "P1", "burst": 5 },
+            { "id": "P2", "burst": 3 },
+            { "id": "P3", "burst": 4 }
+        ],
+        "controls": [
+            { "id": "next-step", "label": "NEXT STEP", "operation": "next-step" }
+        ],
+        "actions": [
+            { "label": "Run the first process", "operation": "run-first-process" },
+            { "label": "Use one time quantum", "operation": "use-time-quantum" },
+            { "label": "Return an unfinished process to the queue", "operation": "return-to-ready-queue" },
+            { "label": "Give the next process a turn", "operation": "run-next-process" },
+            { "label": "Continue rotating processes", "operation": "continue-rotating" },
+            { "label": "Complete all processes", "operation": "complete-all" }
+        ]
+    },
+
+    "quiz": {
+        "question": "P1 has 5 units remaining and the time quantum is 2. What happens after P1 uses the CPU?",
+        "options": [
+            "P1 always finishes",
+            "P1 has 3 units remaining and returns to the ready queue",
+            "P1 starts again immediately",
+            "P1 is deleted"
+        ],
+        "correct": 1
+    },
+
+    "discovery": {
+        "title": "CPU Time Is Shared",
+        "summary": "Round Robin gives each process a limited time quantum, then rotates unfinished processes back into the ready queue."
+    },
+
+    "notes": {
+        "sections": [
+            {
+                "title": "What is Round Robin?",
+                "content": "Round Robin is a CPU scheduling method where ready processes take turns using the CPU."
+            },
+            {
+                "title": "Time quantum",
+                "content": "A time quantum is the maximum amount of CPU time a process receives in one turn."
+            },
+            {
+                "title": "Why processes take turns",
+                "content": "Taking turns stops one long process from keeping every other ready process waiting for too long."
+            },
+            {
+                "title": "When a process is unfinished",
+                "content": "If a process still has work after its time quantum, it goes to the back of the ready queue."
+            },
+            {
+                "title": "When a process finishes",
+                "content": "A process that uses all of its remaining time leaves the CPU and moves to Completed."
+            },
+            {
+                "title": "Time-sharing systems",
+                "content": "Round Robin is useful when many users or programs should get regular chances to run."
+            },
+            {
+                "title": "FCFS and Round Robin",
+                "content": "FCFS runs the first process until it finishes. Round Robin pauses unfinished processes after a time quantum so others can run."
+            }
+        ]
+    }
+}
