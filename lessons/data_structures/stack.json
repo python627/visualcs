@@ -78,5 +78,83 @@
             "type": "example",
             "content": "PUSH 10, then 20, then 30. POP removes 30 first because it is on top."
         }
-    ]
+    ],
+
+    "introduction": {
+        "title": "Meet the Stack",
+        "content": "A Stack holds items in a vertical pile. You will experiment with adding items and taking them away.",
+        "points": [
+            "Items are added at the TOP.",
+            "Items are removed from the TOP.",
+            "You are about to use PUSH and POP."
+        ],
+        "visual": {
+            "type": "stack",
+            "label": "STACK",
+            "items": [30, 20, 10],
+            "top_label": "TOP"
+        }
+    },
+
+    "worked_example": {
+        "title": "Watch PUSH and POP",
+        "content": "Follow the stack as each operation changes the top item.",
+        "steps": [
+            {
+                "action": "PUSH 10",
+                "items": [10],
+                "explanation": "10 is the first item, so it becomes the top."
+            },
+            {
+                "action": "PUSH 20",
+                "items": [20, 10],
+                "explanation": "20 is placed above 10."
+            },
+            {
+                "action": "PUSH 30",
+                "items": [30, 20, 10],
+                "explanation": "30 is now sitting at the top."
+            },
+            {
+                "action": "POP",
+                "items": [20, 10],
+                "explanation": "POP removes the item at the top."
+            }
+        ],
+        "conclusion": "30 disappeared because it was the most recently added item and was sitting at the top.",
+        "next": {
+            "title": "Use the playground below.",
+            "content": "Try PUSH to add blocks, then POP to remove the top block."
+        }
+    },
+
+    "guided_teaching": {
+        "values": [10, 20, 30],
+        "action_explanations": {
+            "push": [
+                "You pushed {value}. Notice that it entered at the TOP of the Stack.",
+                "{value} was placed above 10. New items always enter from the TOP.",
+                "{value} is now the TOP item because it was added last."
+            ],
+            "pop": "{removed} was removed because POP removes the item currently at the TOP."
+        },
+        "prediction": {
+            "before_operation": "pop",
+            "heading": "Before you POP...",
+            "question": "Which value do you think will disappear?",
+            "choices": [10, 20, 30],
+            "selection_message": "Your prediction: {prediction}. Now press POP to check it.",
+            "result": {
+                "correct": "Your prediction: {prediction} ✓",
+                "incorrect": "Your prediction: {prediction}",
+                "actual": "Actual result: {actual}",
+                "concept": {
+                    "last_in": "LAST IN",
+                    "arrow": "↓",
+                    "first_out": "FIRST OUT",
+                    "label": "LIFO"
+                }
+            }
+        }
+    }
 }

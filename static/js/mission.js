@@ -23,6 +23,11 @@ function getExpectedOperation() {
 }
 
 
+function getMissionStepIndex() {
+    return missionStepIndex;
+}
+
+
 function completeAction(operation) {
     if (missionCompleted || operation !== getExpectedOperation()) {
         return {

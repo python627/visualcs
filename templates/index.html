@@ -33,6 +33,124 @@
 
 </nav>
 
+{% if lesson.introduction or lesson.worked_example %}
+
+<section class="lesson-onboarding" aria-label="Get ready to learn">
+
+    {% if lesson.introduction %}
+
+    <article class="beginner-introduction">
+
+        <div class="beginner-introduction-copy">
+
+            <span class="teaching-kicker">Beginner intro</span>
+            <h2>{{ lesson.introduction.title }}</h2>
+            <p>{{ lesson.introduction.content }}</p>
+
+            {% if lesson.introduction.points %}
+
+            <ul class="beginner-introduction-points">
+
+                {% for point in lesson.introduction.points %}
+
+                <li>{{ point }}</li>
+
+                {% endfor %}
+
+            </ul>
+
+            {% endif %}
+
+        </div>
+
+        {% if lesson.introduction.visual and lesson.introduction.visual.type == "stack" %}
+
+        <div class="teaching-stack-visual" aria-label="{{ lesson.introduction.visual.label }} example">
+
+            <span class="teaching-stack-label">{{ lesson.introduction.visual.label }}</span>
+
+            <div class="teaching-stack">
+
+                {% for item in lesson.introduction.visual["items"] %}
+
+                <div class="teaching-stack-row{% if loop.first %} is-top{% endif %}">
+                    <span class="teaching-stack-block">{{ item }}</span>
+
+                    {% if loop.first %}
+
+                    <span class="teaching-stack-top">← {{ lesson.introduction.visual.top_label }}</span>
+
+                    {% endif %}
+
+                </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+    </article>
+
+    {% endif %}
+
+    {% if lesson.worked_example %}
+
+    <article class="worked-example">
+
+        <span class="teaching-kicker">Worked example</span>
+        <h2>{{ lesson.worked_example.title }}</h2>
+        <p class="worked-example-intro">{{ lesson.worked_example.content }}</p>
+
+        <div class="worked-example-flow" aria-label="Worked example steps">
+
+            {% for step in lesson.worked_example.steps %}
+
+            <article class="worked-example-step">
+
+                <span class="worked-example-action">{{ step.action }}</span>
+
+                <div class="teaching-stack teaching-stack-compact" aria-label="Stack after {{ step.action }}">
+
+                    {% for item in step["items"] %}
+
+                    <span class="teaching-stack-block">{{ item }}</span>
+
+                    {% endfor %}
+
+                </div>
+
+                <p>{{ step.explanation }}</p>
+
+            </article>
+
+            {% if not loop.last %}
+
+            <span class="worked-example-arrow" aria-hidden="true">→</span>
+
+            {% endif %}
+
+            {% endfor %}
+
+        </div>
+
+        <p class="worked-example-conclusion">{{ lesson.worked_example.conclusion }}</p>
+
+        <div class="now-you-try">
+            <span>Now You Try</span>
+            <p><strong>{{ lesson.worked_example.next.title }}</strong> {{ lesson.worked_example.next.content }}</p>
+        </div>
+
+    </article>
+
+    {% endif %}
+
+</section>
+
+{% endif %}
+
 <main class="dashboard">
 
     <aside class="mission-card">
@@ -111,6 +229,12 @@
         Welcome! Let's discover how a {{ lesson.topic }} works.
 
     </div>
+
+    {% if lesson.guided_teaching and lesson.guided_teaching.prediction %}
+
+    <section id="prediction-panel" class="prediction-panel" aria-live="polite" hidden></section>
+
+    {% endif %}
 
     {% if lesson.alternate_explanations %}
 
@@ -204,6 +328,8 @@
 <script src="{{ url_for('static', filename='js/lesson.js') }}"></script>
 
 <script src="{{ url_for('static', filename='js/quiz.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/guided_teaching.js') }}"></script>
 
 <script src="{{ url_for('static', filename='js/animations.js') }}"></script>
 

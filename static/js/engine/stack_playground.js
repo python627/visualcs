@@ -15,7 +15,16 @@ function createStackPlayground() {
     }
 
     function add() {
-        const value = Math.floor(Math.random() * 90) + 10;
+        if (isGuidedPredictionPending()) {
+            setByteMessage("Choose a prediction, then press POP to check it.");
+            return;
+        }
+
+        const missionStep = getMissionStepIndex();
+        const isGuidedPush = getExpectedOperation() === "push";
+        const value = isGuidedPush
+            ? getGuidedValue(missionStep, Math.floor(Math.random() * 90) + 10)
+            : Math.floor(Math.random() * 90) + 10;
 
         stack.push(value);
         render();
@@ -23,18 +32,24 @@ function createStackPlayground() {
 
         const missionResult = completeAction("push");
 
-        if (!missionResult.complete) {
-            setByteMessage(
-                missionResult.nextOperation === "push"
-                    ? "Great! Press PUSH again."
-                    : "Excellent! Now press POP once."
-            );
+        if (missionResult.accepted) {
+            showGuidedActionExplanation("push", missionStep, { value });
+
+            if (missionResult.nextOperation === "pop") {
+                showPredictionPrompt();
+            }
         }
     }
 
     function remove() {
         if (stack.length === 0) {
             setByteMessage("The structure is empty.");
+            return;
+        }
+
+        if (isGuidedPredictionRequired("pop")) {
+            showPredictionPrompt();
+            setByteMessage("Make a prediction before POP reveals the answer.");
             return;
         }
 
@@ -47,7 +62,11 @@ function createStackPlayground() {
         animateRemainingBlocks(previousRects, 0);
         animateBlockRemoval(removedValue, previousRects.at(-1), { x: 0, y: -90 });
 
-        completeAction("pop");
+        const missionResult = completeAction("pop");
+
+        if (missionResult.accepted) {
+            resolveGuidedPrediction(removedValue);
+        }
     }
 
     return {

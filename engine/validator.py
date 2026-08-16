@@ -237,4 +237,204 @@ class LessonValidator:
                             )
 
 
+        # Validate optional beginner introduction
+        if "introduction" in lesson:
+
+            introduction = lesson["introduction"]
+
+            if not isinstance(introduction, dict):
+                errors.append(
+                    "introduction must be an object"
+                )
+
+            else:
+                for field in ("title", "content"):
+                    if not isinstance(introduction.get(field), str):
+                        errors.append(
+                            f"introduction.{field} must be a string"
+                        )
+
+                if "points" in introduction:
+                    if not isinstance(introduction["points"], list):
+                        errors.append(
+                            "introduction.points must be a list"
+                        )
+
+                    elif not all(
+                        isinstance(point, str)
+                        for point in introduction["points"]
+                    ):
+                        errors.append(
+                            "introduction.points must contain strings"
+                        )
+
+                if "visual" in introduction:
+                    visual = introduction["visual"]
+
+                    if not isinstance(visual, dict):
+                        errors.append(
+                            "introduction.visual must be an object"
+                        )
+
+                    else:
+                        for field in ("type", "label", "top_label"):
+                            if not isinstance(visual.get(field), str):
+                                errors.append(
+                                    f"introduction.visual.{field} must be a string"
+                                )
+
+                        if not isinstance(visual.get("items"), list):
+                            errors.append(
+                                "introduction.visual.items must be a list"
+                            )
+
+
+        # Validate optional worked example
+        if "worked_example" in lesson:
+
+            worked_example = lesson["worked_example"]
+
+            if not isinstance(worked_example, dict):
+                errors.append(
+                    "worked_example must be an object"
+                )
+
+            else:
+                for field in ("title", "content", "conclusion"):
+                    if not isinstance(worked_example.get(field), str):
+                        errors.append(
+                            f"worked_example.{field} must be a string"
+                        )
+
+                if not isinstance(worked_example.get("steps"), list):
+                    errors.append(
+                        "worked_example.steps must be a list"
+                    )
+
+                else:
+                    for index, step in enumerate(worked_example["steps"]):
+
+                        if not isinstance(step, dict):
+                            errors.append(
+                                f"worked_example.steps[{index}] must be an object"
+                            )
+
+                            continue
+
+                        for field in ("action", "explanation"):
+                            if not isinstance(step.get(field), str):
+                                errors.append(
+                                    f"worked_example.steps[{index}].{field} must be a string"
+                                )
+
+                        if not isinstance(step.get("items"), list):
+                            errors.append(
+                                f"worked_example.steps[{index}].items must be a list"
+                            )
+
+                next_step = worked_example.get("next")
+
+                if not isinstance(next_step, dict):
+                    errors.append(
+                        "worked_example.next must be an object"
+                    )
+
+                else:
+                    for field in ("title", "content"):
+                        if not isinstance(next_step.get(field), str):
+                            errors.append(
+                                f"worked_example.next.{field} must be a string"
+                            )
+
+
+        # Validate optional guided teaching interactions
+        if "guided_teaching" in lesson:
+
+            guided_teaching = lesson["guided_teaching"]
+
+            if not isinstance(guided_teaching, dict):
+                errors.append(
+                    "guided_teaching must be an object"
+                )
+
+            else:
+                if "values" in guided_teaching and not isinstance(
+                    guided_teaching["values"],
+                    list
+                ):
+                    errors.append(
+                        "guided_teaching.values must be a list"
+                    )
+
+                action_explanations = guided_teaching.get(
+                    "action_explanations"
+                )
+
+                if action_explanations is not None and not isinstance(
+                    action_explanations,
+                    dict
+                ):
+                    errors.append(
+                        "guided_teaching.action_explanations must be an object"
+                    )
+
+                prediction = guided_teaching.get("prediction")
+
+                if prediction is not None:
+                    if not isinstance(prediction, dict):
+                        errors.append(
+                            "guided_teaching.prediction must be an object"
+                        )
+
+                    else:
+                        for field in (
+                            "before_operation",
+                            "heading",
+                            "question",
+                            "selection_message"
+                        ):
+                            if not isinstance(prediction.get(field), str):
+                                errors.append(
+                                    f"guided_teaching.prediction.{field} must be a string"
+                                )
+
+                        if not isinstance(prediction.get("choices"), list):
+                            errors.append(
+                                "guided_teaching.prediction.choices must be a list"
+                            )
+
+                        result = prediction.get("result")
+
+                        if not isinstance(result, dict):
+                            errors.append(
+                                "guided_teaching.prediction.result must be an object"
+                            )
+
+                        else:
+                            for field in ("correct", "incorrect", "actual"):
+                                if not isinstance(result.get(field), str):
+                                    errors.append(
+                                        f"guided_teaching.prediction.result.{field} must be a string"
+                                    )
+
+                            concept = result.get("concept")
+
+                            if not isinstance(concept, dict):
+                                errors.append(
+                                    "guided_teaching.prediction.result.concept must be an object"
+                                )
+
+                            else:
+                                for field in (
+                                    "last_in",
+                                    "arrow",
+                                    "first_out",
+                                    "label"
+                                ):
+                                    if not isinstance(concept.get(field), str):
+                                        errors.append(
+                                            f"guided_teaching.prediction.result.concept.{field} must be a string"
+                                        )
+
+
         return errors
