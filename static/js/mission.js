@@ -44,7 +44,10 @@ function completeAction(operation) {
 
     if (complete) {
         missionCompleted = true;
-        showQuiz();
+
+        if (!startLessonChallenge()) {
+            showQuiz();
+        }
     }
 
     return {

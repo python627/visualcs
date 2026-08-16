@@ -1849,6 +1849,183 @@
 
 }
 
+.challenge-panel{
+
+    margin-top:16px;
+
+}
+
+.playground:has(#challenge-panel:not([hidden])){
+
+    text-align:left;
+
+}
+
+.playground:has(#challenge-panel:not([hidden])) .playground-learning-area{
+
+    display:grid;
+    grid-template-columns:minmax(190px, .9fr) minmax(220px, 1fr);
+    align-items:start;
+    gap:18px;
+    margin-top:18px;
+
+}
+
+.playground:has(#challenge-panel:not([hidden])) .challenge-panel{
+
+    margin-top:0;
+
+}
+
+.playground:has(#challenge-panel:not([hidden])) .playground-interaction{
+
+    min-width:0;
+    text-align:center;
+
+}
+
+.playground:has(#challenge-panel:not([hidden])) .playground-area{
+
+    margin:0 auto 20px;
+
+}
+
+.challenge-card{
+
+    padding:14px;
+    border:1px solid #22c55e;
+    border-radius:12px;
+    background:#123528;
+
+}
+
+.challenge-card h3{
+
+    color:#dcfce7;
+    font-size:16px;
+
+}
+
+.challenge-card h4{
+
+    margin-top:10px;
+    color:white;
+    font-size:15px;
+
+}
+
+.challenge-card > p{
+
+    margin-top:6px;
+    color:#d1fae5;
+    font-size:14px;
+    line-height:1.45;
+
+}
+
+.challenge-progress,
+.challenge-success{
+
+    color:#fef3c7 !important;
+    font-weight:bold;
+
+}
+
+.challenge-target{
+
+    margin-top:12px;
+    padding:11px;
+    border:1px solid #34d399;
+    border-radius:10px;
+    background:#0f2a20;
+
+}
+
+.challenge-target-label{
+
+    display:block;
+    margin-bottom:8px;
+    color:#a7f3d0;
+    font-size:11px;
+    font-weight:bold;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+
+}
+
+.challenge-stack-target{
+
+    display:grid;
+    gap:5px;
+
+}
+
+.challenge-stack-row{
+
+    display:flex;
+    align-items:center;
+    gap:8px;
+
+}
+
+.challenge-stack-value{
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:54px;
+    height:28px;
+    border:1px solid #6ee7b7;
+    border-radius:7px;
+    background:#065f46;
+    color:white;
+    font-size:13px;
+    font-weight:bold;
+
+}
+
+.challenge-stack-row:first-child .challenge-stack-value{
+
+    border-color:#fef3c7;
+    background:#047857;
+
+}
+
+.challenge-stack-top{
+
+    color:#fef3c7;
+    font-size:11px;
+    font-weight:bold;
+
+}
+
+.challenge-actions{
+
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin-top:12px;
+
+}
+
+.challenge-actions button{
+
+    padding:8px 10px;
+    border:1px solid #6ee7b7;
+    border-radius:8px;
+    background:#047857;
+    color:white;
+    font-size:13px;
+    font-weight:bold;
+
+}
+
+.challenge-actions button:hover{
+
+    background:#059669;
+
+}
+
 @media (max-width:760px){
 
     .lesson-onboarding{
@@ -1867,6 +2044,12 @@
 
         align-items:flex-start;
         flex-direction:column;
+
+    }
+
+    .playground:has(#challenge-panel:not([hidden])) .playground-learning-area{
+
+        grid-template-columns:1fr;
 
     }
 

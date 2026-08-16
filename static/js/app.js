@@ -4,4 +4,6 @@ const playground = createPlayground(
 
 playground.mount();
 
+initializeLessonChallenge(playground);
+
 resetMission();

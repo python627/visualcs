@@ -73,6 +73,16 @@ progress{
 .discoveries{
     margin:0 30px 30px;
 }
+
+@media (max-width:900px){
+
+    .dashboard{
+        grid-template-columns:1fr;
+        padding:20px;
+    }
+
+}
+
 .library{
 
     padding:40px;

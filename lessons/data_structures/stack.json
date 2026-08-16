@@ -156,5 +156,42 @@
                 }
             }
         }
+    },
+
+    "challenge": {
+        "title": "Stack Challenge",
+        "start_message": "You completed the guided mission. Now apply the rule yourself.",
+        "continue_message": "Challenge complete. Keep experimenting with the Stack whenever you want.",
+        "phases": [
+            {
+                "title": "Build this Stack",
+                "instruction": "Use the playground to make the target.",
+                "target": {
+                    "label": "Target Stack",
+                    "items": [30, 20, 10],
+                    "top_label": "TOP"
+                },
+                "expected_state": [10, 20, 30],
+                "operation_values": {
+                    "push": [10, 20, 30]
+                },
+                "progressive": true,
+                "progress_operations": ["push"],
+                "success": "✓ Stack built correctly",
+                "feedback": "Look at the target Stack and compare it with yours."
+            },
+            {
+                "title": "Now remove the TOP item.",
+                "instruction": "Make the Stack match this new target.",
+                "target": {
+                    "label": "New target",
+                    "items": [20, 10],
+                    "top_label": "TOP"
+                },
+                "expected_state": [10, 20],
+                "success": "✓ Challenge Complete",
+                "feedback": "Look at the target Stack and compare it with yours."
+            }
+        ]
     }
 }

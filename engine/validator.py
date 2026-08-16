@@ -437,4 +437,108 @@ class LessonValidator:
                                         )
 
 
+        # Validate optional lesson challenge
+        if "challenge" in lesson:
+
+            challenge = lesson["challenge"]
+
+            if not isinstance(challenge, dict):
+                errors.append(
+                    "challenge must be an object"
+                )
+
+            else:
+                for field in ("title", "start_message", "continue_message"):
+                    if not isinstance(challenge.get(field), str):
+                        errors.append(
+                            f"challenge.{field} must be a string"
+                        )
+
+                if not isinstance(challenge.get("phases"), list):
+                    errors.append(
+                        "challenge.phases must be a list"
+                    )
+
+                else:
+                    for index, phase in enumerate(challenge["phases"]):
+
+                        if not isinstance(phase, dict):
+                            errors.append(
+                                f"challenge.phases[{index}] must be an object"
+                            )
+
+                            continue
+
+                        for field in (
+                            "title",
+                            "instruction",
+                            "success",
+                            "feedback"
+                        ):
+                            if not isinstance(phase.get(field), str):
+                                errors.append(
+                                    f"challenge.phases[{index}].{field} must be a string"
+                                )
+
+                        if not isinstance(phase.get("expected_state"), list):
+                            errors.append(
+                                f"challenge.phases[{index}].expected_state must be a list"
+                            )
+
+                        target = phase.get("target")
+
+                        if not isinstance(target, dict):
+                            errors.append(
+                                f"challenge.phases[{index}].target must be an object"
+                            )
+
+                        else:
+                            for field in ("label", "top_label"):
+                                if not isinstance(target.get(field), str):
+                                    errors.append(
+                                        f"challenge.phases[{index}].target.{field} must be a string"
+                                    )
+
+                            if not isinstance(target.get("items"), list):
+                                errors.append(
+                                    f"challenge.phases[{index}].target.items must be a list"
+                                )
+
+                        operation_values = phase.get("operation_values")
+
+                        if operation_values is not None:
+                            if not isinstance(operation_values, dict):
+                                errors.append(
+                                    f"challenge.phases[{index}].operation_values must be an object"
+                                )
+
+                            elif not all(
+                                isinstance(operation, str)
+                                and isinstance(values, list)
+                                for operation, values in operation_values.items()
+                            ):
+                                errors.append(
+                                    f"challenge.phases[{index}].operation_values must map operations to lists"
+                                )
+
+                        if "progressive" in phase and not isinstance(
+                            phase["progressive"],
+                            bool
+                        ):
+                            errors.append(
+                                f"challenge.phases[{index}].progressive must be a boolean"
+                            )
+
+                        if "progress_operations" in phase and (
+                            not isinstance(phase["progress_operations"], list)
+                            or not all(
+                                isinstance(operation, str)
+                                for operation in phase["progress_operations"]
+                            )
+                        ):
+                            errors.append(
+                                f"challenge.phases[{index}].progress_operations must contain strings"
+                            )
+
+
         return errors

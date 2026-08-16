@@ -14,6 +14,11 @@ function createStackPlayground() {
         });
     }
 
+    function clearStack() {
+        stack.length = 0;
+        render();
+    }
+
     function add() {
         if (isGuidedPredictionPending()) {
             setByteMessage("Choose a prediction, then press POP to check it.");
@@ -22,9 +27,13 @@ function createStackPlayground() {
 
         const missionStep = getMissionStepIndex();
         const isGuidedPush = getExpectedOperation() === "push";
+        const challengeValue = getLessonChallengeOperationValue(
+            "push",
+            stack.length
+        );
         const value = isGuidedPush
             ? getGuidedValue(missionStep, Math.floor(Math.random() * 90) + 10)
-            : Math.floor(Math.random() * 90) + 10;
+            : challengeValue ?? Math.floor(Math.random() * 90) + 10;
 
         stack.push(value);
         render();
@@ -39,11 +48,15 @@ function createStackPlayground() {
                 showPredictionPrompt();
             }
         }
+        else {
+            reportLessonChallengeState(stack, "push");
+        }
     }
 
     function remove() {
         if (stack.length === 0) {
             setByteMessage("The structure is empty.");
+            reportLessonChallengeState(stack, "pop");
             return;
         }
 
@@ -67,6 +80,9 @@ function createStackPlayground() {
         if (missionResult.accepted) {
             resolveGuidedPrediction(removedValue);
         }
+        else {
+            reportLessonChallengeState(stack, "pop");
+        }
     }
 
     return {
@@ -75,8 +91,42 @@ function createStackPlayground() {
             getControl("pop").onclick = remove;
         },
         reset() {
-            stack.length = 0;
-            render();
+            clearStack();
+        },
+        resetForChallenge() {
+            clearStack();
+        },
+        getChallengeState() {
+            return [...stack];
+        },
+        renderChallengeTarget(target, container) {
+            const label = document.createElement("span");
+            label.className = "challenge-target-label";
+            label.textContent = target.label;
+
+            const targetStack = document.createElement("div");
+            targetStack.className = "challenge-stack-target";
+
+            target.items.forEach((value, index) => {
+                const row = document.createElement("div");
+                row.className = "challenge-stack-row";
+
+                const block = document.createElement("span");
+                block.className = "challenge-stack-value";
+                block.textContent = value;
+                row.appendChild(block);
+
+                if (index === 0) {
+                    const top = document.createElement("span");
+                    top.className = "challenge-stack-top";
+                    top.textContent = `← ${target.top_label}`;
+                    row.appendChild(top);
+                }
+
+                targetStack.appendChild(row);
+            });
+
+            container.append(label, targetStack);
         }
     };
 }

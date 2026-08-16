@@ -172,28 +172,42 @@
 
     <h2>📦 Playground</h2>
 
-    <div class="playground-area">
+    <div class="playground-learning-area">
 
-        <div id="animation-layer"></div>
+        {% if lesson.challenge %}
 
-        <div id="stack"></div>
+        <section id="challenge-panel" class="challenge-panel" aria-live="polite" hidden></section>
+
+        {% endif %}
+
+        <div class="playground-interaction">
+
+            <div class="playground-area">
+
+                <div id="animation-layer"></div>
+
+                <div id="stack"></div>
+
+            </div>
+
+            <div class="buttons">
+
+                {% for control in lesson.playground.controls %}
+
+                <button
+                    id="control-{{ control.id }}"
+                    data-operation="{{ control.operation }}"
+                >
+                    {{ control.label }}
+                </button>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
 
     </div>
-
-   <div class="buttons">
-
-    {% for control in lesson.playground.controls %}
-
-    <button
-        id="control-{{ control.id }}"
-        data-operation="{{ control.operation }}"
-    >
-        {{ control.label }}
-    </button>
-
-    {% endfor %}
-
-</div>
 
 </section>
 
@@ -330,6 +344,8 @@
 <script src="{{ url_for('static', filename='js/quiz.js') }}"></script>
 
 <script src="{{ url_for('static', filename='js/guided_teaching.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/challenge.js') }}"></script>
 
 <script src="{{ url_for('static', filename='js/animations.js') }}"></script>
 
