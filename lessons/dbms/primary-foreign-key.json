@@ -1,0 +1,108 @@
+{
+    "id": "primary-foreign-key",
+    "subject": "DBMS",
+    "topic": "Primary and Foreign Keys",
+    "title": "Discover Primary & Foreign Keys",
+    "description": "Discover how database keys identify rows and connect related tables.",
+    "difficulty": "Beginner",
+    "estimated_time": "12 min",
+
+    "mission": {
+        "title": "Trace a Table Relationship",
+        "description": "Follow a payment's foreign key to the student row identified by a primary key."
+    },
+
+    "playground": {
+        "type": "relational-keys",
+        "tables": {
+            "students": {
+                "title": "STUDENTS",
+                "primary_key": "id",
+                "columns": [
+                    { "key": "id", "label": "ID" },
+                    { "key": "name", "label": "NAME" }
+                ],
+                "rows": [
+                    { "id": 101, "name": "John" },
+                    { "id": 102, "name": "Mary" },
+                    { "id": 103, "name": "Peter" }
+                ]
+            },
+            "payments": {
+                "title": "PAYMENTS",
+                "primary_key": "payment_id",
+                "columns": [
+                    { "key": "payment_id", "label": "PAYMENT_ID" },
+                    { "key": "student_id", "label": "STUDENT_ID" }
+                ],
+                "rows": [
+                    { "payment_id": "P001", "student_id": 102 },
+                    { "payment_id": "P002", "student_id": 101 },
+                    { "payment_id": "P003", "student_id": 103 }
+                ]
+            }
+        },
+        "relationship": {
+            "source_table": "payments",
+            "foreign_key": "student_id",
+            "target_table": "students",
+            "primary_key": "id",
+            "trace_order": ["P001", "P002", "P003"]
+        },
+        "controls": [
+            { "id": "trace-relation", "label": "TRACE RELATION", "operation": "trace-relation" }
+        ],
+        "actions": [
+            { "label": "Find a foreign-key value", "operation": "find-foreign-key" },
+            { "label": "Trace it to the Students table", "operation": "trace-to-students" },
+            { "label": "Match the primary key", "operation": "match-primary-key" },
+            { "label": "Identify the correct student", "operation": "identify-student" },
+            { "label": "Trace another payment relationship", "operation": "complete-another-relationship" }
+        ]
+    },
+
+    "quiz": {
+        "question": "Payments.STUDENT_ID contains 102. Students.ID = 102 belongs to Mary. Who made that payment?",
+        "options": [
+            "John",
+            "Mary",
+            "Peter",
+            "Unknown"
+        ],
+        "correct": 1
+    },
+
+    "discovery": {
+        "title": "Keys Connect Records",
+        "summary": "A foreign key stores a value that references a primary key in another table, allowing related records to be connected."
+    },
+
+    "notes": {
+        "sections": [
+            {
+                "title": "What is a primary key?",
+                "content": "A primary key is a column whose value identifies one specific row in a table."
+            },
+            {
+                "title": "Unique rows",
+                "content": "Primary-key values must be unique, so two different students cannot both have ID 102."
+            },
+            {
+                "title": "What is a foreign key?",
+                "content": "A foreign key is a value in one table that refers to a primary-key value in another table."
+            },
+            {
+                "title": "Creating relationships",
+                "content": "Foreign keys connect related records without repeating all of the student information in every payment row."
+            },
+            {
+                "title": "One-to-many relationships",
+                "content": "One student can be connected to many payment rows, but each payment row points to one student."
+            },
+            {
+                "title": "Why databases use keys",
+                "content": "Keys keep data organized, make records easier to find, and help tables stay connected correctly."
+            }
+        ]
+    }
+}
