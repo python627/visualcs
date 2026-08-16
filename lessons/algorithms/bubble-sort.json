@@ -1,5 +1,6 @@
 {
     "id": "bubble-sort",
+    "order": 2,
     "subject": "Algorithms",
     "topic": "Bubble Sort",
     "title": "Discover Bubble Sort",

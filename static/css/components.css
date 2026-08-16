@@ -1349,6 +1349,47 @@
 
 }
 
+.lesson-completion-notice{
+
+    display:inline-block;
+    margin-top:14px;
+    padding:7px 10px;
+    border:1px solid #22c55e;
+    border-radius:8px;
+    background:#14532d;
+    color:#bbf7d0;
+    font-size:14px;
+    font-weight:bold;
+
+}
+
+.lesson-continue{
+
+    margin-top:16px;
+
+}
+
+.lesson-continue a{
+
+    display:block;
+    padding:10px;
+    border-radius:9px;
+    background:#2563eb;
+    color:white;
+    font-size:14px;
+    font-weight:bold;
+    text-align:center;
+    text-decoration:none;
+    transition:background .25s;
+
+}
+
+.lesson-continue a:hover{
+
+    background:#1d4ed8;
+
+}
+
 .notes{
     margin:0 30px 30px;
 }

@@ -24,6 +24,7 @@ function showQuiz() {
 
     quizShown = true;
     quizAnswered = false;
+    setLessonStage("quiz");
 
     const quiz = LESSON.quiz;
     const optionsHTML = quiz.options.map((option, index) => `
@@ -49,6 +50,10 @@ function checkAnswer(answer) {
     const correct = answer === quiz.correct;
 
     if (correct) {
+        markLessonCompleted(LESSON.id);
+        setLessonStage("discovery");
+        showLessonContinue();
+
         document.getElementById("discoveries").innerHTML = `
             <div class="discovery-card">
                 <h3>🏆 ${LESSON.discovery.title}</h3>
@@ -61,6 +66,7 @@ function checkAnswer(answer) {
         <h2>${correct ? "🎉 Correct!" : "❌ Not quite."}</h2>
         <p>${correct ? "You discovered the rule." : "Watch the blocks again."}</p>
         ${correct ? `<h3>${LESSON.discovery.title}</h3><p>${LESSON.discovery.summary}</p>` : ""}
+        ${correct ? '<p class="lesson-completion-notice">✓ Lesson Completed</p>' : ""}
         <div id="playground-feedback"></div>
         <br>
         <button onclick="resetLesson()">Try Again</button>

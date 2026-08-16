@@ -1,5 +1,6 @@
 {
     "id": "primary-foreign-key",
+    "order": 1,
     "subject": "DBMS",
     "topic": "Primary and Foreign Keys",
     "title": "Discover Primary & Foreign Keys",

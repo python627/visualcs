@@ -1,5 +1,6 @@
 {
     "id": "queue",
+    "order": 2,
     "subject": "Data Structures",
     "topic": "Queue",
     "title": "Discover Queues",

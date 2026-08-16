@@ -1,5 +1,6 @@
 {
     "id": "fcfs-scheduling",
+    "order": 1,
     "subject": "Operating Systems",
     "topic": "FCFS CPU Scheduling",
     "title": "Discover FCFS Scheduling",

@@ -13,6 +13,14 @@ class LessonRegistry:
         self.validator = LessonValidator()
 
 
+    def _lesson_sort_key(self, lesson):
+
+        return (
+            lesson.get("order", float("inf")),
+            lesson["title"].casefold()
+        )
+
+
     def get_all_lessons(self):
 
         lessons = []
@@ -106,4 +114,30 @@ class LessonRegistry:
             subjects[subject].append(lesson)
 
 
+        for lessons in subjects.values():
+            lessons.sort(key=self._lesson_sort_key)
+
+
         return dict(sorted(subjects.items()))
+
+
+    def get_lessons_for_subject(self, subject_slug):
+
+        lessons = [
+            lesson
+            for lesson in self.get_all_lessons()
+            if lesson["subject_slug"] == subject_slug
+        ]
+
+        return sorted(lessons, key=self._lesson_sort_key)
+
+
+    def get_next_lesson(self, subject_slug, lesson_id):
+
+        lessons = self.get_lessons_for_subject(subject_slug)
+
+        for index, lesson in enumerate(lessons):
+            if lesson["id"] == lesson_id:
+                return lessons[index + 1] if index + 1 < len(lessons) else None
+
+        return None

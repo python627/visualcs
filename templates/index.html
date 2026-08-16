@@ -18,6 +18,18 @@
     </div>
 </header>
 
+<nav class="lesson-stage-indicator" aria-label="Lesson flow">
+
+    <span class="lesson-stage active" data-lesson-stage="learn">Learn</span>
+    <span class="lesson-stage-arrow" aria-hidden="true">→</span>
+    <span class="lesson-stage" data-lesson-stage="mission">Mission</span>
+    <span class="lesson-stage-arrow" aria-hidden="true">→</span>
+    <span class="lesson-stage" data-lesson-stage="quiz">Quiz</span>
+    <span class="lesson-stage-arrow" aria-hidden="true">→</span>
+    <span class="lesson-stage" data-lesson-stage="discovery">Discovery</span>
+
+</nav>
+
 <main class="dashboard">
 
     <aside class="mission-card">
@@ -97,6 +109,24 @@
 
     </div>
 
+    <div id="lesson-continue" class="lesson-continue" hidden>
+
+        {% if next_lesson %}
+
+        <a
+            href="{{ url_for('lesson', subject=next_lesson.subject_slug, lesson=next_lesson.id) }}"
+        >
+            Next Lesson → {{ next_lesson.title }}
+        </a>
+
+        {% else %}
+
+        <a href="{{ url_for('home') }}">Back to Library</a>
+
+        {% endif %}
+
+    </div>
+
 </aside>
 
 </main>
@@ -144,6 +174,10 @@
 </script>
 
 <script src="{{ url_for('static', filename='js/dom.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/progress.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/lesson_flow.js') }}"></script>
 
 <script src="{{ url_for('static', filename='js/mission.js') }}"></script>
 

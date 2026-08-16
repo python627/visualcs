@@ -1,5 +1,6 @@
 {
     "id": "binary-search",
+    "order": 1,
     "subject": "Algorithms",
     "topic": "Binary Search",
     "title": "Discover Binary Search",

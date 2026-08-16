@@ -34,6 +34,16 @@ class LessonValidator:
             return errors
 
 
+        # Validate optional lesson ordering metadata
+        if "order" in lesson and (
+            not isinstance(lesson["order"], int)
+            or isinstance(lesson["order"], bool)
+        ):
+            errors.append(
+                "order must be an integer"
+            )
+
+
         # Validate mission
         if not isinstance(lesson["mission"], dict):
 

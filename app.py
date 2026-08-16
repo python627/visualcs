@@ -30,9 +30,15 @@ def lesson(subject, lesson):
         lesson
     )
 
+    next_lesson = lesson_registry.get_next_lesson(
+        subject,
+        lesson_data["id"]
+    )
+
     return render_template(
         "index.html",
-        lesson=lesson_data
+        lesson=lesson_data,
+        next_lesson=next_lesson
     )
 
 
