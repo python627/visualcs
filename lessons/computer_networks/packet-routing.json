@@ -92,5 +92,18 @@
                 "content": "Computers and servers are end devices that send or receive data. Routers mainly move packets between networks."
             }
         ]
-    }
+    },
+
+    "alternate_explanations": [
+        {
+            "title": "Think of a parcel journey",
+            "type": "analogy",
+            "content": "A packet is like a parcel moving through sorting centers. Each router reads the destination and forwards it toward the correct next center."
+        },
+        {
+            "title": "Follow this packet",
+            "type": "example",
+            "content": "The packet starts at Computer A, reaches Router 1, and Router 1 chooses Router 3 instead of Router 2. Router 3 then forwards it to Server C."
+        }
+    ]
 }

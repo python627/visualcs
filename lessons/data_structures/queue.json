@@ -64,5 +64,18 @@
                 "content": "People waiting in a line are served in the same order that they joined the line."
             }
         ]
-    }
+    },
+
+    "alternate_explanations": [
+        {
+            "title": "Think of a waiting line",
+            "type": "analogy",
+            "content": "A Queue is like people waiting for a bus. New people join at the back, and the person at the front boards first."
+        },
+        {
+            "title": "Walk through the line",
+            "type": "example",
+            "content": "ENQUEUE A, then B, then C. The line is A → B → C. DEQUEUE removes A first because A has waited the longest."
+        }
+    ]
 }

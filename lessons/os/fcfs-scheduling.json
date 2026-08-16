@@ -83,5 +83,18 @@
                 "content": "The convoy effect happens when many short processes are stuck waiting behind one long process, like cars behind a slow truck."
             }
         ]
-    }
+    },
+
+    "alternate_explanations": [
+        {
+            "title": "Think of a checkout line",
+            "type": "analogy",
+            "content": "FCFS works like a checkout line. The person who arrives first is served first, even if someone behind them has only one item."
+        },
+        {
+            "title": "Follow the ready queue",
+            "type": "example",
+            "content": "The ready queue starts P1(4), P2(2), P3(3). P1 uses the CPU and finishes first, then P2 runs, then P3. Their arrival order never changes."
+        }
+    ]
 }

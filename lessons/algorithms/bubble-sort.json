@@ -66,5 +66,18 @@
                 "content": "Bubble Sort takes O(n²) time in the typical unsorted case because it may compare many pairs over many passes."
             }
         ]
-    }
+    },
+
+    "alternate_explanations": [
+        {
+            "title": "Think of arranging books",
+            "type": "analogy",
+            "content": "Imagine arranging books from thinnest to thickest by checking neighbors. Whenever a thicker book is on the left, swap the two books."
+        },
+        {
+            "title": "Watch one value move",
+            "type": "example",
+            "content": "Start with [50, 20, 40, 10, 30]. Compare 50 and 20, then swap. Compare 50 and 40, then swap again. The larger 50 keeps moving right during the pass."
+        }
+    ]
 }

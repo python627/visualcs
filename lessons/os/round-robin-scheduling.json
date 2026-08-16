@@ -81,5 +81,18 @@
                 "content": "FCFS runs the first process until it finishes. Round Robin pauses unfinished processes after a time quantum so others can run."
             }
         ]
-    }
+    },
+
+    "alternate_explanations": [
+        {
+            "title": "Think of sharing one controller",
+            "type": "analogy",
+            "content": "Round Robin is like several people sharing one game controller for short turns. Everyone gets a turn before the first person gets the controller again."
+        },
+        {
+            "title": "Rotate with quantum 2",
+            "type": "example",
+            "content": "P1 starts with 5 units and uses 2, leaving 3. It moves behind P2 and P3. P2 then uses 2 and returns with 1, so the queue keeps rotating."
+        }
+    ]
 }

@@ -66,5 +66,18 @@
                 "content": "To find 60, compare it with 40 first. Since 60 is larger, discard the values up to 40 and check the new middle."
             }
         ]
-    }
+    },
+
+    "alternate_explanations": [
+        {
+            "title": "Think of finding a page",
+            "type": "analogy",
+            "content": "To find a page in a sorted book, open near the middle. The page number tells you whether to keep looking in the left or right half."
+        },
+        {
+            "title": "Find 60 step by step",
+            "type": "example",
+            "content": "In [10, 20, 30, 40, 50, 60, 70], check 40 first. Since 60 is larger, fade out 10 through 40. The new middle is 60, so it is found."
+        }
+    ]
 }

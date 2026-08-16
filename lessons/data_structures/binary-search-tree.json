@@ -75,5 +75,18 @@
                 "content": "A balanced BST has average search time O(log n). A badly unbalanced tree can degrade to O(n)."
             }
         ]
-    }
+    },
+
+    "alternate_explanations": [
+        {
+            "title": "Think of a choose-your-path sign",
+            "type": "analogy",
+            "content": "Each tree node is a signpost. A smaller number follows the LEFT path, while a larger number follows the RIGHT path."
+        },
+        {
+            "title": "Place values one at a time",
+            "type": "example",
+            "content": "Insert 50 first. Insert 30: it is smaller, so it goes left. Insert 70: it is larger, so it goes right. Insert 40: go left from 50, then right from 30."
+        }
+    ]
 }

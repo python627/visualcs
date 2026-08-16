@@ -105,5 +105,18 @@
                 "content": "Keys keep data organized, make records easier to find, and help tables stay connected correctly."
             }
         ]
-    }
+    },
+
+    "alternate_explanations": [
+        {
+            "title": "Think of a student ID card",
+            "type": "analogy",
+            "content": "A student ID is a unique label for one student. A payment record can write that ID down instead of copying the student's whole name."
+        },
+        {
+            "title": "Trace payment P001",
+            "type": "example",
+            "content": "Payment P001 stores STUDENT_ID 102. Follow 102 to Students.ID 102, which identifies Mary. The foreign key leads to the matching primary-key row."
+        }
+    ]
 }

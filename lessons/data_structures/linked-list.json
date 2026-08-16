@@ -69,5 +69,18 @@
                 "content": "Think of a treasure hunt: each clue points to the next clue until the trail ends."
             }
         ]
-    }
+    },
+
+    "alternate_explanations": [
+        {
+            "title": "Think of linked train cars",
+            "type": "analogy",
+            "content": "A Linked List is like train cars connected in a chain. Each car carries its own value and is connected to the next car."
+        },
+        {
+            "title": "Follow the head",
+            "type": "example",
+            "content": "ADD 7, then ADD 14, creating 7 → 14. REMOVE takes away 7, so HEAD now points to 14."
+        }
+    ]
 }
