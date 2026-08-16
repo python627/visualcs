@@ -109,6 +109,20 @@
 
     </div>
 
+    {% if lesson.alternate_explanations %}
+
+    <div class="alternate-explanations">
+
+        <button id="explain-differently" class="explain-differently">
+            Explain differently
+        </button>
+
+        <div id="alternate-explanation" aria-live="polite"></div>
+
+    </div>
+
+    {% endif %}
+
     <div id="lesson-continue" class="lesson-continue" hidden>
 
         {% if next_lesson %}
@@ -178,6 +192,8 @@
 <script src="{{ url_for('static', filename='js/progress.js') }}"></script>
 
 <script src="{{ url_for('static', filename='js/lesson_flow.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/alternate_explanations.js') }}"></script>
 
 <script src="{{ url_for('static', filename='js/mission.js') }}"></script>
 

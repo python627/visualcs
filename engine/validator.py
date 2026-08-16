@@ -210,4 +210,31 @@ class LessonValidator:
                             )
 
 
+        # Validate optional alternate explanations
+        if "alternate_explanations" in lesson:
+
+            if not isinstance(lesson["alternate_explanations"], list):
+                errors.append(
+                    "alternate_explanations must be a list"
+                )
+
+            else:
+                for index, explanation in enumerate(
+                    lesson["alternate_explanations"]
+                ):
+
+                    if not isinstance(explanation, dict):
+                        errors.append(
+                            f"alternate_explanations[{index}] must be an object"
+                        )
+
+                        continue
+
+                    for field in ("title", "type", "content"):
+                        if not isinstance(explanation.get(field), str):
+                            errors.append(
+                                f"alternate_explanations[{index}].{field} must be a string"
+                            )
+
+
         return errors

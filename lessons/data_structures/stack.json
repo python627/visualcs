@@ -65,5 +65,18 @@
                 "content": "A stack of plates follows the same rule. Plates are added and removed from the top."
             }
         ]
-    }
+    },
+
+    "alternate_explanations": [
+        {
+            "title": "Think of plates",
+            "type": "analogy",
+            "content": "A Stack works like plates placed on top of each other. The last plate added is the first one removed."
+        },
+        {
+            "title": "Walk through it",
+            "type": "example",
+            "content": "PUSH 10, then 20, then 30. POP removes 30 first because it is on top."
+        }
+    ]
 }
