@@ -180,6 +180,37 @@ class LessonValidator:
                 )
 
 
+        # Teaching stages are optional and may be supplied together under a
+        # reusable teaching object. The existing root-level fields remain
+        # supported so established lessons keep validating unchanged.
+        teaching = lesson.get("teaching")
+
+        if teaching is not None:
+            if not isinstance(teaching, dict):
+                errors.append(
+                    "teaching must be an object"
+                )
+
+            else:
+                effective_lesson = dict(lesson)
+
+                for field in (
+                    "introduction",
+                    "worked_example",
+                    "challenge",
+                    "recall"
+                ):
+                    if field in teaching:
+                        effective_lesson[field] = teaching[field]
+
+                guided_practice = teaching.get("guided_practice")
+
+                if guided_practice is not None:
+                    effective_lesson["guided_teaching"] = guided_practice
+
+                lesson = effective_lesson
+
+
         # Validate optional notes
         if "notes" in lesson:
 
@@ -414,6 +445,15 @@ class LessonValidator:
                             "selection_message"
                         ):
                             if not isinstance(prediction.get(field), str):
+                                errors.append(
+                                    f"guided_teaching.prediction.{field} must be a string"
+                                )
+
+                        for field in ("pending_message", "required_message"):
+                            if field in prediction and not isinstance(
+                                prediction[field],
+                                str
+                            ):
                                 errors.append(
                                     f"guided_teaching.prediction.{field} must be a string"
                                 )

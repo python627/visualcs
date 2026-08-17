@@ -4,6 +4,6 @@ const playground = createPlayground(
 
 playground.mount();
 
-initializeLessonChallenge(playground);
+teachingEngine.connect(playground);
 
 resetMission();

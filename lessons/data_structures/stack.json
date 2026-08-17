@@ -80,6 +80,7 @@
         }
     ],
 
+    "teaching": {
     "introduction": {
         "title": "Meet the Stack",
         "content": "A Stack holds items in a vertical pile. You will experiment with adding items and taking them away.",
@@ -128,7 +129,7 @@
         }
     },
 
-    "guided_teaching": {
+    "guided_practice": {
         "values": [10, 20, 30],
         "action_explanations": {
             "push": [
@@ -140,6 +141,8 @@
         },
         "prediction": {
             "before_operation": "pop",
+            "pending_message": "Choose a prediction, then press POP to check it.",
+            "required_message": "Make a prediction before POP reveals the answer.",
             "heading": "Before you POP...",
             "question": "Which value do you think will disappear?",
             "choices": [10, 20, 30],
@@ -202,5 +205,6 @@
         "empty_message": "Write a short explanation before submitting.",
         "completion_message": "✓ Recall completed",
         "model_answer": "POP removes the top item. Since new items are pushed onto the top, the most recently added item is removed first."
+    }
     }
 }

@@ -4,8 +4,7 @@ function createStackPlayground() {
 
     function render() {
         stackDiv.innerHTML = "";
-        stackDiv.classList.remove("linked-list-view");
-        stackDiv.classList.remove("queue-view");
+        stackDiv.classList.remove("linked-list-view", "queue-view");
 
         stack.forEach(number => {
             const block = document.createElement("div");
@@ -21,49 +20,38 @@ function createStackPlayground() {
     }
 
     function add() {
-        if (isGuidedPredictionPending()) {
-            setByteMessage("Choose a prediction, then press POP to check it.");
+        if (teachingEngine.prepareOperation("push").blocked) {
             return;
         }
 
-        const missionStep = getMissionStepIndex();
-        const isGuidedPush = getExpectedOperation() === "push";
-        const challengeValue = getLessonChallengeOperationValue(
-            "push",
-            stack.length
-        );
-        const value = isGuidedPush
-            ? getGuidedValue(missionStep, Math.floor(Math.random() * 90) + 10)
-            : challengeValue ?? Math.floor(Math.random() * 90) + 10;
+        const value = teachingEngine.getOperationValue({
+            operation: "push",
+            index: stack.length,
+            fallback: Math.floor(Math.random() * 90) + 10
+        });
 
         stack.push(value);
         render();
         animateBlockAddition(value, getBlockElements().at(-1));
 
-        const missionResult = completeAction("push");
-
-        if (missionResult.accepted) {
-            showGuidedActionExplanation("push", missionStep, { value });
-
-            if (missionResult.nextOperation === "pop") {
-                showPredictionPrompt();
-            }
-        }
-        else {
-            reportLessonChallengeState(stack, "push");
-        }
+        teachingEngine.operationCompleted({
+            operation: "push",
+            value,
+            state: [...stack]
+        });
     }
 
     function remove() {
         if (stack.length === 0) {
             setByteMessage("The structure is empty.");
-            reportLessonChallengeState(stack, "pop");
+            teachingEngine.reportUnavailableOperation({
+                operation: "pop",
+                state: [...stack]
+            });
             return;
         }
 
-        if (isGuidedPredictionRequired("pop")) {
-            showPredictionPrompt();
-            setByteMessage("Make a prediction before POP reveals the answer.");
+        if (teachingEngine.prepareOperation("pop").blocked) {
             return;
         }
 
@@ -76,14 +64,11 @@ function createStackPlayground() {
         animateRemainingBlocks(previousRects, 0);
         animateBlockRemoval(removedValue, previousRects.at(-1), { x: 0, y: -90 });
 
-        const missionResult = completeAction("pop");
-
-        if (missionResult.accepted) {
-            resolveGuidedPrediction(removedValue);
-        }
-        else {
-            reportLessonChallengeState(stack, "pop");
-        }
+        teachingEngine.operationCompleted({
+            operation: "pop",
+            removedValue,
+            state: [...stack]
+        });
     }
 
     return {
@@ -96,9 +81,6 @@ function createStackPlayground() {
         },
         resetForChallenge() {
             clearStack();
-        },
-        getChallengeState() {
-            return [...stack];
         },
         renderChallengeTarget(target, container) {
             const label = document.createElement("span");

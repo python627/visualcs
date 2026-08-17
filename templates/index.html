@@ -12,6 +12,13 @@
 </head>
 <body>
 
+{% set teaching = lesson.teaching or {} %}
+{% set introduction = teaching.introduction or lesson.get("introduction") %}
+{% set worked_example = teaching.worked_example or lesson.get("worked_example") %}
+{% set guided_practice = teaching.guided_practice or lesson.get("guided_teaching") %}
+{% set challenge = teaching.challenge or lesson.get("challenge") %}
+{% set recall = teaching.recall or lesson.get("recall") %}
+
     <header class="topbar">
     <h1>🎓 VisualCS</h1>
 
@@ -31,32 +38,32 @@
     <span class="lesson-stage-arrow" aria-hidden="true">→</span>
     <span class="lesson-stage" data-lesson-stage="discovery">Discovery</span>
 
-    {% if lesson.recall %}
+    {% if recall %}
     <span class="lesson-stage-arrow" aria-hidden="true">&rarr;</span>
     <span class="lesson-stage" data-lesson-stage="recall">Recall</span>
     {% endif %}
 
 </nav>
 
-{% if lesson.introduction or lesson.worked_example %}
+{% if introduction or worked_example %}
 
 <section class="lesson-onboarding" aria-label="Get ready to learn">
 
-    {% if lesson.introduction %}
+    {% if introduction %}
 
     <article class="beginner-introduction">
 
         <div class="beginner-introduction-copy">
 
             <span class="teaching-kicker">Beginner intro</span>
-            <h2>{{ lesson.introduction.title }}</h2>
-            <p>{{ lesson.introduction.content }}</p>
+            <h2>{{ introduction.title }}</h2>
+            <p>{{ introduction.content }}</p>
 
-            {% if lesson.introduction.points %}
+            {% if introduction.points %}
 
             <ul class="beginner-introduction-points">
 
-                {% for point in lesson.introduction.points %}
+                {% for point in introduction.points %}
 
                 <li>{{ point }}</li>
 
@@ -68,22 +75,22 @@
 
         </div>
 
-        {% if lesson.introduction.visual and lesson.introduction.visual.type == "stack" %}
+        {% if introduction.visual and introduction.visual.type == "stack" %}
 
-        <div class="teaching-stack-visual" aria-label="{{ lesson.introduction.visual.label }} example">
+        <div class="teaching-stack-visual" aria-label="{{ introduction.visual.label }} example">
 
-            <span class="teaching-stack-label">{{ lesson.introduction.visual.label }}</span>
+            <span class="teaching-stack-label">{{ introduction.visual.label }}</span>
 
             <div class="teaching-stack">
 
-                {% for item in lesson.introduction.visual["items"] %}
+                {% for item in introduction.visual["items"] %}
 
                 <div class="teaching-stack-row{% if loop.first %} is-top{% endif %}">
                     <span class="teaching-stack-block">{{ item }}</span>
 
                     {% if loop.first %}
 
-                    <span class="teaching-stack-top">← {{ lesson.introduction.visual.top_label }}</span>
+                    <span class="teaching-stack-top">← {{ introduction.visual.top_label }}</span>
 
                     {% endif %}
 
@@ -97,20 +104,20 @@
 
         {% endif %}
 
-        {% if lesson.introduction.visual and lesson.introduction.visual.type == "queue" %}
+        {% if introduction.visual and introduction.visual.type == "queue" %}
 
-        <div class="teaching-queue-visual" aria-label="{{ lesson.introduction.visual.label }} example">
+        <div class="teaching-queue-visual" aria-label="{{ introduction.visual.label }} example">
 
-            <span class="teaching-stack-label">{{ lesson.introduction.visual.label }}</span>
+            <span class="teaching-stack-label">{{ introduction.visual.label }}</span>
 
             <div class="teaching-queue-ends">
-                <span>{{ lesson.introduction.visual.front_label }} &darr;</span>
-                <span>{{ lesson.introduction.visual.rear_label }} &darr;</span>
+                <span>{{ introduction.visual.front_label }} &darr;</span>
+                <span>{{ introduction.visual.rear_label }} &darr;</span>
             </div>
 
             <div class="teaching-queue">
 
-                {% for item in lesson.introduction.visual["items"] %}
+                {% for item in introduction.visual["items"] %}
 
                 <span class="teaching-queue-block">{{ item }}</span>
 
@@ -132,23 +139,23 @@
 
     {% endif %}
 
-    {% if lesson.worked_example %}
+    {% if worked_example %}
 
     <article class="worked-example">
 
         <span class="teaching-kicker">Worked example</span>
-        <h2>{{ lesson.worked_example.title }}</h2>
-        <p class="worked-example-intro">{{ lesson.worked_example.content }}</p>
+        <h2>{{ worked_example.title }}</h2>
+        <p class="worked-example-intro">{{ worked_example.content }}</p>
 
         <div class="worked-example-flow" aria-label="Worked example steps">
 
-            {% for step in lesson.worked_example.steps %}
+            {% for step in worked_example.steps %}
 
             <article class="worked-example-step">
 
                 <span class="worked-example-action">{{ step.action }}</span>
 
-                {% if lesson.worked_example.visual_type == "queue" %}
+                {% if worked_example.visual_type == "queue" %}
 
                 <div class="teaching-queue teaching-queue-compact" aria-label="Queue after {{ step.action }}">
 
@@ -194,11 +201,11 @@
 
         </div>
 
-        <p class="worked-example-conclusion">{{ lesson.worked_example.conclusion }}</p>
+        <p class="worked-example-conclusion">{{ worked_example.conclusion }}</p>
 
         <div class="now-you-try">
             <span>Now You Try</span>
-            <p><strong>{{ lesson.worked_example.next.title }}</strong> {{ lesson.worked_example.next.content }}</p>
+            <p><strong>{{ worked_example.next.title }}</strong> {{ worked_example.next.content }}</p>
         </div>
 
     </article>
@@ -232,7 +239,7 @@
 
     <div class="playground-learning-area">
 
-        {% if lesson.challenge %}
+        {% if challenge %}
 
         <section id="challenge-panel" class="challenge-panel" aria-live="polite" hidden></section>
 
@@ -302,7 +309,7 @@
 
     </div>
 
-    {% if lesson.guided_teaching and lesson.guided_teaching.prediction %}
+    {% if guided_practice and guided_practice.prediction %}
 
     <section id="prediction-panel" class="prediction-panel" aria-live="polite" hidden></section>
 
@@ -356,7 +363,7 @@
 
 </section>
 
-{% if lesson.recall %}
+{% if recall %}
 
 <section id="lesson-recall" class="lesson-recall" aria-live="polite" hidden></section>
 
@@ -400,18 +407,14 @@
 
 <script src="{{ url_for('static', filename='js/alternate_explanations.js') }}"></script>
 
+<script src="{{ url_for('static', filename='js/teaching_engine.js') }}"></script>
+
 <script src="{{ url_for('static', filename='js/mission.js') }}"></script>
 
 
 <script src="{{ url_for('static', filename='js/lesson.js') }}"></script>
 
 <script src="{{ url_for('static', filename='js/quiz.js') }}"></script>
-
-<script src="{{ url_for('static', filename='js/recall.js') }}"></script>
-
-<script src="{{ url_for('static', filename='js/guided_teaching.js') }}"></script>
-
-<script src="{{ url_for('static', filename='js/challenge.js') }}"></script>
 
 <script src="{{ url_for('static', filename='js/animations.js') }}"></script>
 

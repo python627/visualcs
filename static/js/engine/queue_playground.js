@@ -15,50 +15,44 @@ function createQueuePlayground() {
         });
     }
 
+    function clearQueue() {
+        queue.length = 0;
+        render();
+    }
+
     function add() {
-        if (isGuidedPredictionPending()) {
-            setByteMessage("Choose a prediction, then press DEQUEUE to check it.");
+        if (teachingEngine.prepareOperation("enqueue").blocked) {
             return;
         }
 
-        const missionStep = getMissionStepIndex();
-        const isGuidedEnqueue = getExpectedOperation() === "enqueue";
-        const challengeValue = getLessonChallengeOperationValue(
-            "enqueue",
-            queue.length
-        );
-        const value = isGuidedEnqueue
-            ? getGuidedValue(missionStep, Math.floor(Math.random() * 90) + 10)
-            : challengeValue ?? Math.floor(Math.random() * 90) + 10;
+        const value = teachingEngine.getOperationValue({
+            operation: "enqueue",
+            index: queue.length,
+            fallback: Math.floor(Math.random() * 90) + 10
+        });
 
         queue.push(value);
         render();
         animateBlockAddition(value, getBlockElements().at(-1));
 
-        const missionResult = completeAction("enqueue");
-
-        if (missionResult.accepted) {
-            showGuidedActionExplanation("enqueue", missionStep, { value });
-
-            if (missionResult.nextOperation === "dequeue") {
-                showPredictionPrompt();
-            }
-        }
-        else {
-            reportLessonChallengeState(queue, "enqueue");
-        }
+        teachingEngine.operationCompleted({
+            operation: "enqueue",
+            value,
+            state: [...queue]
+        });
     }
 
     function remove() {
         if (queue.length === 0) {
             setByteMessage("The structure is empty.");
-            reportLessonChallengeState(queue, "dequeue");
+            teachingEngine.reportUnavailableOperation({
+                operation: "dequeue",
+                state: [...queue]
+            });
             return;
         }
 
-        if (isGuidedPredictionRequired("dequeue")) {
-            showPredictionPrompt();
-            setByteMessage("Make a prediction before DEQUEUE reveals the answer.");
+        if (teachingEngine.prepareOperation("dequeue").blocked) {
             return;
         }
 
@@ -71,14 +65,11 @@ function createQueuePlayground() {
         animateRemainingBlocks(previousRects, 1);
         animateBlockRemoval(removedValue, previousRects[0], { x: -100, y: 0 });
 
-        const missionResult = completeAction("dequeue");
-
-        if (missionResult.accepted) {
-            resolveGuidedPrediction(removedValue, "dequeue");
-        }
-        else {
-            reportLessonChallengeState(queue, "dequeue");
-        }
+        teachingEngine.operationCompleted({
+            operation: "dequeue",
+            removedValue,
+            state: [...queue]
+        });
     }
 
     return {
@@ -87,15 +78,10 @@ function createQueuePlayground() {
             getControl("dequeue").onclick = remove;
         },
         reset() {
-            queue.length = 0;
-            render();
+            clearQueue();
         },
         resetForChallenge() {
-            queue.length = 0;
-            render();
-        },
-        getChallengeState() {
-            return [...queue];
+            clearQueue();
         },
         renderChallengeTarget(target, container) {
             const label = document.createElement("span");

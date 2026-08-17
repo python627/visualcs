@@ -79,6 +79,7 @@
         }
     ],
 
+    "teaching": {
     "introduction": {
         "title": "Meet the Queue",
         "content": "A Queue keeps items in the order they arrive. You will experiment with adding items and letting them leave.",
@@ -129,7 +130,7 @@
         }
     },
 
-    "guided_teaching": {
+    "guided_practice": {
         "values": [10, 20, 30],
         "action_explanations": {
             "enqueue": [
@@ -141,6 +142,8 @@
         },
         "prediction": {
             "before_operation": "dequeue",
+            "pending_message": "Choose a prediction, then press DEQUEUE to check it.",
+            "required_message": "Make a prediction before DEQUEUE reveals the answer.",
             "result_operation": "dequeue",
             "heading": "Before you DEQUEUE...",
             "question": "Which value do you think will leave?",
@@ -207,5 +210,6 @@
         "empty_message": "Write a short explanation before submitting.",
         "completion_message": "✓ Recall completed",
         "model_answer": "A Queue removes from the front. New items join at the rear, so the item that has waited the longest reaches the front and leaves first."
+    }
     }
 }
