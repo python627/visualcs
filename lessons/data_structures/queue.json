@@ -77,5 +77,135 @@
             "type": "example",
             "content": "ENQUEUE A, then B, then C. The line is A → B → C. DEQUEUE removes A first because A has waited the longest."
         }
-    ]
+    ],
+
+    "introduction": {
+        "title": "Meet the Queue",
+        "content": "A Queue keeps items in the order they arrive. You will experiment with adding items and letting them leave.",
+        "points": [
+            "New items join at the REAR.",
+            "Items leave from the FRONT.",
+            "You are about to use ENQUEUE and DEQUEUE."
+        ],
+        "visual": {
+            "type": "queue",
+            "label": "QUEUE",
+            "items": [10, 20, 30],
+            "front_label": "FRONT",
+            "rear_label": "REAR"
+        }
+    },
+
+    "worked_example": {
+        "visual_type": "queue",
+        "title": "Watch ENQUEUE and DEQUEUE",
+        "content": "Follow the Queue as each operation changes who is waiting at the front.",
+        "steps": [
+            {
+                "action": "ENQUEUE 10",
+                "items": [10],
+                "explanation": "10 is the first item, so it is waiting at the front."
+            },
+            {
+                "action": "ENQUEUE 20",
+                "items": [10, 20],
+                "explanation": "20 joins behind 10 at the rear."
+            },
+            {
+                "action": "ENQUEUE 30",
+                "items": [10, 20, 30],
+                "explanation": "30 joins at the rear, after the other waiting items."
+            },
+            {
+                "action": "DEQUEUE",
+                "items": [20, 30],
+                "explanation": "10 leaves from the front of the Queue."
+            }
+        ],
+        "conclusion": "10 left because it entered the Queue first and had been waiting the longest.",
+        "next": {
+            "title": "Use the playground below.",
+            "content": "Try ENQUEUE to add items at the rear, then DEQUEUE to remove the item at the front."
+        }
+    },
+
+    "guided_teaching": {
+        "values": [10, 20, 30],
+        "action_explanations": {
+            "enqueue": [
+                "10 joined the Queue at the REAR.",
+                "20 joined behind 10. New items enter from the REAR.",
+                "30 joined behind 20. It is now at the REAR."
+            ],
+            "dequeue": "{removed} left from the FRONT. It had been waiting the longest."
+        },
+        "prediction": {
+            "before_operation": "dequeue",
+            "result_operation": "dequeue",
+            "heading": "Before you DEQUEUE...",
+            "question": "Which value do you think will leave?",
+            "choices": [10, 20, 30],
+            "selection_message": "Your prediction: {prediction}. Now press DEQUEUE to check it.",
+            "result": {
+                "correct": "Your prediction: {prediction}",
+                "incorrect": "Your prediction: {prediction}",
+                "actual": "Actual: {actual}",
+                "correct_actual": "Actual: {actual} ✓",
+                "concept": {
+                    "last_in": "FIRST IN",
+                    "arrow": "↓",
+                    "first_out": "FIRST OUT",
+                    "label": "FIFO"
+                }
+            }
+        }
+    },
+
+    "challenge": {
+        "title": "Queue Challenge",
+        "start_message": "You completed the guided mission. Now apply the rule yourself.",
+        "continue_message": "Challenge complete. Keep experimenting with the Queue whenever you want.",
+        "phases": [
+            {
+                "title": "Build this Queue",
+                "instruction": "Use the playground to make the target.",
+                "target": {
+                    "label": "Target Queue",
+                    "items": [10, 20, 30],
+                    "front_label": "FRONT",
+                    "rear_label": "REAR"
+                },
+                "expected_state": [10, 20, 30],
+                "operation_values": {
+                    "enqueue": [10, 20, 30]
+                },
+                "progressive": true,
+                "progress_operations": ["enqueue"],
+                "success": "✓ Queue built correctly",
+                "feedback": "Look at the target Queue and compare it with yours."
+            },
+            {
+                "title": "Remove the item that has been waiting the longest.",
+                "instruction": "Make the Queue match this new target.",
+                "target": {
+                    "label": "New target",
+                    "items": [20, 30],
+                    "front_label": "FRONT",
+                    "rear_label": "REAR"
+                },
+                "expected_state": [20, 30],
+                "success": "✓ Challenge Complete",
+                "feedback": "Look at the target Queue and compare it with yours."
+            }
+        ]
+    },
+
+    "recall": {
+        "title": "Recall",
+        "prompt": "In your own words, why does a Queue remove the oldest item first?",
+        "submit_label": "Submit recall",
+        "empty_message": "Write a short explanation before submitting.",
+        "completion_message": "✓ Recall completed",
+        "model_answer": "A Queue removes from the front. New items join at the rear, so the item that has waited the longest reaches the front and leaves first."
+    }
 }

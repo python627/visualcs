@@ -147,7 +147,7 @@ function isGuidedPredictionRequired(operation) {
 }
 
 
-function resolveGuidedPrediction(actual) {
+function resolveGuidedPrediction(actual, operation) {
 
     const prediction = getPredictionConfig();
     const panel = getPredictionPanel();
@@ -162,8 +162,17 @@ function resolveGuidedPrediction(actual) {
         isCorrect ? result.correct : result.incorrect,
         { prediction: selectedPrediction }
     );
-    const actualMessage = formatGuidedText(result.actual, { actual });
-    const explanation = getGuidedActionExplanation("pop", 0, { removed: actual });
+    const actualTemplate = isCorrect && result.correct_actual
+        ? result.correct_actual
+        : result.actual;
+    const actualMessage = formatGuidedText(actualTemplate, { actual });
+    const resultOperation = operation || prediction.result_operation
+        || prediction.before_operation;
+    const explanation = getGuidedActionExplanation(
+        resultOperation,
+        0,
+        { removed: actual }
+    );
 
     panel.hidden = false;
     panel.innerHTML = `
@@ -171,7 +180,7 @@ function resolveGuidedPrediction(actual) {
             <p>${predictionMessage}</p>
             <p class="prediction-actual">${actualMessage}</p>
             ${explanation ? `<p>${explanation}</p>` : ""}
-            <div class="lifo-connection">
+            <div class="operation-connection">
                 <span>${result.concept.last_in}</span>
                 <span>${result.concept.arrow}</span>
                 <span>${result.concept.first_out}</span>

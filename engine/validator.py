@@ -277,7 +277,19 @@ class LessonValidator:
                         )
 
                     else:
-                        for field in ("type", "label", "top_label"):
+                        for field in ("type", "label"):
+                            if not isinstance(visual.get(field), str):
+                                errors.append(
+                                    f"introduction.visual.{field} must be a string"
+                                )
+
+                        visual_type = visual.get("type")
+                        label_fields = {
+                            "stack": ("top_label",),
+                            "queue": ("front_label", "rear_label"),
+                        }.get(visual_type, ())
+
+                        for field in label_fields:
                             if not isinstance(visual.get(field), str):
                                 errors.append(
                                     f"introduction.visual.{field} must be a string"
@@ -305,6 +317,14 @@ class LessonValidator:
                         errors.append(
                             f"worked_example.{field} must be a string"
                         )
+
+                if "visual_type" in worked_example and not isinstance(
+                    worked_example["visual_type"],
+                    str
+                ):
+                    errors.append(
+                        "worked_example.visual_type must be a string"
+                    )
 
                 if not isinstance(worked_example.get("steps"), list):
                     errors.append(
@@ -398,6 +418,14 @@ class LessonValidator:
                                     f"guided_teaching.prediction.{field} must be a string"
                                 )
 
+                        if "result_operation" in prediction and not isinstance(
+                            prediction["result_operation"],
+                            str
+                        ):
+                            errors.append(
+                                "guided_teaching.prediction.result_operation must be a string"
+                            )
+
                         if not isinstance(prediction.get("choices"), list):
                             errors.append(
                                 "guided_teaching.prediction.choices must be a list"
@@ -416,6 +444,14 @@ class LessonValidator:
                                     errors.append(
                                         f"guided_teaching.prediction.result.{field} must be a string"
                                     )
+
+                            if "correct_actual" in result and not isinstance(
+                                result["correct_actual"],
+                                str
+                            ):
+                                errors.append(
+                                    "guided_teaching.prediction.result.correct_actual must be a string"
+                                )
 
                             concept = result.get("concept")
 
@@ -493,7 +529,17 @@ class LessonValidator:
                             )
 
                         else:
-                            for field in ("label", "top_label"):
+                            if not isinstance(target.get("label"), str):
+                                errors.append(
+                                    f"challenge.phases[{index}].target.label must be a string"
+                                )
+
+                            target_label_fields = {
+                                "stack": ("top_label",),
+                                "queue": ("front_label", "rear_label"),
+                            }.get(lesson.get("playground", {}).get("type"), ())
+
+                            for field in target_label_fields:
                                 if not isinstance(target.get(field), str):
                                     errors.append(
                                         f"challenge.phases[{index}].target.{field} must be a string"
@@ -539,6 +585,31 @@ class LessonValidator:
                             errors.append(
                                 f"challenge.phases[{index}].progress_operations must contain strings"
                             )
+
+
+        # Validate optional retrieval-practice recall
+        if "recall" in lesson:
+
+            recall = lesson["recall"]
+
+            if not isinstance(recall, dict):
+                errors.append(
+                    "recall must be an object"
+                )
+
+            else:
+                for field in (
+                    "title",
+                    "prompt",
+                    "submit_label",
+                    "empty_message",
+                    "completion_message",
+                    "model_answer"
+                ):
+                    if not isinstance(recall.get(field), str):
+                        errors.append(
+                            f"recall.{field} must be a string"
+                        )
 
 
         return errors

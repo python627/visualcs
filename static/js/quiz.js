@@ -50,9 +50,7 @@ function checkAnswer(answer) {
     const correct = answer === quiz.correct;
 
     if (correct) {
-        markLessonCompleted(LESSON.id);
         setLessonStage("discovery");
-        showLessonContinue();
 
         document.getElementById("discoveries").innerHTML = `
             <div class="discovery-card">
@@ -60,13 +58,22 @@ function checkAnswer(answer) {
                 <p>${LESSON.discovery.summary}</p>
             </div>
         `;
+
+        if (hasLessonRecall()) {
+            showLessonRecall();
+        }
+        else {
+            markLessonCompleted(LESSON.id);
+            showLessonContinue();
+        }
     }
 
     message.innerHTML = `
         <h2>${correct ? "🎉 Correct!" : "❌ Not quite."}</h2>
         <p>${correct ? "You discovered the rule." : "Watch the blocks again."}</p>
         ${correct ? `<h3>${LESSON.discovery.title}</h3><p>${LESSON.discovery.summary}</p>` : ""}
-        ${correct ? '<p class="lesson-completion-notice">✓ Lesson Completed</p>' : ""}
+        ${correct && hasLessonRecall() ? '<p>Now complete the Recall prompt below.</p>' : ""}
+        ${correct && !hasLessonRecall() ? '<p class="lesson-completion-notice">✓ Lesson Completed</p>' : ""}
         <div id="playground-feedback"></div>
         <br>
         <button onclick="resetLesson()">Try Again</button>

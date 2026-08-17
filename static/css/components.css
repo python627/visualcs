@@ -55,6 +55,24 @@
     overflow-x:auto;
 }
 
+#stack.queue-view{
+    width:100%;
+    min-height:170px;
+    height:auto;
+    margin:25px 0;
+    border-color:#38bdf8;
+    padding:24px 20px;
+    flex-direction:row;
+    align-items:center;
+    justify-content:flex-start;
+    gap:10px;
+    overflow-x:auto;
+}
+
+.playground-area:has(#stack.queue-view){
+    width:min(100%, 720px);
+}
+
 .playground-area:has(#stack.linked-list-view){
     width:min(100%, 720px);
 }
@@ -1390,6 +1408,102 @@
 
 }
 
+.lesson-recall{
+
+    max-width:680px;
+    margin:0 30px 30px;
+    padding:18px;
+    border:1px solid #7c3aed;
+    border-radius:14px;
+    background:#24124a;
+
+}
+
+.recall-card h2{
+
+    margin-bottom:8px;
+    color:#ede9fe;
+    font-size:20px;
+
+}
+
+.recall-card > p{
+
+    color:#e9d5ff;
+    line-height:1.5;
+
+}
+
+.recall-response{
+
+    display:block;
+    width:100%;
+    min-height:82px;
+    margin-top:14px;
+    padding:10px;
+    border:1px solid #c4b5fd;
+    border-radius:9px;
+    background:#172036;
+    color:white;
+    font:inherit;
+    line-height:1.45;
+    resize:vertical;
+
+}
+
+.recall-submit{
+
+    margin-top:10px;
+    padding:9px 13px;
+    border:1px solid #c4b5fd;
+    border-radius:8px;
+    background:#6d28d9;
+    color:white;
+    font-size:14px;
+    font-weight:bold;
+
+}
+
+.recall-submit:hover{
+
+    background:#7c3aed;
+
+}
+
+.recall-feedback{
+
+    min-height:20px;
+    margin-top:9px;
+    color:#fde68a;
+    font-size:13px;
+
+}
+
+.recall-complete{
+
+    color:#bbf7d0 !important;
+    font-weight:bold;
+
+}
+
+.recall-model-answer{
+
+    margin-top:12px;
+    padding:11px;
+    border-radius:9px;
+    background:#312e81;
+
+}
+
+.recall-model-answer strong{
+
+    display:block;
+    margin-bottom:5px;
+    color:#ddd6fe;
+    font-size:13px;
+
+}
+
 .alternate-explanations{
 
     margin-top:16px;
@@ -1616,6 +1730,65 @@
 
 }
 
+.teaching-queue-visual{
+
+    padding:16px;
+    border:1px solid #1d4ed8;
+    border-radius:14px;
+    background:#0f1b31;
+
+}
+
+.teaching-queue-ends,
+.challenge-queue-ends{
+
+    display:flex;
+    justify-content:space-between;
+    gap:20px;
+    margin-bottom:7px;
+    color:#7dd3fc;
+    font-size:11px;
+    font-weight:bold;
+    letter-spacing:.05em;
+
+}
+
+.teaching-queue{
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    min-width:max-content;
+
+}
+
+.teaching-queue-block{
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-width:48px;
+    height:34px;
+    padding:0 9px;
+    border:2px solid #7dd3fc;
+    border-radius:8px;
+    background:#0c4a6e;
+    color:white;
+    font-size:15px;
+    font-weight:bold;
+    box-shadow:0 4px 10px rgba(14, 165, 233, .16);
+
+}
+
+.teaching-queue-arrow{
+
+    color:#7dd3fc;
+    font-size:18px;
+    font-weight:bold;
+
+}
+
 .worked-example{
 
     overflow:hidden;
@@ -1667,6 +1840,25 @@
 }
 
 .teaching-stack-compact .teaching-stack-block{
+
+    min-width:0;
+    height:28px;
+    font-size:13px;
+
+}
+
+.teaching-queue-compact{
+
+    min-height:126px;
+    padding:10px;
+    border:1px solid #1d4ed8;
+    border-radius:10px;
+    background:#0f1b31;
+    overflow-x:auto;
+
+}
+
+.teaching-queue-compact .teaching-queue-block{
 
     min-width:0;
     height:28px;
@@ -1824,7 +2016,7 @@
 
 }
 
-.lifo-connection{
+.operation-connection{
 
     display:grid;
     justify-items:center;
@@ -1841,7 +2033,7 @@
 
 }
 
-.lifo-connection strong{
+.operation-connection strong{
 
     margin-top:3px;
     color:#fef3c7;
@@ -1999,6 +2191,54 @@
 
 }
 
+.challenge-queue-ends{
+
+    margin-bottom:6px;
+    color:#a7f3d0;
+
+}
+
+.challenge-queue-target{
+
+    display:flex;
+    align-items:center;
+    gap:6px;
+    overflow-x:auto;
+
+}
+
+.challenge-queue-value{
+
+    display:flex;
+    flex:0 0 auto;
+    align-items:center;
+    justify-content:center;
+    width:42px;
+    height:28px;
+    border:1px solid #6ee7b7;
+    border-radius:7px;
+    background:#065f46;
+    color:white;
+    font-size:13px;
+    font-weight:bold;
+
+}
+
+.challenge-queue-value:first-child{
+
+    border-color:#fef3c7;
+    background:#047857;
+
+}
+
+.challenge-queue-arrow{
+
+    color:#a7f3d0;
+    font-size:16px;
+    font-weight:bold;
+
+}
+
 .challenge-actions{
 
     display:flex;
@@ -2050,6 +2290,12 @@
     .playground:has(#challenge-panel:not([hidden])) .playground-learning-area{
 
         grid-template-columns:1fr;
+
+    }
+
+    .lesson-recall{
+
+        margin:0 20px 24px;
 
     }
 

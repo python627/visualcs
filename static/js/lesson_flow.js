@@ -1,4 +1,6 @@
-const LESSON_STAGES = ["learn", "mission", "quiz", "discovery"];
+const LESSON_STAGES = Array.from(
+    document.querySelectorAll("[data-lesson-stage]")
+).map(element => element.dataset.lessonStage);
 
 let currentLessonStage = "learn";
 

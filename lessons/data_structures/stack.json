@@ -193,5 +193,14 @@
                 "feedback": "Look at the target Stack and compare it with yours."
             }
         ]
+    },
+
+    "recall": {
+        "title": "Recall",
+        "prompt": "In your own words, why does POP remove the most recently added item?",
+        "submit_label": "Submit recall",
+        "empty_message": "Write a short explanation before submitting.",
+        "completion_message": "✓ Recall completed",
+        "model_answer": "POP removes the top item. Since new items are pushed onto the top, the most recently added item is removed first."
     }
 }

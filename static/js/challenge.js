@@ -169,6 +169,7 @@ function restartLessonChallenge() {
 
     if (quizShown) {
         resetQuiz();
+        resetLessonRecall();
         setLessonStage("mission");
     }
 

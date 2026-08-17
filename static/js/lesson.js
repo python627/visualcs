@@ -4,5 +4,6 @@ function resetLesson() {
     resetLessonFlow();
     resetGuidedTeaching();
     resetLessonChallenge();
+    resetLessonRecall();
     setByteMessage(`Welcome! Let's discover how a ${LESSON.topic} works.`);
 }

@@ -5,6 +5,7 @@ function createStackPlayground() {
     function render() {
         stackDiv.innerHTML = "";
         stackDiv.classList.remove("linked-list-view");
+        stackDiv.classList.remove("queue-view");
 
         stack.forEach(number => {
             const block = document.createElement("div");
