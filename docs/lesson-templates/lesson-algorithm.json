@@ -1,0 +1,46 @@
+{
+  "schema_version": 2,
+  "metadata": {
+    "id": "algorithm-example",
+    "order": 1,
+    "subject_order": 1,
+    "subject": "Algorithms",
+    "topic": "Algorithm",
+    "title": "Algorithm Example",
+    "description": "See an algorithm make one meaningful decision at a time.",
+    "difficulty": "Beginner",
+    "estimated_time": "15 min"
+  },
+  "learning_objectives": ["Follow an algorithm's decision process."],
+  "capabilities": ["interactive_state", "sorting", "sequence_simulation", "target_transformation"],
+  "teaching": {
+    "mission": { "title": "Follow the algorithm", "description": "Advance through meaningful steps." },
+    "introduction": { "title": "What it does", "content": "Give the learner a simple orientation." }
+  },
+  "visualization": {
+    "type": "registered-playground-type",
+    "controls": [{ "id": "next-step", "label": "NEXT STEP", "operation": "next-step" }],
+    "actions": [{ "label": "Make one decision", "operation": "next-step" }]
+  },
+  "mastery": {
+    "title": "Algorithm Mastery",
+    "mastered_label": "Algorithm Mastered",
+    "levels": [
+      { "id": "learn", "label": "Learn", "completion": { "type": "course_completion" } }
+    ]
+  },
+  "expert": {
+    "id": "expert",
+    "label": "Expert",
+    "kind": "expert",
+    "generator": "registered-generator",
+    "generator_version": 1,
+    "required_capabilities": ["interactive_state", "sequence_simulation"],
+    "thinking": { "title": "Think first" },
+    "solve": { "title": "Expert challenge" }
+  },
+  "assessment": {
+    "quiz": { "question": "What makes this algorithm work?", "options": ["Correct idea", "Distractor"], "correct": 0 },
+    "discovery": { "title": "Algorithm discovery", "summary": "State the central insight." }
+  }
+}

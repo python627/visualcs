@@ -1,0 +1,64 @@
+{
+  "schema_version": 2,
+  "metadata": {
+    "id": "state-transformer",
+    "order": 1,
+    "subject_order": 1,
+    "subject": "Subject Name",
+    "topic": "State transformation",
+    "title": "State Transformation",
+    "description": "Transform a visible start state into a target state.",
+    "difficulty": "Beginner",
+    "estimated_time": "12 min"
+  },
+  "learning_objectives": ["Transform a state using valid operations."],
+  "capabilities": ["interactive_state", "target_transformation"],
+  "teaching": {
+    "mission": { "title": "Mission", "description": "Try a few guided actions." },
+    "worked_example": {
+      "visual_type": "array",
+      "title": "A small example",
+      "content": "Show a before and after state.",
+      "steps": [
+        { "action": "START", "items": [3, 1, 2], "explanation": "This is the start." },
+        { "action": "CHANGE", "items": [1, 2, 3], "explanation": "This is the result." }
+      ],
+      "conclusion": "Connect the change to the concept.",
+      "next": { "title": "Now you try.", "content": "Use the live playground." }
+    }
+  },
+  "visualization": {
+    "type": "registered-playground-type",
+    "controls": [{ "id": "change", "label": "CHANGE", "operation": "change" }],
+    "actions": [{ "label": "Change the state", "operation": "change" }]
+  },
+  "practice": {
+    "challenge": {
+      "title": "Apply it",
+      "start_message": "Compare your state with the target.",
+      "continue_message": "Keep experimenting.",
+      "phases": [{
+        "title": "Reach the target",
+        "instruction": "Find a valid route to the target state.",
+        "target": { "label": "TARGET", "description": "Describe the target." },
+        "goal": { "type": "state_equals", "expected_state": [1, 2, 3] },
+        "success": "Target reached.",
+        "feedback": "Compare the visible state with the target."
+      }]
+    }
+  },
+  "assessment": {
+    "quiz": { "question": "Which state is the target?", "options": ["[1, 2, 3]", "[3, 2, 1]"], "correct": 0 },
+    "discovery": { "title": "You transformed the state", "summary": "Explain why the valid operations worked." }
+  },
+  "completion": {
+    "recall": {
+      "title": "Recall",
+      "prompt": "In your own words, why did that transformation work?",
+      "submit_label": "Submit recall",
+      "empty_message": "Write a short answer first.",
+      "completion_message": "Recall completed.",
+      "model_answer": "A concise model explanation."
+    }
+  }
+}

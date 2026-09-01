@@ -1,0 +1,45 @@
+{
+  "schema_version": 2,
+  "metadata": {
+    "id": "concept-basics",
+    "order": 1,
+    "subject_order": 1,
+    "subject": "Subject Name",
+    "topic": "Concept",
+    "title": "Concept Basics",
+    "description": "A short beginner introduction to a concept.",
+    "difficulty": "Beginner",
+    "estimated_time": "8 min"
+  },
+  "learning_objectives": [
+    "Explain the core idea in simple words."
+  ],
+  "capabilities": [],
+  "teaching": {
+    "mission": {
+      "title": "Explore the concept",
+      "description": "Use the controls to discover the key idea."
+    },
+    "introduction": {
+      "title": "Start with the big idea",
+      "content": "Explain what the learner is about to see.",
+      "points": ["Keep terminology light."]
+    }
+  },
+  "visualization": {
+    "type": "registered-playground-type",
+    "controls": [{ "id": "next", "label": "NEXT", "operation": "next" }],
+    "actions": [{ "label": "Take a step", "operation": "next" }]
+  },
+  "assessment": {
+    "quiz": {
+      "question": "What is the key idea?",
+      "options": ["Correct answer", "Distractor"],
+      "correct": 0
+    },
+    "discovery": {
+      "title": "Key discovery",
+      "summary": "Summarize what the learner saw."
+    }
+  }
+}

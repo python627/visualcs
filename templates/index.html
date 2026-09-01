@@ -12,6 +12,8 @@
 </head>
 <body>
 
+{% from "_lesson_components.html" import render_teaching_state %}
+
 {% set teaching = lesson.teaching or {} %}
 {% set introduction = teaching.introduction or lesson.get("introduction") %}
 {% set worked_example = teaching.worked_example or lesson.get("worked_example") %}
@@ -79,64 +81,8 @@
 
         </div>
 
-        {% if introduction.visual and introduction.visual.type == "stack" %}
-
-        <div class="teaching-stack-visual" aria-label="{{ introduction.visual.label }} example">
-
-            <span class="teaching-stack-label">{{ introduction.visual.label }}</span>
-
-            <div class="teaching-stack">
-
-                {% for item in introduction.visual["items"] %}
-
-                <div class="teaching-stack-row{% if loop.first %} is-top{% endif %}">
-                    <span class="teaching-stack-block">{{ item }}</span>
-
-                    {% if loop.first %}
-
-                    <span class="teaching-stack-top">← {{ introduction.visual.top_label }}</span>
-
-                    {% endif %}
-
-                </div>
-
-                {% endfor %}
-
-            </div>
-
-        </div>
-
-        {% endif %}
-
-        {% if introduction.visual and introduction.visual.type == "queue" %}
-
-        <div class="teaching-queue-visual" aria-label="{{ introduction.visual.label }} example">
-
-            <span class="teaching-stack-label">{{ introduction.visual.label }}</span>
-
-            <div class="teaching-queue-ends">
-                <span>{{ introduction.visual.front_label }} &darr;</span>
-                <span>{{ introduction.visual.rear_label }} &darr;</span>
-            </div>
-
-            <div class="teaching-queue">
-
-                {% for item in introduction.visual["items"] %}
-
-                <span class="teaching-queue-block">{{ item }}</span>
-
-                {% if not loop.last %}
-
-                <span class="teaching-queue-arrow" aria-hidden="true">&rarr;</span>
-
-                {% endif %}
-
-                {% endfor %}
-
-            </div>
-
-        </div>
-
+        {% if introduction.visual %}
+            {{ render_teaching_state(introduction.visual) }}
         {% endif %}
 
     </article>
@@ -159,47 +105,7 @@
 
                 <span class="worked-example-action">{{ step.action }}</span>
 
-                {% if worked_example.visual_type == "queue" %}
-
-                <div class="teaching-queue teaching-queue-compact" aria-label="Queue after {{ step.action }}">
-
-                    {% for item in step["items"] %}
-
-                    <span class="teaching-queue-block">{{ item }}</span>
-
-                    {% if not loop.last %}
-
-                    <span class="teaching-queue-arrow" aria-hidden="true">&rarr;</span>
-
-                    {% endif %}
-
-                    {% endfor %}
-
-                </div>
-
-                {% else %}
-
-                    {% if worked_example.visual_type == "stack" %}
-
-                    <div class="teaching-stack teaching-stack-compact" aria-label="Stack after {{ step.action }}">
-
-                        {% for item in step["items"] %}
-
-                        <span class="teaching-stack-block">{{ item }}</span>
-
-                        {% endfor %}
-
-                    </div>
-
-                    {% else %}
-
-                    <div class="worked-example-state" aria-label="Example state after {{ step.action }}">
-                        {{ step.visual or step.action }}
-                    </div>
-
-                    {% endif %}
-
-                {% endif %}
+                {{ render_teaching_state(step, worked_example.visual_type, compact=true) }}
 
                 <p>{{ step.explanation }}</p>
 
@@ -468,6 +374,8 @@
 
 <script src="{{ url_for('static', filename='js/scenario_factory.js') }}"></script>
 
+<script src="{{ url_for('static', filename='js/lesson_capabilities.js') }}"></script>
+
 <script src="{{ url_for('static', filename='js/expert_attempt_runner.js') }}"></script>
 
 <script src="{{ url_for('static', filename='js/mastery_engine.js') }}"></script>
@@ -502,6 +410,8 @@
 <script src="{{ url_for('static', filename='js/engine/remaining_mastery_generators.js') }}"></script>
 
 <script src="{{ url_for('static', filename='js/engine/bubble_sort_playground.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/engine/selection_sort_playground.js') }}"></script>
 
 <script src="{{ url_for('static', filename='js/engine/binary_search_tree_playground.js') }}"></script>
 

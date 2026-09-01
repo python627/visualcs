@@ -269,7 +269,9 @@ function createStackPlayground() {
                 }),
                 renderState({
                     label: "TARGET STACK",
-                    items: target.items || [],
+                    items: Array.isArray(target.raw_state)
+                        ? [...target.raw_state].reverse()
+                        : target.items || [],
                     topLabel: target.top_label || "TOP"
                 })
             );

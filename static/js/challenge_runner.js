@@ -183,14 +183,18 @@ class ChallengeRunner {
         }
 
         if (goal?.type === "state_equals") {
-            if (this.statesMatch(state, goal.expected_state)) {
+            const currentState = goal.state_key
+                ? state?.[goal.state_key]
+                : state;
+
+            if (this.statesMatch(currentState, goal.expected_state)) {
                 return this.completeCurrentPhase();
             }
 
             const progressOperations = phase.progress_operations || [];
             const isValidProgress = phase.progressive
                 && progressOperations.includes(operation)
-                && this.isExpectedStatePrefix(state, goal.expected_state);
+                && this.isExpectedStatePrefix(currentState, goal.expected_state);
 
             return this.finishWithConstraintIfNeeded(
                 this.createResult(isValidProgress ? "progress" : "incorrect", {

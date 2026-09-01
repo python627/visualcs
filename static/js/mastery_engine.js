@@ -45,6 +45,15 @@ class MasteryEngine {
     }
 
 
+    supportsExpertLevel(level) {
+        const required = level?.expert?.required_capabilities;
+
+        return !Array.isArray(required)
+            || typeof lessonCapabilities === "undefined"
+            || lessonCapabilities.supportsAll(required);
+    }
+
+
     getExpertDefinition() {
         return this.isExpertLevel(this.getCurrentLevel())
             ? this.getCurrentLevel().expert
@@ -190,9 +199,15 @@ class MasteryEngine {
     getOperationRule(level) {
         return level?.operation_rule
             || level?.guidance?.operation_rule
-            || (this.lesson.playground.type === "stack"
-                ? "PUSH and POP each use one operation."
-                : "Each available operation counts once.");
+            || this.config?.default_operation_rule
+            || "Each available operation counts once.";
+    }
+
+
+    getCurrentStateLabel(level, fallback = "YOUR STATE") {
+        return level?.current_state_label
+            || this.config?.current_state_label
+            || fallback;
     }
 
 
@@ -300,6 +315,10 @@ class MasteryEngine {
         }
 
         if (this.isExpertLevel(level)) {
+            if (!this.supportsExpertLevel(level)) {
+                setByteMessage("This Expert level needs lesson capabilities that are not available.");
+                return;
+            }
             this.startExpertLevel(level);
             return;
         }
@@ -896,7 +915,10 @@ class MasteryEngine {
                 initialState: this.expertScenario?.data?.initial_state || [],
                 target: {
                     label: this.getExpertDefinition()?.solve?.target_label || "TARGET STACK",
-                    items: [...(this.expertScenario?.data?.target_state || [])].reverse(),
+                    // State order is owned by each playground. Reversing here
+                    // made every Expert target look like a Stack.
+                    items: [...(this.expertScenario?.data?.target_state || [])],
+                    raw_state: [...(this.expertScenario?.data?.target_state || [])],
                     top_label: this.getExpertDefinition()?.solve?.top_label || "TOP"
                 }
             }
@@ -972,7 +994,7 @@ class MasteryEngine {
 
         panel.hidden = false;
         panel.className = `challenge-panel mastery-challenge-panel mastery-${this.lesson.playground.type}`;
-        this.setYourStackLabel(true, level.current_state_label || "YOUR STACK");
+        this.setYourStackLabel(true, this.getCurrentStateLabel(level));
         panel.innerHTML = `
             <div class="challenge-card mastery-challenge-card">
                 <header class="mastery-puzzle-header">

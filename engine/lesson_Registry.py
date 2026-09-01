@@ -2,6 +2,7 @@ import json
 import os
 
 from engine.validator import LessonValidator
+from engine.lesson_schema import normalize_lesson
 
 
 class LessonRegistry:
@@ -57,7 +58,7 @@ class LessonRegistry:
 
     def get_all_lessons(self):
 
-        lessons = []
+        records = []
 
         for subject in os.listdir(self.lesson_path):
 
@@ -90,7 +91,15 @@ class LessonRegistry:
                         encoding="utf-8"
                     ) as file:
 
-                        lesson = json.load(file)
+                        contents = file.read()
+
+                    # Empty files are known unused curriculum placeholders,
+                    # not lesson pages. The validation command lists them
+                    # separately without treating them as active failures.
+                    if not contents.strip():
+                        continue
+
+                    lesson = json.loads(contents)
 
 
                 except json.JSONDecodeError as error:
@@ -126,9 +135,28 @@ class LessonRegistry:
                     continue
 
 
-                lesson["subject_slug"] = subject
+                records.append({
+                    "path": file_path,
+                    "subject_slug": subject,
+                    "lesson": normalize_lesson(lesson)
+                })
 
-                lessons.append(lesson)
+
+        collection_errors = self.validator.validate_collection(records)
+        lessons = []
+
+        for record in records:
+            errors = collection_errors.get(record["path"], [])
+
+            if errors:
+                print(f"INVALID LESSON: {record['path']}")
+                for error in errors:
+                    print(f"  - {error}")
+                continue
+
+            lesson = record["lesson"]
+            lesson["subject_slug"] = record["subject_slug"]
+            lessons.append(lesson)
 
 
         return lessons

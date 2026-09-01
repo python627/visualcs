@@ -273,18 +273,35 @@ class TeachingEngine {
             { removed: actual, value: actual }
         );
 
+        const concept = result?.concept;
+        const conceptSteps = Array.isArray(concept?.steps)
+            ? concept.steps.filter(step => typeof step === "string")
+            : null;
+        const conceptHTML = conceptSteps?.length
+            ? `<div class="operation-connection">${conceptSteps.map(step => (
+                `<span>${this.format(step, { actual })}</span>`
+            )).join("")}</div>`
+            : concept && [
+                concept.last_in,
+                concept.arrow,
+                concept.first_out,
+                concept.label
+            ].every(item => typeof item === "string")
+                ? `<div class="operation-connection">
+                    <span>${concept.last_in}</span>
+                    <span>${concept.arrow}</span>
+                    <span>${concept.first_out}</span>
+                    <strong>${concept.label}</strong>
+                </div>`
+                : "";
+
         panel.hidden = false;
         panel.innerHTML = `
             <div class="prediction-card prediction-result">
                 <p>${predictionMessage}</p>
                 <p class="prediction-actual">${actualMessage}</p>
                 ${explanation ? `<p>${explanation}</p>` : ""}
-                <div class="operation-connection">
-                    <span>${result.concept.last_in}</span>
-                    <span>${result.concept.arrow}</span>
-                    <span>${result.concept.first_out}</span>
-                    <strong>${result.concept.label}</strong>
-                </div>
+                ${conceptHTML}
             </div>
         `;
     }

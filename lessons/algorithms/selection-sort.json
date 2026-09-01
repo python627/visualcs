@@ -1,0 +1,384 @@
+{
+  "schema_version": 2,
+  "metadata": {
+    "id": "selection-sort",
+    "order": 3,
+    "subject_order": 2,
+    "subject": "Algorithms",
+    "topic": "Selection Sort",
+    "title": "Selection Sort",
+    "description": "Find the smallest remaining value and place it in its final position.",
+    "difficulty": "Beginner",
+    "estimated_time": "16 min"
+  },
+  "learning_objectives": [
+    "Explain how Selection Sort chooses the smallest remaining value.",
+    "Follow one pass that places a value in its final position.",
+    "Sort an unfamiliar array through repeated selections."
+  ],
+  "capabilities": [
+    "interactive_state",
+    "sorting",
+    "target_transformation",
+    "sequence_simulation",
+    "prediction"
+  ],
+  "teaching": {
+    "mission": {
+      "title": "Find the smallest",
+      "description": "Watch Selection Sort place one smallest remaining value at a time."
+    },
+    "introduction": {
+      "title": "Sort by choosing the next smallest value",
+      "content": "Selection Sort looks through the unsorted values, chooses the smallest one, and places it at the next open position.",
+      "points": [
+        "The left side gradually becomes sorted.",
+        "Each pass chooses one smallest remaining value.",
+        "You are about to watch one value earn its final position at a time."
+      ],
+      "visual": {
+        "type": "array",
+        "label": "UNSORTED ARRAY",
+        "items": [64, 25, 12, 22, 11]
+      }
+    },
+    "worked_example": {
+      "visual_type": "array",
+      "title": "One selection pass",
+      "content": "Start at the left and search the remaining values for the smallest one.",
+      "steps": [
+        {
+          "action": "LOOK",
+          "items": [50, 20, 40],
+          "explanation": "20 is smaller than 50 and 40, so it is the smallest remaining value."
+        },
+        {
+          "action": "PLACE 20",
+          "items": [20, 50, 40],
+          "explanation": "Move 20 to the first open position. Its position is now final."
+        },
+        {
+          "action": "NEXT PASS",
+          "items": [20, 40, 50],
+          "explanation": "Only the unsorted part still needs attention."
+        }
+      ],
+      "conclusion": "Selection Sort keeps choosing the smallest value that has not been placed yet.",
+      "next": {
+        "title": "Now you try.",
+        "content": "Advance one pass at a time and watch the sorted side grow."
+      }
+    },
+    "guided_practice": {
+      "action_explanations": {
+        "next-step": [
+          "You found the smallest value in the whole array and placed it first.",
+          "Now search only the values that are still unsorted.",
+          "Another smallest remaining value has reached its final position.",
+          "Every value now has a final sorted position."
+        ]
+      },
+      "prediction": {
+        "before_operation": "next-step",
+        "pending_message": "Choose a prediction before you run the first pass.",
+        "required_message": "Which value should Selection Sort place first? Make a prediction before seeing the pass.",
+        "heading": "Before the first pass…",
+        "question": "Which value will be placed at the first position?",
+        "choices": [64, 25, 11],
+        "selection_message": "Your prediction: {prediction}. Now run the first pass to check it.",
+        "result": {
+          "correct": "Your prediction was right.",
+          "incorrect": "Your prediction was {prediction}.",
+          "actual": "The smallest value was {actual}, so it moved into the first position.",
+          "concept": {
+            "steps": ["SMALLEST REMAINING", "↓", "NEXT FINAL POSITION"]
+          }
+        }
+      }
+    }
+  },
+  "visualization": {
+    "type": "selection-sort",
+    "values": [64, 25, 12, 22, 11],
+    "controls": [
+      { "id": "next-step", "label": "NEXT STEP", "operation": "next-step" }
+    ],
+    "actions": [
+      { "label": "Find the first smallest value", "operation": "next-step" },
+      { "label": "Select from the remaining values", "operation": "next-step" },
+      { "label": "Place another smallest value", "operation": "next-step" },
+      { "label": "Finish sorting the array", "operation": "next-step" }
+    ]
+  },
+  "practice": {
+    "challenge": {
+      "title": "Selection Sort challenge",
+      "start_message": "The array is mixed again. Compare the unsorted values and decide when the array is fully sorted.",
+      "continue_message": "You can keep using Selection Sort in free play.",
+      "phases": [
+        {
+          "title": "Sort the whole array",
+          "instruction": "Build the target order by repeatedly selecting the smallest remaining value.",
+          "target": {
+            "label": "TARGET ARRAY",
+            "items": [11, 12, 22, 25, 64]
+          },
+          "goal": {
+            "type": "state_equals",
+            "state_key": "values",
+            "expected_state": [11, 12, 22, 25, 64]
+          },
+          "success": "✓ Challenge complete — every value is in ascending order.",
+          "feedback": "Look at the unsorted part and keep placing its smallest value next."
+        }
+      ]
+    }
+  },
+  "mastery": {
+    "title": "Selection Sort Mastery",
+    "mastered_label": "Selection Sort Mastered",
+    "current_state_label": "YOUR ARRAY",
+    "default_operation_rule": "Each selection pass places one smallest remaining value.",
+    "levels": [
+      {
+        "id": "learn",
+        "label": "Learn",
+        "completion": { "type": "course_completion" }
+      },
+      {
+        "id": "practice",
+        "label": "Practice",
+        "prerequisites": ["learn"],
+        "current_state_label": "YOUR ARRAY",
+        "guidance": {
+          "start_message": "Find the smallest value during each pass; the left side will become final first.",
+          "hints": {
+            "limit": 1,
+            "items": [{ "content": "On each pass, compare only values that are not already in the sorted left side." }]
+          }
+        },
+        "controls": [{ "label": "SELECT NEXT MINIMUM", "operation": "next-step" }],
+        "scenario": {
+          "values": [29, 10, 14, 37, 13],
+          "target_state": [10, 13, 14, 29, 37]
+        },
+        "challenge": {
+          "phases": [{
+            "title": "Sort the practice array",
+            "instruction": "Use complete selection passes until every value is sorted.",
+            "target": { "label": "TARGET ARRAY", "items": [10, 13, 14, 29, 37] },
+            "goal": { "type": "outcome_equals", "expected_outcome": "sorted" },
+            "success": "✓ Practice complete",
+            "feedback": "Keep selecting the smallest value from the unsorted part."
+          }]
+        }
+      },
+      {
+        "id": "apply",
+        "label": "Apply",
+        "prerequisites": ["practice"],
+        "current_state_label": "YOUR ARRAY",
+        "guidance": {
+          "start_message": "There are no hints this time. Decide which value each pass will place next.",
+          "hints": { "limit": 0, "items": [] }
+        },
+        "controls": [{ "label": "SELECT NEXT MINIMUM", "operation": "next-step" }],
+        "scenario": {
+          "values": [41, 7, 28, 16],
+          "target_state": [7, 16, 28, 41]
+        },
+        "challenge": {
+          "phases": [{
+            "title": "Apply Selection Sort",
+            "instruction": "Sort this fresh array without guidance.",
+            "target": { "label": "TARGET ARRAY", "items": [7, 16, 28, 41] },
+            "goal": { "type": "outcome_equals", "expected_outcome": "sorted" },
+            "success": "✓ Apply complete",
+            "feedback": "The next selected value must be the smallest one still unsorted."
+          }]
+        }
+      },
+      {
+        "id": "solve",
+        "label": "Solve",
+        "prerequisites": ["apply"],
+        "current_state_label": "YOUR ARRAY",
+        "guidance": {
+          "start_message": "Sort the array within the pass limit. Plan where the smallest values belong.",
+          "hints": { "limit": 0, "items": [] }
+        },
+        "metrics": { "operation_label": "Passes" },
+        "operation_rule": "Each selection pass counts once.",
+        "constraints": {
+          "max_operations": 3,
+          "operation_limit_message": "Pass limit reached. The array is not sorted yet; retry with a complete plan."
+        },
+        "controls": [{ "label": "SELECT NEXT MINIMUM", "operation": "next-step" }],
+        "scenario": {
+          "values": [33, 12, 27, 9],
+          "target_state": [9, 12, 27, 33]
+        },
+        "challenge": {
+          "phases": [{
+            "title": "Solve in three passes",
+            "instruction": "Transform START into TARGET using no more than 3 selection passes.",
+            "target": { "label": "TARGET ARRAY", "items": [9, 12, 27, 33] },
+            "goal": { "type": "outcome_equals", "expected_outcome": "sorted" },
+            "success": "✓ Solve complete",
+            "feedback": "A correct Selection Sort pass always fixes the next smallest remaining value."
+          }]
+        }
+      },
+      {
+        "id": "mastery",
+        "label": "Mastery",
+        "prerequisites": ["solve"],
+        "current_state_label": "YOUR ARRAY",
+        "guidance": {
+          "start_message": "Use the pattern, not hints: choose the smallest remaining value until the array is sorted.",
+          "hints": { "limit": 0, "items": [] }
+        },
+        "metrics": { "operation_label": "Passes" },
+        "operation_rule": "Each pass places one value permanently.",
+        "constraints": {
+          "max_operations": 4,
+          "operation_limit_message": "All four passes are used. Retry and keep the selection pattern consistent."
+        },
+        "controls": [{ "label": "SELECT NEXT MINIMUM", "operation": "next-step" }],
+        "scenario": {
+          "values": [58, 17, 43, 6, 31],
+          "target_state": [6, 17, 31, 43, 58]
+        },
+        "challenge": {
+          "phases": [{
+            "title": "Master the pattern",
+            "instruction": "Sort an unfamiliar array with one deliberate selection pass per final position.",
+            "target": { "label": "TARGET ARRAY", "items": [6, 17, 31, 43, 58] },
+            "goal": { "type": "outcome_equals", "expected_outcome": "sorted" },
+            "success": "✓ Mastery complete",
+            "feedback": "Keep the sorted part on the left and select from everything to its right."
+          }]
+        }
+      }
+    ]
+  },
+  "expert": {
+    "id": "expert",
+    "label": "Expert",
+    "prerequisites": ["mastery"],
+    "generator": "selection-sort-expert",
+    "generator_version": 1,
+    "required_capabilities": ["interactive_state", "sorting", "sequence_simulation", "prediction"],
+    "replayable": true,
+    "scenario_rules": { "length": 5 },
+    "thinking": {
+      "title": "Predict the passes",
+      "objective_label": "Think first",
+      "instruction": "Do not run the passes yet. Mentally choose the smallest remaining value on each pass.",
+      "starting_stack_label": "STARTING ARRAY",
+      "sequence_label": "PASSES TO SIMULATE",
+      "do_not_execute": "Do not perform these passes in the playground. Work through them mentally from top to bottom.",
+      "prediction_label": "YOUR PREDICTION",
+      "prediction_fields": [
+        {
+          "id": "finalState",
+          "label": "Final sorted array",
+          "prompt": "After all passes, what will the array contain?",
+          "type": "number_list",
+          "placeholder": "Smallest to largest, e.g. 10, 20, 30"
+        },
+        {
+          "id": "firstMinimum",
+          "label": "First selected minimum",
+          "prompt": "Which value is placed first?",
+          "type": "number",
+          "inputmode": "numeric"
+        }
+      ],
+      "submit_label": "Check my prediction",
+      "empty_message": "Enter both predictions before checking.",
+      "actual_label": "RESULT",
+      "your_prediction_label": "Your prediction",
+      "actual_result": "Final array: {{final_state}}. First selected minimum: {{next_pop}}.",
+      "feedback": {
+        "all_correct": "You traced every selection correctly.",
+        "incorrect": "Compare each pass: Selection Sort chooses the smallest remaining value before placing it."
+      },
+      "replay_message": "Now watch the selection passes replay.",
+      "continue_label": "Continue to Expert Challenge →"
+    },
+    "solve": {
+      "title": "Expert Selection Sort",
+      "instruction": "Sort the unfamiliar array with no hints. Aim for one correct selection pass per final position.",
+      "target_label": "TARGET ARRAY",
+      "your_label": "YOUR ARRAY",
+      "metric_label": "Passes",
+      "hints_label": "Hints: none",
+      "operation_rule": "Each selection pass counts once.",
+      "controls": [{ "operation": "next-step", "label": "SELECT NEXT MINIMUM" }],
+      "solved_message": "✓ Expert Challenge Solved",
+      "solved_result": "Your solution: {{operations}} passes. Optimal solution: {{optimal_operations}} passes.",
+      "perfect_message": "🏆 PERFECT EXPERT",
+      "perfect_result": "You reached the target in the optimal {{optimal_operations}} passes.",
+      "try_optimal_label": "Try for {{optimal_operations}} passes",
+      "new_challenge_label": "New Expert Challenge"
+    }
+  },
+  "assessment": {
+    "quiz": {
+      "question": "What does Selection Sort place during each pass?",
+      "options": [
+        "The smallest value remaining in the unsorted part",
+        "The largest value anywhere in the array",
+        "A random value"
+      ],
+      "correct": 0
+    },
+    "discovery": {
+      "title": "Selection Sort discovery",
+      "summary": "Selection Sort grows a sorted left side by selecting the smallest value that is still unplaced."
+    },
+    "notes": {
+      "sections": [
+        {
+          "title": "What?",
+          "content": "Selection Sort repeatedly chooses the smallest value from the unsorted part of an array."
+        },
+        {
+          "title": "Example",
+          "content": "In [50, 20, 40], choose 20 first and place it at the beginning: [20, 50, 40]."
+        },
+        {
+          "title": "Why?",
+          "content": "Once the smallest remaining value is placed, no later value can belong before it."
+        },
+        {
+          "title": "Remember",
+          "content": "Find the smallest remaining value → place it next. Time complexity: O(n²)."
+        }
+      ]
+    },
+    "alternate_explanations": [
+      {
+        "title": "Think of arranging cards",
+        "type": "analogy",
+        "content": "Look through the cards you have not arranged, pick the lowest number, and move it into the next open spot on the left."
+      },
+      {
+        "title": "Walk through it",
+        "type": "example",
+        "content": "For [30, 10, 20], select 10 first to get [10, 30, 20], then select 20 to finish [10, 20, 30]."
+      }
+    ]
+  },
+  "completion": {
+    "recall": {
+      "title": "Recall",
+      "prompt": "In your own words, why is the left side of a Selection Sort array already sorted?",
+      "submit_label": "Submit recall",
+      "empty_message": "Write a short explanation first.",
+      "completion_message": "✓ Recall completed",
+      "model_answer": "Each pass puts the smallest value still remaining into the next position on the left, so no later value should come before it."
+    }
+  }
+}

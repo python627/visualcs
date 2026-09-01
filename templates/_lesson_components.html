@@ -1,0 +1,74 @@
+{#
+  Small, data-driven teaching views. These intentionally cover only simple
+  states used in introductions and worked examples; live visualizations remain
+  the responsibility of their dedicated playgrounds.
+#}
+
+{% macro render_teaching_state(state, visual_type='', compact=false) %}
+    {#
+      Use mapping access for JSON lesson data. Dot lookup checks Python
+      attributes first, so a JSON field named "items" would otherwise resolve
+      to dict.items rather than the lesson's array.
+    #}
+    {% set state_type = state["type"] if "type" in state else visual_type or 'text' %}
+    {% set items = state["items"] if "items" in state else [] %}
+    {% set label = state["label"] if "label" in state else '' %}
+
+    {% if state_type == 'stack' %}
+        {% if compact %}
+        <div class="teaching-stack teaching-stack-compact" aria-label="{{ label or 'Stack example' }}">
+            {% for item in items %}<span class="teaching-stack-block">{{ item }}</span>{% endfor %}
+        </div>
+        {% else %}
+        <div class="teaching-stack-visual" aria-label="{{ label or 'Stack example' }}">
+            {% if not compact and label %}
+            <span class="teaching-stack-label">{{ label }}</span>
+            {% endif %}
+            <div class="teaching-stack">
+                {% for item in items %}
+                <div class="teaching-stack-row{% if loop.first %} is-top{% endif %}">
+                    <span class="teaching-stack-block">{{ item }}</span>
+                    {% if loop.first and not compact %}
+                    <span class="teaching-stack-top">← {{ state["top_label"] if "top_label" in state else 'TOP' }}</span>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+    {% elif state_type == 'queue' %}
+        <div class="{% if compact %}teaching-queue teaching-queue-compact{% else %}teaching-queue-visual{% endif %}" aria-label="{{ label or 'Queue example' }}">
+            {% if not compact and label %}
+            <span class="teaching-stack-label">{{ label }}</span>
+            <div class="teaching-queue-ends">
+                <span>{{ state["front_label"] if "front_label" in state else 'FRONT' }} &darr;</span>
+                <span>{{ state["rear_label"] if "rear_label" in state else 'REAR' }} &darr;</span>
+            </div>
+            {% endif %}
+            {% if not compact %}<div>{% endif %}
+                {% for item in items %}
+                <span class="teaching-queue-block">{{ item }}</span>
+                {% if not loop.last %}<span class="teaching-queue-arrow" aria-hidden="true">&rarr;</span>{% endif %}
+                {% endfor %}
+            {% if not compact %}</div>{% endif %}
+        </div>
+    {% elif state_type == 'array' %}
+        <div class="teaching-array{% if compact %} teaching-array-compact{% endif %}" aria-label="{{ label or 'Array example' }}">
+            {% if label %}<span class="teaching-array-label">{{ label }}</span>{% endif %}
+            <div class="teaching-array-values">
+                {% for item in items %}<span>{{ item }}</span>{% endfor %}
+            </div>
+        </div>
+    {% elif state_type == 'sequence' %}
+        <div class="teaching-sequence" aria-label="{{ label or 'Sequence example' }}">
+            {% if label %}<span class="teaching-array-label">{{ label }}</span>{% endif %}
+            {% for item in items %}
+            <span>{{ item }}</span>{% if not loop.last %}<b aria-hidden="true">&rarr;</b>{% endif %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="worked-example-state" aria-label="Example state">
+            {{ state["visual"] if "visual" in state else state["text"] if "text" in state else state["action"] if "action" in state else '' }}
+        </div>
+    {% endif %}
+{% endmacro %}

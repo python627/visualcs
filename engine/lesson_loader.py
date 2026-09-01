@@ -1,6 +1,8 @@
 import json
 import os
 
+from engine.lesson_schema import normalize_lesson
+
 
 class LessonLoader:
 
@@ -22,4 +24,4 @@ class LessonLoader:
 
         with open(path, "r", encoding="utf-8") as file:
 
-            return json.load(file)
+            return normalize_lesson(json.load(file))

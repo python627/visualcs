@@ -212,6 +212,8 @@
     "mastery": {
         "title": "Stack Mastery",
         "mastered_label": "Stack Mastered",
+        "current_state_label": "YOUR STACK",
+        "default_operation_rule": "PUSH and POP each use one operation.",
         "levels": [
             {
                 "id": "learn",
