@@ -1,6 +1,7 @@
 {
     "id": "linked-list",
     "order": 3,
+    "subject_order": 1,
     "subject": "Data Structures",
     "topic": "Linked List",
     "title": "Discover Linked Lists",

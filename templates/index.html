@@ -21,11 +21,14 @@
 {% set mastery = lesson.get("mastery") %}
 
     <header class="topbar">
-    <h1>🎓 VisualCS</h1>
+    <h1><a class="brand-link" href="{{ url_for('home') }}">🎓 VisualCS</a></h1>
 
-    <div class="progress-box">
-        <span>Mission 1</span>
-        <progress value="20" max="100"></progress>
+    <div class="lesson-header-actions">
+        <a class="dashboard-link" href="{{ url_for('home') }}">← Lessons</a>
+        <div class="progress-box">
+            <span>Mission 1</span>
+            <progress value="20" max="100"></progress>
+        </div>
     </div>
 </header>
 
@@ -413,6 +416,15 @@
 <section id="lesson-recall" class="lesson-recall" aria-live="polite" hidden></section>
 
 {% endif %}
+
+<section
+    id="lesson-completion-panel"
+    class="lesson-completion-panel"
+    data-next-url="{% if next_lesson %}{{ url_for('lesson', subject=next_lesson.subject_slug, lesson=next_lesson.id) }}{% endif %}"
+    data-next-title="{% if next_lesson %}{{ next_lesson.title }}{% endif %}"
+    data-dashboard-url="{{ url_for('home') }}"
+    hidden
+></section>
 
 {% if lesson.notes and lesson.notes.sections %}
 

@@ -1,6 +1,7 @@
 {
     "id": "binary-search-tree",
     "order": 4,
+    "subject_order": 1,
     "subject": "Data Structures",
     "topic": "Binary Search Tree",
     "title": "Discover Binary Search Trees",

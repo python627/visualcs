@@ -57,6 +57,8 @@ function initializeLessonFlow() {
             if (currentLessonStage === "learn") {
                 setLessonStage("mission");
             }
+
+            markLessonInProgress(LESSON.id, currentLessonStage);
         });
     });
 

@@ -43,6 +43,14 @@ class LessonValidator:
                 "order must be an integer"
             )
 
+        if "subject_order" in lesson and (
+            not isinstance(lesson["subject_order"], int)
+            or isinstance(lesson["subject_order"], bool)
+        ):
+            errors.append(
+                "subject_order must be an integer"
+            )
+
 
         # Validate mission
         if not isinstance(lesson["mission"], dict):

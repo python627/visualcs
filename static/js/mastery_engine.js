@@ -145,6 +145,23 @@ class MasteryEngine {
     }
 
 
+    getRecommendedLevel() {
+        return this.getLevels().find(level => (
+            level.completion?.type !== "course_completion"
+            && this.getLevelStatus(level) === "unlocked"
+        )) || null;
+    }
+
+
+    startRecommendedLevel() {
+        const level = this.getRecommendedLevel();
+
+        if (level) {
+            this.startLevel(level.id);
+        }
+    }
+
+
     getLevelNumber(level) {
         return this.getLevels().findIndex(item => item.id === level.id) + 1;
     }

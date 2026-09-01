@@ -14,6 +14,7 @@ class TeachingEngine {
         this.challengeRunner = null;
         this.completedChallengePhaseMessage = null;
         this.recallCompleted = false;
+        this.courseCompletionShown = false;
     }
 
 
@@ -670,8 +671,7 @@ class TeachingEngine {
                 this.showRecall();
             }
             else {
-                markLessonCompleted(this.lesson.id);
-                showLessonContinue();
+                this.completeCourse();
             }
         }
 
@@ -691,6 +691,53 @@ class TeachingEngine {
     resetQuiz() {
         this.quizShown = false;
         this.quizAnswered = false;
+    }
+
+
+    showCourseCompletion() {
+        const panel = document.getElementById("lesson-completion-panel");
+
+        if (!panel || this.courseCompletionShown) {
+            return;
+        }
+
+        this.courseCompletionShown = true;
+
+        const nextUrl = panel.dataset.nextUrl;
+        const nextTitle = panel.dataset.nextTitle;
+        const dashboardUrl = panel.dataset.dashboardUrl;
+        const practiceAvailable = masteryEngine?.getRecommendedLevel?.();
+        const summary = this.getDiscovery()?.summary || "You completed the beginner learning path.";
+        const practiceAction = practiceAvailable
+            ? `<button type="button" data-course-practice>Practice ${this.lesson.topic}</button>`
+            : "";
+        const nextAction = nextUrl
+            ? `<a class="lesson-completion-primary" href="${nextUrl}">Next Lesson → ${nextTitle}</a>`
+            : `<a class="lesson-completion-primary" href="${dashboardUrl}">Back to Lessons</a>`;
+
+        panel.hidden = false;
+        panel.innerHTML = `
+            <div class="lesson-completion-copy">
+                <span class="teaching-kicker">Learning milestone</span>
+                <h2>✓ Lesson Complete</h2>
+                <p>You learned about ${this.lesson.topic}. ${summary}</p>
+            </div>
+            <div class="lesson-completion-actions">
+                ${practiceAction}
+                ${nextAction}
+            </div>
+        `;
+
+        panel.querySelector("[data-course-practice]")?.addEventListener("click", () => {
+            masteryEngine.startRecommendedLevel();
+        });
+    }
+
+
+    completeCourse() {
+        markLessonCompleted(this.lesson.id);
+        masteryEngine.recordCourseCompletion();
+        this.showCourseCompletion();
     }
 
 
@@ -751,9 +798,7 @@ class TeachingEngine {
         }
 
         this.recallCompleted = true;
-        markLessonCompleted(this.lesson.id);
-        masteryEngine.recordCourseCompletion();
-        showLessonContinue();
+        this.completeCourse();
 
         const panel = document.getElementById("lesson-recall");
 
@@ -798,6 +843,14 @@ class TeachingEngine {
         }
 
         this.resetChallenge();
+        this.courseCompletionShown = false;
+
+        const completionPanel = document.getElementById("lesson-completion-panel");
+
+        if (completionPanel) {
+            completionPanel.hidden = true;
+            completionPanel.innerHTML = "";
+        }
         this.resetRecall();
     }
 }

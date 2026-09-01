@@ -1,5 +1,5 @@
 const VISUALCS_PROGRESS_KEY = "visualcs_progress";
-const VISUALCS_PROGRESS_SCHEMA_VERSION = 3;
+const VISUALCS_PROGRESS_SCHEMA_VERSION = 4;
 
 
 function createEmptyProgress() {
@@ -7,7 +7,8 @@ function createEmptyProgress() {
     return {
         schemaVersion: VISUALCS_PROGRESS_SCHEMA_VERSION,
         completedLessons: [],
-        masteryByLesson: {}
+        masteryByLesson: {},
+        lessonActivityByLesson: {}
     };
 
 }
@@ -170,6 +171,35 @@ function normalizeMasteryByLesson(masteryByLesson) {
 }
 
 
+function normalizeLessonActivityByLesson(lessonActivityByLesson) {
+
+    if (!lessonActivityByLesson || typeof lessonActivityByLesson !== "object") {
+        return {};
+    }
+
+    return Object.fromEntries(
+        Object.entries(lessonActivityByLesson)
+            .filter(([lessonId, activity]) => (
+                typeof lessonId === "string"
+                && activity
+                && typeof activity === "object"
+            ))
+            .map(([lessonId, activity]) => [
+                lessonId,
+                {
+                    stage: typeof activity.stage === "string"
+                        ? activity.stage
+                        : "mission",
+                    updatedAt: Number.isFinite(activity.updatedAt)
+                        ? activity.updatedAt
+                        : 0
+                }
+            ])
+    );
+
+}
+
+
 function normalizeProgress(progress) {
 
     const source = progress && typeof progress === "object"
@@ -182,7 +212,10 @@ function normalizeProgress(progress) {
     return {
         schemaVersion: VISUALCS_PROGRESS_SCHEMA_VERSION,
         completedLessons: [...new Set(completedLessons)],
-        masteryByLesson: normalizeMasteryByLesson(source.masteryByLesson)
+        masteryByLesson: normalizeMasteryByLesson(source.masteryByLesson),
+        lessonActivityByLesson: normalizeLessonActivityByLesson(
+            source.lessonActivityByLesson
+        )
     };
 
 }
@@ -273,6 +306,8 @@ function unlockMasteryLevel(lessonId, levelId) {
 
 function startMasteryAttempt(lessonId, levelId) {
 
+    markLessonInProgress(lessonId, "mastery");
+
     return updateMasteryLevelProgress(lessonId, levelId, current => ({
         ...current,
         status: "in_progress",
@@ -295,6 +330,8 @@ function getExpertProgress(lessonId, levelId) {
 
 
 function startExpertAttempt(lessonId, levelId, scenario) {
+
+    markLessonInProgress(lessonId, "expert");
 
     const latestScenario = normalizeExpertScenario(scenario);
 
@@ -441,14 +478,38 @@ function markMasteryLevelCompleted(lessonId, levelId, performance = {}) {
 }
 
 
+function markLessonInProgress(lessonId, stage = "mission") {
+
+    if (typeof lessonId !== "string" || !lessonId) {
+        return;
+    }
+
+    const progress = getProgress();
+
+    if (progress.completedLessons.includes(lessonId)) {
+        return;
+    }
+
+    progress.lessonActivityByLesson[lessonId] = {
+        stage: typeof stage === "string" ? stage : "mission",
+        updatedAt: Date.now()
+    };
+    saveProgress(progress);
+    window.dispatchEvent(new CustomEvent("visualcs-progress-changed"));
+
+}
+
+
 function markLessonCompleted(lessonId) {
 
     const progress = getProgress();
 
     if (!progress.completedLessons.includes(lessonId)) {
         progress.completedLessons.push(lessonId);
-        saveProgress(progress);
     }
+
+    delete progress.lessonActivityByLesson[lessonId];
+    saveProgress(progress);
 
     window.dispatchEvent(new CustomEvent("visualcs-progress-changed"));
 

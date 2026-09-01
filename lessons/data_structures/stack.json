@@ -1,6 +1,7 @@
 {
     "id": "stack",
     "order": 1,
+    "subject_order": 1,
     "subject": "Data Structures",
     "topic": "Stack",
     "title": "Discover Stacks",

@@ -22,28 +22,29 @@
 
     <h1>🎓 VisualCS</h1>
 
-    <span>Choose your lesson</span>
+    <span>Build your computer science foundations</span>
 
 </header>
 
 
 <main class="library">
 
-    <div class="library-header">
+    <div class="library-header learning-journey-header">
 
-        <h2>Explore Computer Science</h2>
+        <span class="teaching-kicker">Your learning journey</span>
+        <h2>Keep building what you know</h2>
 
         <p>
-            Learn through missions, interaction, and discovery.
+            Learn concepts, practise applying them, and return whenever you are ready for the next step.
         </p>
 
     </div>
 
     <section class="overall-progress" aria-labelledby="overall-progress-title">
 
-        <div>
-            <h2 id="overall-progress-title">Your Progress</h2>
-            <p id="overall-progress-text" aria-live="polite">0 / 0 lessons completed · 0%</p>
+        <div class="journey-progress-copy">
+            <h2 id="overall-progress-title">Your Learning Journey</h2>
+            <p id="overall-progress-text" aria-live="polite">0 / 0 lessons learned · 0%</p>
         </div>
 
         <div
@@ -57,27 +58,34 @@
             <span id="overall-progress-bar"></span>
         </div>
 
+        <div class="journey-statistics" aria-label="Mastery statistics">
+            <span id="mastered-lessons-count">Mastered: 0</span>
+            <span id="expert-lessons-count">Expert: 0</span>
+        </div>
+
         <button id="reset-progress" class="reset-progress" type="button">Reset Progress</button>
 
     </section>
 
-    {% for subject, lessons in subjects.items() %}
+    <section id="continue-learning" class="continue-learning" aria-live="polite"></section>
+
+    {% for section in catalog_sections %}
 
     <section class="subject-section" data-subject-section>
 
         <div class="subject-header">
 
-            <h2>{{ subject }}</h2>
+            <h2>{{ section.title }}</h2>
 
-            <span data-subject-progress>{{ lessons|length }} lesson{% if lessons|length != 1 %}s{% endif %}</span>
+            <span data-subject-progress>{{ section.lessons|length }} lesson{% if section.lessons|length != 1 %}s{% endif %}</span>
 
         </div>
 
         <div class="lesson-grid">
 
-            {% for lesson in lessons %}
+            {% for lesson in section.lessons %}
 
-            <article class="lesson-card" data-lesson-id="{{ lesson.id }}">
+            <article class="lesson-card" data-lesson-card data-lesson-id="{{ lesson.id }}">
 
             <div class="lesson-icon">
                 📚
@@ -91,7 +99,7 @@
                         {{ lesson.title }}
                     </h3>
 
-                    <span class="lesson-completed-badge" data-completion-badge hidden>✓ Completed</span>
+                    <span class="lesson-status" data-lesson-status>○ Not Started</span>
 
                 </div>
 
@@ -111,8 +119,11 @@
 
                 </div>
 
+                <p class="lesson-mastery-status" data-lesson-mastery>Mastery: Not started</p>
+
                 <a
-                    class="start-lesson"
+                    class="start-lesson lesson-card-action"
+                    data-lesson-action
                     href="{{ url_for(
                         'lesson',
                         subject=lesson.subject_slug,
@@ -136,11 +147,14 @@
 
 </main>
 
-<script src="{{ url_for('static', filename='js/progress.js') }}"></script>
-
 <script>
-    initializeCatalogProgress();
+    const LESSON_CATALOG = {{ catalog_lessons | tojson }};
 </script>
+
+<script src="{{ url_for('static', filename='js/progress.js') }}"></script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+
+<script>initializeLearningDashboard(LESSON_CATALOG);</script>
 
 </body>
 

@@ -21,6 +21,40 @@ class LessonRegistry:
         )
 
 
+    def _subject_sort_key(self, section):
+
+        return (
+            section["order"],
+            section["title"].casefold()
+        )
+
+
+    def _catalog_lesson(self, lesson):
+
+        mastery_levels = lesson.get("mastery", {}).get("levels", [])
+
+        return {
+            "id": lesson["id"],
+            "title": lesson["title"],
+            "description": lesson["description"],
+            "difficulty": lesson["difficulty"],
+            "estimated_time": lesson["estimated_time"],
+            "subject": lesson["subject"],
+            "subject_slug": lesson["subject_slug"],
+            "order": lesson.get("order"),
+            "mastery_levels": [
+                {
+                    "id": level.get("id"),
+                    "label": level.get("label"),
+                    "kind": level.get("kind"),
+                    "completion": level.get("completion")
+                }
+                for level in mastery_levels
+                if isinstance(level, dict)
+            ]
+        }
+
+
     def get_all_lessons(self):
 
         lessons = []
@@ -102,23 +136,48 @@ class LessonRegistry:
 
     def get_lessons_by_subject(self):
 
-        subjects = {}
+        return {
+            section["title"]: section["lessons"]
+            for section in self.get_catalog_sections()
+        }
+
+
+    def get_catalog_sections(self):
+
+        sections = {}
 
         for lesson in self.get_all_lessons():
-
             subject = lesson["subject"]
+            section = sections.setdefault(
+                subject,
+                {
+                    "title": subject,
+                    "order": lesson.get("subject_order", float("inf")),
+                    "lessons": []
+                }
+            )
 
-            if subject not in subjects:
-                subjects[subject] = []
-
-            subjects[subject].append(lesson)
-
-
-        for lessons in subjects.values():
-            lessons.sort(key=self._lesson_sort_key)
+            section["order"] = min(
+                section["order"],
+                lesson.get("subject_order", float("inf"))
+            )
+            section["lessons"].append(lesson)
 
 
-        return dict(sorted(subjects.items()))
+        for section in sections.values():
+            section["lessons"].sort(key=self._lesson_sort_key)
+
+
+        return sorted(sections.values(), key=self._subject_sort_key)
+
+
+    def get_catalog_lessons(self):
+
+        return [
+            self._catalog_lesson(lesson)
+            for section in self.get_catalog_sections()
+            for lesson in section["lessons"]
+        ]
 
 
     def get_lessons_for_subject(self, subject_slug):

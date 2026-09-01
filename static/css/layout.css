@@ -145,6 +145,70 @@ progress{
 
 }
 
+.learning-journey-header{
+    max-width:720px;
+}
+
+.journey-progress-copy{
+    min-width:0;
+}
+
+.journey-statistics{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-top:14px;
+}
+
+.journey-statistics span{
+    padding:6px 10px;
+    border:1px solid #334155;
+    border-radius:999px;
+    color:#cbd5e1;
+    font-size:13px;
+    font-weight:bold;
+}
+
+.continue-learning{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:24px;
+    margin:0 0 40px;
+    padding:24px;
+    border:1px solid #2563eb;
+    border-radius:18px;
+    background:linear-gradient(135deg, #172036, #172554);
+}
+
+.continue-learning-copy{
+    min-width:0;
+}
+
+.continue-learning h2{
+    margin:6px 0 8px;
+    font-size:24px;
+}
+
+.continue-learning p{
+    line-height:1.55;
+}
+
+.continue-learning-action{
+    flex:none;
+    padding:12px 16px;
+    border-radius:10px;
+    background:#2563eb;
+    color:white;
+    font-weight:bold;
+    text-decoration:none;
+    white-space:nowrap;
+}
+
+.continue-learning-action:hover{
+    background:#1d4ed8;
+}
+
 .overall-progress h2{
 
     margin-bottom:7px;
@@ -317,10 +381,56 @@ progress{
 
 }
 
+.lesson-status{
+    flex:none;
+    padding:4px 8px;
+    border:1px solid #475569;
+    border-radius:999px;
+    color:#cbd5e1;
+    font-size:11px;
+    font-weight:bold;
+    white-space:nowrap;
+}
+
+.lesson-card[data-progress-state="in_progress"] .lesson-status,
+.lesson-card[data-progress-state="improving"] .lesson-status{
+    border-color:#60a5fa;
+    color:#bfdbfe;
+}
+
+.lesson-card[data-progress-state="learned"] .lesson-status{
+    border-color:#22c55e;
+    color:#bbf7d0;
+}
+
+.lesson-card[data-progress-state="mastered"] .lesson-status{
+    border-color:#facc15;
+    color:#fef08a;
+}
+
+.lesson-card[data-progress-state="expert"] .lesson-status{
+    border-color:#c084fc;
+    color:#e9d5ff;
+}
+
+.lesson-mastery-status{
+    margin:-8px 0 18px;
+    color:#94a3b8;
+    font-size:13px;
+}
+
 .lesson-card.lesson-completed{
 
     border-color:#22c55e;
 
+}
+
+.lesson-card.lesson-mastered{
+    border-color:#eab308;
+}
+
+.lesson-card.lesson-expert{
+    border-color:#a855f7;
 }
 
 .lesson-card p{
@@ -368,5 +478,30 @@ progress{
 .start-lesson:hover{
 
     background:#1d4ed8;
+
+}
+
+@media (max-width:760px){
+
+    .library{
+        padding:28px 20px;
+    }
+
+    .continue-learning{
+        align-items:flex-start;
+        flex-direction:column;
+        gap:16px;
+    }
+
+    .continue-learning-action{
+        width:100%;
+        text-align:center;
+    }
+
+    .subject-header{
+        align-items:flex-start;
+        flex-direction:column;
+        gap:6px;
+    }
 
 }
