@@ -64,10 +64,14 @@ progress{
 
 .dashboard{
     display:grid;
-    grid-template-columns:260px 1fr 320px;
+    grid-template-columns:260px minmax(0, 1fr) 320px;
     gap:25px;
     padding:30px;
     align-items:start;
+}
+
+.dashboard > *{
+    min-width:0;
 }
 
 .discoveries{
@@ -77,8 +81,26 @@ progress{
 @media (max-width:900px){
 
     .dashboard{
-        grid-template-columns:1fr;
+        grid-template-columns:minmax(0, 1fr);
         padding:20px;
+    }
+
+}
+
+@media (max-width:760px){
+
+    .topbar{
+        align-items:flex-start;
+        flex-direction:column;
+        gap:10px;
+        padding:16px 20px;
+    }
+
+    .lesson-stage-indicator{
+        flex-wrap:wrap;
+        justify-content:center;
+        min-width:0;
+        margin:14px 20px 0;
     }
 
 }

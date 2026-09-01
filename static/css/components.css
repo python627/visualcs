@@ -2080,36 +2080,45 @@
 
 }
 
-.playground:has(#challenge-panel:not([hidden])) .playground-learning-area,
-.playground:has(#mastery-challenge-panel:not([hidden])) .playground-learning-area{
+/*
+ * A guided challenge is one task, not a sidebar beside a shrunken
+ * visualization.  Keeping both sections in one responsive column gives the
+ * interactive area the same usable width as a normal lesson.
+ */
+.playground:has(#challenge-panel:not([hidden])) .playground-learning-area{
 
     display:grid;
-    grid-template-columns:minmax(190px, .9fr) minmax(220px, 1fr);
+    grid-template-columns:minmax(0, 1fr);
     align-items:start;
     gap:18px;
     margin-top:18px;
 
 }
 
-.playground:has(#challenge-panel:not([hidden])) .challenge-panel,
-.playground:has(#mastery-challenge-panel:not([hidden])) .mastery-challenge-panel{
+.playground:has(#challenge-panel:not([hidden])) .challenge-panel{
 
     margin-top:0;
+    width:100%;
+    min-width:0;
+    box-sizing:border-box;
 
 }
 
-.playground:has(#challenge-panel:not([hidden])) .playground-interaction,
-.playground:has(#mastery-challenge-panel:not([hidden])) .playground-interaction{
+.playground:has(#challenge-panel:not([hidden])) .playground-interaction{
 
+    width:100%;
     min-width:0;
     text-align:center;
 
 }
 
-.playground:has(#challenge-panel:not([hidden])) .playground-area,
-.playground:has(#mastery-challenge-panel:not([hidden])) .playground-area{
+.playground:has(#challenge-panel:not([hidden])) .playground-area{
 
-    margin:0 auto 20px;
+    width:100%;
+    min-width:0;
+    max-width:none;
+    margin:0 0 20px;
+    box-sizing:border-box;
 
 }
 
@@ -2583,7 +2592,7 @@ body:has(#mastery-challenge-panel:not([hidden])) .notes{
 .dashboard:has(#mastery-challenge-panel:not([hidden])) .playground-learning-area{
 
     display:grid;
-    grid-template-columns:repeat(3, minmax(0, 1fr));
+    grid-template-columns:minmax(150px, .7fr) minmax(0, 2.6fr) minmax(150px, .7fr);
     grid-template-areas:
         "header header header"
         "objective objective objective"
@@ -2669,26 +2678,41 @@ body:has(#mastery-challenge-panel:not([hidden])) .notes{
 .dashboard:has(#mastery-challenge-panel:not([hidden])) .playground-area{
 
     grid-area:current;
+    width:100%;
     min-width:0;
+    max-width:none;
     margin:0;
     padding:12px;
     min-height:170px;
     border:1px solid #334155;
     border-radius:9px;
     background:#111b31;
+    box-sizing:border-box;
 
 }
 
 
 .dashboard:has(#mastery-challenge-panel:not([hidden])) #stack{
 
-    width:min(100%, 180px);
+    width:100%;
+    min-width:0;
+    max-width:none;
     height:auto;
     min-height:132px;
     margin:8px auto 0;
+    box-sizing:border-box;
 
 }
 
+/* Keep the existing vertical Stack itself compact inside its now full-width
+ * panel. Other playground renderers identify their view with a class and use
+ * the flexible width above. */
+.dashboard:has(#mastery-challenge-panel:not([hidden])) #stack:not([class]){
+
+    width:min(100%, 180px);
+    max-width:180px;
+
+}
 
 .dashboard:has(#mastery-challenge-panel:not([hidden])) .mastery-your-stack-label{
 
@@ -2935,7 +2959,7 @@ body:has(#mastery-challenge-panel:not([hidden])) .notes{
 /* Expert uses the same focused mastery puzzle, with a think-first stage. */
 .dashboard:has(#mastery-challenge-panel.expert-thinking) .playground-learning-area{
 
-    grid-template-columns:minmax(150px, .72fr) minmax(230px, 1fr) minmax(250px, 1.15fr);
+    grid-template-columns:minmax(0, .8fr) minmax(0, 1.2fr) minmax(0, 1.4fr);
     grid-template-areas:
         "header header header"
         "objective objective objective"
@@ -3076,7 +3100,9 @@ body:has(#mastery-challenge-panel:not([hidden])) .notes{
 
 .dashboard:has(#mastery-challenge-panel.expert-thinking) .expert-thinking-start-state .mastery-state-card{
 
-    width:min(100%, 210px);
+    width:100%;
+    min-width:0;
+    box-sizing:border-box;
     min-height:0;
 
 }
