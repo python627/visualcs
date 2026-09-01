@@ -14,7 +14,10 @@ function getMissionStepIndex() {
 
 
 function completeAction(operation) {
-    return teachingEngine.operationCompleted({ operation });
+    return teachingEngine.operationCompleted({
+        operation,
+        deferExplanation: true
+    });
 }
 
 

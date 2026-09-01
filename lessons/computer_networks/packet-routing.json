@@ -105,5 +105,102 @@
             "type": "example",
             "content": "The packet starts at Computer A, reaches Router 1, and Router 1 chooses Router 3 instead of Router 2. Router 3 then forwards it to Server C."
         }
-    ]
+    ],
+
+    "teaching": {
+        "introduction": {
+            "title": "Meet Packet Routing",
+            "content": "Data crosses a network in small packets. Routers read a packet's destination and choose a useful next stop on the way there.",
+            "points": [
+                "Computer A is the source sending this packet.",
+                "Server C is the destination that should receive it.",
+                "You will follow the packet as routers choose its path."
+            ]
+        },
+        "worked_example": {
+            "title": "Follow one packet",
+            "content": "The packet does not jump directly to the server; it travels through connected network devices.",
+            "steps": [
+                { "action": "Send", "visual": "Computer A → Router 1", "explanation": "Computer A sends a packet toward its first router." },
+                { "action": "Choose a route", "visual": "Router 1 → Router 3\nRouter 2 stays visible", "explanation": "Router 1 examines the destination, Server C, and chooses the next hop that leads toward it." },
+                { "action": "Deliver", "visual": "Router 3 → Server C", "explanation": "Router 3 forwards the packet to the destination server." }
+            ],
+            "conclusion": "Routers use destination information to forward packets one hop at a time.",
+            "next": { "title": "Route the packet below.", "content": "Use NEXT STEP to see the possible paths before Router 1 makes its choice." }
+        },
+        "guided_practice": {
+            "action_explanations": {
+                "send-packet": "The packet begins its journey at the source, Computer A, and heads to the first router.",
+                "reach-first-router": "Router 1 now holds the packet and must choose the next hop toward Server C.",
+                "choose-correct-route": "Router 3 is selected because it is the visible path that continues toward Server C.",
+                "forward-packet": "The packet moves to Router 3, the next device on its chosen route.",
+                "reach-destination": "Server C receives the packet because every router forwarded it toward the destination."
+            }
+        },
+        "challenge": {
+            "title": "Packet Routing Challenge",
+            "start_message": "Deliver a packet from Computer A to Server C while paying attention to the router's route choice.",
+            "continue_message": "Challenge complete. Keep stepping through the network to follow the route again.",
+            "phases": [
+                {
+                    "title": "Deliver the packet",
+                    "instruction": "Move the packet through Router 1, choose the path toward Server C, and complete delivery.",
+                    "target": { "label": "Goal", "description": "Use the path Computer A → Router 1 → Router 3 → Server C; Router 2 should remain a visible unchosen option." },
+                    "expected_operations": ["send-packet", "reach-first-router", "examine-destination", "choose-correct-route", "forward-packet", "reach-destination"],
+                    "success": "✓ Packet delivered to Server C",
+                    "feedback": "At Router 1, inspect the destination and choose the next hop that leads toward Server C."
+                }
+            ]
+        },
+        "recall": {
+            "title": "Recall",
+            "prompt": "In your own words, what does a router use to decide where to forward a packet?",
+            "submit_label": "Submit recall",
+            "empty_message": "Write a short explanation before submitting.",
+            "completion_message": "✓ Recall completed",
+            "model_answer": "A router examines the packet's destination network or address information and chooses the next connected path that moves the packet toward that destination."
+        }
+    },
+    "mastery": {
+        "title": "Packet Routing Mastery",
+        "mastered_label": "Packet Routing Mastered",
+        "levels": [
+            { "id": "learn", "label": "Learn", "completion": { "type": "course_completion" } },
+            {
+                "id": "practice", "label": "Practice", "prerequisites": ["learn"], "current_state_label": "YOUR PACKET ROUTE",
+                "guidance": { "start_message": "Choose the next hop that moves the packet toward Server C.", "hints": { "limit": 1, "items": [{ "content": "At Router 1, choose the branch connected to the requested destination server." }] } },
+                "controls": [{ "operation": "to-router-1", "label": "TO ROUTER 1" }, { "operation": "to-router-2", "label": "TO ROUTER 2" }, { "operation": "to-router-3", "label": "TO ROUTER 3" }, { "operation": "to-server-b", "label": "TO SERVER B" }, { "operation": "to-server-c", "label": "TO SERVER C" }],
+                "scenario": { "destination": "server-c", "route": ["computer-a", "router-1", "router-3", "server-c"] },
+                "challenge": { "phases": [{ "title": "Route to Server C", "instruction": "Forward the packet to Server C one correct hop at a time.", "target": { "label": "TARGET", "description": "Computer A → Router 1 → Router 3 → Server C" }, "goal": { "type": "outcome_equals", "expected_outcome": "delivered" }, "success": "✓ Practice Complete", "feedback": "Check the current node and the requested destination before choosing." }] }, "constraints": {}
+            },
+            {
+                "id": "apply", "label": "Apply", "prerequisites": ["practice"], "current_state_label": "YOUR PACKET ROUTE",
+                "guidance": { "start_message": "Route to a different destination with less guidance.", "hints": { "limit": 1, "items": [{ "content": "The correct Router 1 branch depends on the destination, not on which router looks closer." }] } },
+                "controls": [{ "operation": "to-router-1", "label": "TO ROUTER 1" }, { "operation": "to-router-2", "label": "TO ROUTER 2" }, { "operation": "to-router-3", "label": "TO ROUTER 3" }, { "operation": "to-server-b", "label": "TO SERVER B" }, { "operation": "to-server-c", "label": "TO SERVER C" }],
+                "scenario": { "destination": "server-b", "route": ["computer-a", "router-1", "router-2", "server-b"] },
+                "challenge": { "phases": [{ "title": "Route to Server B", "instruction": "Choose the path that reaches Server B without a route recipe.", "target": { "label": "TARGET", "description": "Use the branch through Router 2." }, "goal": { "type": "outcome_equals", "expected_outcome": "delivered" }, "success": "✓ Apply Complete", "feedback": "A router chooses the next hop using destination information." }] }, "constraints": {}
+            },
+            {
+                "id": "solve", "label": "Solve", "prerequisites": ["apply"], "current_state_label": "YOUR PACKET ROUTE",
+                "guidance": { "start_message": "Choose a complete valid route without hints.", "hints": { "limit": 0, "items": [] } },
+                "controls": [{ "operation": "to-router-1", "label": "TO ROUTER 1" }, { "operation": "to-router-2", "label": "TO ROUTER 2" }, { "operation": "to-router-3", "label": "TO ROUTER 3" }, { "operation": "to-server-b", "label": "TO SERVER B" }, { "operation": "to-server-c", "label": "TO SERVER C" }],
+                "scenario": { "destination": "server-c", "route": ["computer-a", "router-1", "router-3", "server-c"] },
+                "challenge": { "phases": [{ "title": "Solve the route", "instruction": "Deliver the packet with no guidance or displayed chosen path.", "target": { "label": "TARGET", "description": "Reach the requested destination." }, "goal": { "type": "outcome_equals", "expected_outcome": "delivered" }, "success": "✓ Solve Complete", "feedback": "A valid next hop must be connected and move toward the destination." }] }, "constraints": {}
+            },
+            {
+                "id": "mastery", "label": "Mastery", "prerequisites": ["solve"], "current_state_label": "YOUR PACKET ROUTE",
+                "guidance": { "start_message": "The destination is randomized. Plan the valid route without hints.", "hints": { "limit": 0, "items": [] } },
+                "controls": [{ "operation": "to-router-1", "label": "TO ROUTER 1" }, { "operation": "to-router-2", "label": "TO ROUTER 2" }, { "operation": "to-router-3", "label": "TO ROUTER 3" }, { "operation": "to-server-b", "label": "TO SERVER B" }, { "operation": "to-server-c", "label": "TO SERVER C" }], "scenario": { "generator": "packet-routing-mastery", "generator_version": 1, "scenario_rules": {} },
+                "challenge": { "phases": [{ "title": "Master an unfamiliar route", "instruction": "Deliver the packet through the randomized valid topology path.", "target": { "label": "TARGET", "description": "Use the destination to choose each next hop." }, "goal": { "type": "outcome_equals", "expected_outcome": "delivered" }, "success": "✓ Mastery Complete", "feedback": "Keep other visible paths as distractors; only one route reaches the destination." }] }, "constraints": {}
+            },
+            {
+                "id": "expert", "label": "Expert", "kind": "expert", "prerequisites": ["mastery"],
+                "expert": {
+                    "generator": "packet-routing-expert", "generator_version": 1, "replayable": true, "scenario_rules": {},
+                    "thinking": { "title": "Plan the packet route", "objective_label": "Mental routing", "instruction": "Predict the complete path and destination reachability before the packet moves.", "starting_stack_label": "Network route", "sequence_label": "Hops to simulate", "do_not_execute": "Do not forward the packet yet. Plan every hop in your head.", "prediction_label": "Your prediction", "prediction_fields": [{ "id": "route", "label": "Full route", "prompt": "List node IDs from computer-a to the destination.", "type": "text_list" }, { "id": "reachable", "label": "Destination reachability", "prompt": "Is the destination reachable?", "type": "choice", "options": [{ "value": "reachable", "label": "REACHABLE" }, { "value": "unreachable", "label": "UNREACHABLE" }] }], "submit_label": "Check my prediction", "continue_label": "Continue to Expert Routing →", "empty_message": "Complete both predictions before continuing.", "replay_message": "Now replay the packet route.", "your_prediction_label": "Your prediction", "actual_label": "Result", "actual_result": "Route: {{final_state}}. Destination: {{next_pop}}." },
+                    "solve": { "title": "Expert Packet Routing", "instruction": "Deliver the randomized packet with no hints. Valid route reasoning is the score.", "target_label": "TARGET", "your_label": "YOUR PACKET ROUTE", "available_values_label": "Choose next hop", "metric_label": "Routing decisions", "hints_label": "Hints: none", "operation_rule": "Each selected hop must be connected and lead toward the destination.", "controls": [{ "operation": "to-router-1", "label": "TO ROUTER 1" }, { "operation": "to-router-2", "label": "TO ROUTER 2" }, { "operation": "to-router-3", "label": "TO ROUTER 3" }, { "operation": "to-server-b", "label": "TO SERVER B" }, { "operation": "to-server-c", "label": "TO SERVER C" }], "feedback": "Use the destination to choose the correct next hop.", "solved_message": "✓ Expert Route Solved", "solved_result": "The packet reached the randomized destination.", "new_challenge_label": "New Expert Challenge" }
+                }
+            }
+        ]
+    }
 }

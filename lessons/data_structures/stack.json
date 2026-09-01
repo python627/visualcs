@@ -206,5 +206,285 @@
         "completion_message": "✓ Recall completed",
         "model_answer": "POP removes the top item. Since new items are pushed onto the top, the most recently added item is removed first."
     }
+    },
+
+    "mastery": {
+        "title": "Stack Mastery",
+        "mastered_label": "Stack Mastered",
+        "levels": [
+            {
+                "id": "learn",
+                "label": "Learn",
+                "completion": {
+                    "type": "course_completion"
+                }
+            },
+            {
+                "id": "practice",
+                "label": "Practice",
+                "prerequisites": ["learn"],
+                "guidance": {
+                    "start_message": "Build the target Stack using the rules you learned. The target shows the final order, not the buttons to press.",
+                    "hints": {
+                        "limit": 1,
+                        "items": [
+                            {
+                                "content": "Read the target from bottom to top to decide which items must be added first."
+                            }
+                        ]
+                    }
+                },
+                "scenario": {
+                    "initial_state": [],
+                    "operation_values": {
+                        "push": [10, 20, 30]
+                    }
+                },
+                "challenge": {
+                    "phases": [
+                        {
+                            "title": "Build the target Stack",
+                            "instruction": "Make your Stack match the target. Decide how items need to be ordered.",
+                            "target": {
+                                "label": "Target Stack",
+                                "items": [30, 20, 10],
+                                "top_label": "TOP"
+                            },
+                            "goal": {
+                                "type": "state_equals",
+                                "expected_state": [10, 20, 30]
+                            },
+                            "success": "✓ Practice Complete",
+                            "feedback": "Compare the target with your Stack and think about which item belongs at the top."
+                        }
+                    ]
+                },
+                "constraints": {}
+            },
+            {
+                "id": "apply",
+                "label": "Apply",
+                "prerequisites": ["practice"],
+                "guidance": {
+                    "start_message": "Transform the starting Stack into the target. Choose the operations yourself.",
+                    "hints": {
+                        "limit": 1,
+                        "items": [
+                            {
+                                "content": "Compare the two Stacks from the TOP down. Only the top item can be removed or replaced."
+                            }
+                        ]
+                    }
+                },
+                "scenario": {
+                    "initial_state": [10, 20, 30],
+                    "operation_values": {
+                        "push": [40]
+                    }
+                },
+                "challenge": {
+                    "phases": [
+                        {
+                            "title": "Transform the Stack",
+                            "instruction": "The playground shows the starting Stack. Transform it until it matches this target.",
+                            "target": {
+                                "label": "Target Stack",
+                                "items": [40, 20, 10],
+                                "top_label": "TOP"
+                            },
+                            "goal": {
+                                "type": "state_equals",
+                                "expected_state": [10, 20, 40]
+                            },
+                            "success": "✓ Apply Complete",
+                            "feedback": "The middle and bottom already match. Focus on what must change at the top."
+                        }
+                    ]
+                },
+                "constraints": {}
+            },
+            {
+                "id": "solve",
+                "label": "Solve",
+                "prerequisites": ["apply"],
+                "guidance": {
+                    "start_message": "Reach the target before the operation limit runs out. Plan from the top of the Stack.",
+                    "hints": {
+                        "limit": 1,
+                        "items": [
+                            {
+                                "content": "Count how many top items differ before you begin adding the new target items."
+                            }
+                        ]
+                    }
+                },
+                "scenario": {
+                    "initial_state": [12, 25, 38],
+                    "operation_values": {
+                        "push": [47, 61]
+                    }
+                },
+                "challenge": {
+                    "phases": [
+                        {
+                            "title": "Solve within four operations",
+                            "instruction": "Transform the starting Stack into the target in no more than four operations.",
+                            "target": {
+                                "label": "Target Stack",
+                                "items": [61, 47, 12],
+                                "top_label": "TOP"
+                            },
+                            "goal": {
+                                "type": "state_equals",
+                                "expected_state": [12, 47, 61]
+                            },
+                            "success": "✓ Solve Complete",
+                            "feedback": "The operation limit is tight. Think about which existing items must leave before new ones can be added."
+                        }
+                    ]
+                },
+                "constraints": {
+                    "max_operations": 4,
+                    "operation_limit_message": "Operation limit reached. Target not achieved. Retry Solve with a shorter plan."
+                }
+            },
+    {
+      "id": "mastery",
+                "label": "Mastery",
+                "prerequisites": ["solve"],
+                "guidance": {
+                    "start_message": "This is an unfamiliar Stack transformation. No hints are available; choose the strategy and stay within the limit.",
+                    "hints": {
+                        "limit": 0,
+                        "items": []
+                    }
+                },
+                "scenario": {
+                    "initial_state": [14, 33, 58],
+                    "operation_values": {
+                        "push": [41, 72]
+                    }
+                },
+                "challenge": {
+                    "phases": [
+                        {
+                            "title": "Master the transformation",
+                            "instruction": "Transform the starting Stack into the unfamiliar target using no more than four operations.",
+                            "target": {
+                                "label": "Target Stack",
+                                "items": [72, 41, 14],
+                                "top_label": "TOP"
+                            },
+                            "goal": {
+                                "type": "state_equals",
+                                "expected_state": [14, 41, 72]
+                            },
+                            "success": "✓ Mastery Complete",
+                            "feedback": "Compare the target and current Stack from the top; only top items can change."
+                        }
+                    ]
+                },
+      "constraints": {
+        "max_operations": 4,
+        "operation_limit_message": "Operation limit reached. Target not achieved. Retry Mastery with a more efficient plan."
+      }
+    },
+    {
+      "id": "expert",
+      "label": "Expert",
+      "kind": "expert",
+      "prerequisites": [
+        "mastery"
+      ],
+      "guidance": {
+        "hints": {
+          "limit": 0,
+          "items": []
+        }
+      },
+      "expert": {
+        "generator": "stack-expert",
+        "generator_version": 1,
+        "replayable": true,
+        "scenario_rules": {
+          "value_pool": [
+            11,
+            14,
+            18,
+            23,
+            27,
+            32,
+            36,
+            41,
+            45,
+            49,
+            54,
+            58,
+            63,
+            67,
+            72,
+            76,
+            81,
+            85,
+            89,
+            94,
+            98,
+            103,
+            107,
+            112
+          ]
+        },
+        "thinking": {
+          "title": "Think before you run it",
+          "start_message": "First simulate the Stack in your head. The sequence will animate only after you commit to a prediction.",
+          "objective_label": "Think first",
+          "instruction": "Study the starting Stack and operations before you make a prediction.",
+          "starting_stack_label": "Starting Stack",
+          "top_label": "TOP",
+          "bottom_label": "BOTTOM",
+          "sequence_label": "Operations to simulate",
+          "do_not_execute": "Do not perform these operations yet. Work through them in your head.",
+          "prediction_label": "Your prediction",
+          "final_state_prompt": "After all operations are completed, what will the Stack contain?",
+          "final_state_label": "Final Stack (TOP → bottom)",
+          "final_state_placeholder": "For example: 70, 40, 10",
+          "next_pop_prompt": "What value would the NEXT POP remove?",
+          "next_pop_label": "Next POP removes",
+          "submit_label": "Check my prediction",
+          "continue_label": "Continue to Expert Challenge →",
+          "empty_message": "Enter both predictions before continuing.",
+          "replay_message": "Now watch the Stack carry out the sequence.",
+          "replay_stack_label": "SIMULATION REPLAY",
+          "your_prediction_label": "Your prediction",
+          "actual_label": "Result",
+          "actual_result": "Final Stack, from TOP to bottom: {{final_state}}. The next POP would remove {{next_pop}}.",
+          "feedback": {
+            "all_correct": "Excellent mental simulation. Both predictions match the Stack.",
+            "final_state_correct": "Your final Stack is correct. Notice which value is now on TOP.",
+            "next_pop_correct": "You identified the next POP correctly. Compare the rest of the final Stack with the replay.",
+            "incorrect": "Compare the replay one operation at a time. PUSH adds to TOP and POP removes only the current TOP item."
+          }
+        },
+        "solve": {
+          "title": "Expert Challenge",
+          "start_message": "Transform START into TARGET. There are no hints and the optimal operation count is hidden until you solve it.",
+          "instruction": "Transform START into TARGET using the available PUSH values. Plan before you act; the minimum operation count stays hidden until you reach the target.",
+          "target_label": "TARGET STACK",
+          "your_label": "YOUR STACK",
+          "top_label": "TOP",
+          "available_values_label": "Available PUSH values",
+          "hints_label": "Hints: none",
+          "operation_rule": "Every selected PUSH and POP counts as one operation.",
+          "feedback": "Keep comparing the two Stacks from the bottom upward. Only the current TOP can be removed.",
+          "solved_message": "✓ Expert Challenge Solved",
+          "solved_result": "Your solution: {{operations}} operations. Optimal solution: {{optimal_operations}} operations.",
+          "try_optimal_label": "Try for {{optimal_operations}}",
+          "perfect_message": "🏆 PERFECT EXPERT",
+          "perfect_result": "Solved in the minimum possible operations: {{optimal_operations}}.",
+          "new_challenge_label": "New Expert Challenge"
+        }
+      }
     }
+  ]
+}
 }

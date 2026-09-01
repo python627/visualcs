@@ -7,6 +7,10 @@ function createFcfsSchedulingPlayground() {
     let completedProcesses = [];
     let phase = "enter";
     let schedulingFinished = false;
+    let masteryScenario = null;
+    let masteryMode = false;
+    let masteryBusy = false;
+    let replayToken = 0;
 
     function createProcessCard(process, state, options = {}) {
 
@@ -133,7 +137,8 @@ function createFcfsSchedulingPlayground() {
 
     function resetSchedule() {
 
-        readyQueue = originalProcesses.map(process => ({ ...process }));
+        const processes = masteryScenario?.processes || originalProcesses;
+        readyQueue = processes.map(process => ({ ...process }));
         runningProcess = null;
         completedProcesses = [];
         phase = "enter";
@@ -144,6 +149,11 @@ function createFcfsSchedulingPlayground() {
     }
 
     function nextStep() {
+
+        if (masteryMode) {
+            setByteMessage("Choose the process that should run next in the focused mastery controls.");
+            return;
+        }
 
         if (schedulingFinished) {
 
@@ -223,13 +233,108 @@ function createFcfsSchedulingPlayground() {
 
     }
 
+    function runMasteryProcess(operation) {
+        if (!masteryMode || masteryBusy || schedulingFinished) return;
+        const selectedId = operation.replace("run-", "").toUpperCase();
+        const expected = readyQueue[0];
+
+        if (!expected) return;
+        if (selectedId !== expected.id) {
+            masteryEngine.operationCompleted({
+                operation,
+                state: { outcome: null, completed: completedProcesses.map(process => process.id) },
+                feedback: `${expected.id} arrived first and is at the front of the Ready Queue.`
+            });
+            return;
+        }
+
+        masteryBusy = true;
+        runningProcess = readyQueue.shift();
+        render({ enteringCpu: true });
+
+        setTimeout(() => {
+            const finished = runningProcess;
+            completedProcesses.push(finished);
+            runningProcess = null;
+            schedulingFinished = readyQueue.length === 0;
+            masteryBusy = false;
+            render({ completingId: finished.id });
+            masteryEngine.operationCompleted({
+                operation,
+                state: {
+                    outcome: schedulingFinished ? "complete" : null,
+                    completed: completedProcesses.map(process => process.id)
+                },
+                feedback: schedulingFinished
+                    ? "Every process ran in the same order it arrived."
+                    : `${finished.id} is complete. Decide which process is now at the front.` ,
+                progress: !schedulingFinished
+            });
+        }, 420);
+    }
+
+    function renderProcessCard(title, processes, container) {
+        const card = document.createElement("section");
+        card.className = "mastery-state-card";
+        card.innerHTML = `<span class="challenge-target-label">${title}</span><p>${processes?.length ? processes.map(process => `${process.id} (${process.burst}u)`).join(" → ") : "empty"}</p>`;
+        container.appendChild(card);
+    }
+
     return {
         mount() {
             getControl("next-step").onclick = nextStep;
             resetSchedule();
         },
         reset() {
+            replayToken++;
+            masteryScenario = null;
+            masteryMode = false;
+            masteryBusy = false;
             resetSchedule();
+        },
+        resetForChallenge() {
+            replayToken++;
+            masteryScenario = null;
+            masteryMode = false;
+            masteryBusy = false;
+            resetSchedule();
+        },
+        configureMasteryScenario(scenario) {
+            replayToken++;
+            masteryScenario = scenario || {};
+            masteryMode = true;
+            masteryBusy = false;
+            resetSchedule();
+        },
+        performMasteryOperation(operation) {
+            if (operation.startsWith("run-")) runMasteryProcess(operation);
+        },
+        endMasteryMode() { masteryMode = false; masteryScenario = null; masteryBusy = false; },
+        async replayExpertSimulation(simulation) {
+            if (!simulation || !Array.isArray(simulation.initial_state) || !Array.isArray(simulation.steps)) return;
+            const token = ++replayToken;
+            masteryScenario = { processes: simulation.initial_state };
+            masteryMode = true;
+            resetSchedule();
+            for (const step of simulation.steps) {
+                await new Promise(resolve => window.setTimeout(resolve, 430));
+                if (token !== replayToken) return;
+                const process = readyQueue.shift();
+                if (!process) return;
+                completedProcesses.push(process);
+                schedulingFinished = readyQueue.length === 0;
+                render({ completingId: process.id });
+            }
+        },
+        renderExpertThinkingState({ initialState, labels }, container) {
+            renderProcessCard(labels.title || "Ready Queue", initialState, container);
+        },
+        renderMasteryStates({ scenario, target }, container) {
+            renderProcessCard("START READY QUEUE", scenario?.processes || [], container);
+            const targetCard = document.createElement("section");
+            targetCard.className = "mastery-state-card";
+            targetCard.innerHTML = `<span class="challenge-target-label">${target.label || "TARGET"}</span><p>${target.description || "Complete each process in first-come, first-served order."}</p>`;
+            container.appendChild(targetCard);
         }
     };
 

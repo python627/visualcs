@@ -11,7 +11,7 @@ class TeachingEngine {
         this.predictionPromptVisible = false;
         this.challengeActive = false;
         this.challengeCompleted = false;
-        this.challengePhaseIndex = 0;
+        this.challengeRunner = null;
         this.completedChallengePhaseMessage = null;
         this.recallCompleted = false;
     }
@@ -305,10 +305,7 @@ class TeachingEngine {
 
         if (complete) {
             this.missionCompleted = true;
-
-            if (!this.startChallenge()) {
-                this.showQuiz();
-            }
+            this.schedulePostMissionStage();
         }
 
         return {
@@ -319,7 +316,29 @@ class TeachingEngine {
     }
 
 
-    operationCompleted({ operation, value, removedValue, state }) {
+    schedulePostMissionStage() {
+        // Let the playground finish updating its own data and animation state
+        // before its challenge reset hook is called. This keeps the teaching
+        // flow independent from each renderer's operation timing.
+        window.setTimeout(() => {
+            if (!this.missionCompleted || this.challengeActive || this.quizShown) {
+                return;
+            }
+
+            if (!this.startChallenge()) {
+                this.showQuiz();
+            }
+        });
+    }
+
+
+    operationCompleted({
+        operation,
+        value,
+        removedValue,
+        state,
+        deferExplanation = false
+    }) {
         const missionStep = this.missionStepIndex;
         const missionResult = this.completeMissionOperation(operation);
 
@@ -335,17 +354,32 @@ class TeachingEngine {
                 this.resolvePrediction(actual, operation);
             }
             else {
-                this.showActionExplanation(operation, missionStep, {
+                const explanationValues = {
                     value,
                     removed: removedValue ?? value
-                });
+                };
+
+                if (deferExplanation) {
+                    this.deferActionExplanation(
+                        operation,
+                        missionStep,
+                        explanationValues
+                    );
+                }
+                else {
+                    this.showActionExplanation(
+                        operation,
+                        missionStep,
+                        explanationValues
+                    );
+                }
 
                 if (missionResult.nextOperation === prediction?.before_operation) {
                     this.showPredictionPrompt();
                 }
             }
         }
-        else if (this.challengeActive && Array.isArray(state)) {
+        else if (this.challengeActive) {
             this.reportChallengeState(state, operation);
         }
 
@@ -354,14 +388,30 @@ class TeachingEngine {
 
 
     reportUnavailableOperation({ operation, state }) {
-        if (this.challengeActive && Array.isArray(state)) {
-            this.reportChallengeState(state, operation);
+        if (this.challengeActive) {
+            const result = this.challengeRunner?.reportUnavailable({ state, operation });
+            this.handleChallengeResult(result);
         }
     }
 
 
+    deferActionExplanation(operation, index, values) {
+        const explanation = this.getActionExplanation(operation, index, values);
+
+        if (!explanation) {
+            return;
+        }
+
+        window.setTimeout(() => {
+            if (!this.quizShown && !this.challengeActive) {
+                this.setByteMessage(explanation);
+            }
+        });
+    }
+
+
     getCurrentChallengePhase() {
-        return this.getChallenge()?.phases?.[this.challengePhaseIndex] || null;
+        return this.challengeRunner?.getCurrentPhase() || null;
     }
 
 
@@ -372,23 +422,27 @@ class TeachingEngine {
     }
 
 
-    statesMatch(currentState, expectedState) {
-        return JSON.stringify(currentState) === JSON.stringify(expectedState);
-    }
-
-
-    isExpectedStatePrefix(currentState, expectedState) {
-        return currentState.length <= expectedState.length
-            && currentState.every((value, index) => value === expectedState[index]);
-    }
-
-
     renderChallengeTarget(phase) {
         const target = document.getElementById("challenge-target");
 
-        if (target && this.playground?.renderChallengeTarget) {
-            this.playground.renderChallengeTarget(phase.target, target);
+        if (!target) {
+            return;
         }
+
+        if (this.playground?.renderChallengeTarget) {
+            this.playground.renderChallengeTarget(phase.target, target);
+            return;
+        }
+
+        const label = document.createElement("span");
+        label.className = "challenge-target-label";
+        label.textContent = phase.target?.label || "Challenge target";
+
+        const description = document.createElement("p");
+        description.className = "challenge-target-description";
+        description.textContent = phase.target?.description || "Complete the target state in the playground.";
+
+        target.append(label, description);
     }
 
 
@@ -469,7 +523,7 @@ class TeachingEngine {
 
         this.challengeActive = true;
         this.challengeCompleted = false;
-        this.challengePhaseIndex = 0;
+        this.challengeRunner = new ChallengeRunner(this.getChallenge());
         this.completedChallengePhaseMessage = null;
         this.playground.resetForChallenge();
         this.renderChallenge();
@@ -492,7 +546,7 @@ class TeachingEngine {
 
         this.challengeActive = true;
         this.challengeCompleted = false;
-        this.challengePhaseIndex = 0;
+        this.challengeRunner = new ChallengeRunner(this.getChallenge());
         this.completedChallengePhaseMessage = null;
         this.playground.resetForChallenge();
         this.renderChallenge();
@@ -512,37 +566,35 @@ class TeachingEngine {
 
 
     reportChallengeState(state, operation) {
-        const phase = this.getCurrentChallengePhase();
+        const result = this.challengeRunner?.reportOperation({ state, operation });
 
-        if (!phase) {
+        return this.handleChallengeResult(result);
+    }
+
+
+    handleChallengeResult(result) {
+        if (!result) {
             return false;
         }
 
-        if (this.statesMatch(state, phase.expected_state)) {
-            this.completedChallengePhaseMessage = phase.success;
-
-            if (this.challengePhaseIndex < this.getChallenge().phases.length - 1) {
-                this.challengePhaseIndex++;
-                this.renderChallenge();
-                this.setByteMessage(phase.success);
-            }
-            else {
-                this.challengeActive = false;
-                this.challengeCompleted = true;
-                this.renderChallenge();
-                this.showQuiz();
-            }
-
+        if (result.status === "phase_completed") {
+            this.completedChallengePhaseMessage = result.completedPhase.success;
+            this.renderChallenge();
+            this.setByteMessage(result.completedPhase.success);
             return true;
         }
 
-        const progressOperations = phase.progress_operations || [];
-        const isValidProgress = phase.progressive
-            && progressOperations.includes(operation)
-            && this.isExpectedStatePrefix(state, phase.expected_state);
+        if (result.status === "challenge_completed") {
+            this.completedChallengePhaseMessage = result.completedPhase.success;
+            this.challengeActive = false;
+            this.challengeCompleted = true;
+            this.renderChallenge();
+            this.showQuiz();
+            return true;
+        }
 
-        if (!isValidProgress) {
-            this.setByteMessage(phase.feedback);
+        if (result.feedback) {
+            this.setByteMessage(result.feedback);
         }
 
         return false;
@@ -552,7 +604,7 @@ class TeachingEngine {
     resetChallenge() {
         this.challengeActive = false;
         this.challengeCompleted = false;
-        this.challengePhaseIndex = 0;
+        this.challengeRunner = null;
         this.completedChallengePhaseMessage = null;
 
         const panel = document.getElementById("challenge-panel");
@@ -700,6 +752,7 @@ class TeachingEngine {
 
         this.recallCompleted = true;
         markLessonCompleted(this.lesson.id);
+        masteryEngine.recordCourseCompletion();
         showLessonContinue();
 
         const panel = document.getElementById("lesson-recall");

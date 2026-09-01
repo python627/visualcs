@@ -96,5 +96,107 @@
             "type": "example",
             "content": "The ready queue starts P1(4), P2(2), P3(3). P1 uses the CPU and finishes first, then P2 runs, then P3. Their arrival order never changes."
         }
-    ]
+    ],
+
+    "teaching": {
+        "introduction": {
+            "title": "Meet FCFS Scheduling",
+            "content": "A computer has one CPU, so it needs a rule for choosing which waiting program runs next. FCFS uses arrival order.",
+            "points": [
+                "Ready processes wait in a queue.",
+                "The process at the front gets the CPU first.",
+                "You will follow processes from waiting to running to completed."
+            ]
+        },
+        "worked_example": {
+            "title": "Follow the first arrival",
+            "content": "P1 arrived before P2 and P3, so FCFS gives P1 the CPU first.",
+            "steps": [
+                { "action": "Ready Queue", "visual": "P1(4) → P2(2) → P3(3)", "explanation": "P1 is first in line because it arrived first." },
+                { "action": "Run P1", "visual": "READY: P2(2) → P3(3)\nCPU: P1(4)", "explanation": "P1 moves from the front of Ready Queue into the CPU." },
+                { "action": "Finish P1", "visual": "COMPLETED: P1\nREADY: P2(2) → P3(3)", "explanation": "P1 finishes before P2 gets a turn; FCFS does not skip ahead." }
+            ],
+            "conclusion": "First Come, First Served keeps the same arrival order from start to finish.",
+            "next": { "title": "Run the ready queue.", "content": "Use NEXT STEP to watch every process move through the CPU." }
+        },
+        "guided_practice": {
+            "action_explanations": {
+                "observe-ready-queue": "P1 is at the front, so its earlier arrival gives it the first CPU turn.",
+                "run-first-process": "P1 keeps the CPU while it executes; FCFS does not interrupt it for a later arrival.",
+                "finish-p1": "P1 is complete, so the next process waiting at the front can run.",
+                "run-next-process": "P2 now runs because it has waited at the front since P1 left.",
+                "complete-all": "P3 finishes last because it arrived after P1 and P2."
+            }
+        },
+        "challenge": {
+            "title": "FCFS Challenge",
+            "start_message": "Run this queue using arrival order without being told each next control.",
+            "continue_message": "Challenge complete. Keep exploring to see how a long process can delay the ones behind it.",
+            "phases": [
+                {
+                    "title": "Serve the first arrival",
+                    "instruction": "Move P1 through the CPU before allowing another process to run.",
+                    "target": { "label": "Goal", "description": "P1 should be completed first because it was first in the ready queue." },
+                    "expected_operations": ["observe-ready-queue", "run-first-process", "finish-p1"],
+                    "success": "✓ First arrival completed",
+                    "feedback": "Look at the front of the ready queue: FCFS always begins there."
+                },
+                {
+                    "title": "Keep the arrival order",
+                    "instruction": "Finish the remaining processes in their waiting order.",
+                    "target": { "label": "Goal", "description": "P2 must complete before P3; neither process may jump ahead." },
+                    "expected_operations": ["run-next-process", "continue-running", "continue-running", "continue-running", "continue-running", "complete-all"],
+                    "success": "✓ Queue completed in arrival order",
+                    "feedback": "Keep moving the front process through the CPU, then take the next process from the front."
+                }
+            ]
+        },
+        "recall": {
+            "title": "Recall",
+            "prompt": "In your own words, why does FCFS run P1 before P2 in this lesson?",
+            "submit_label": "Submit recall",
+            "empty_message": "Write a short explanation before submitting.",
+            "completion_message": "✓ Recall completed",
+            "model_answer": "FCFS chooses the process that arrived first. P1 is at the front of the ready queue, so it gets the CPU before P2 and P3."
+        }
+    },
+    "mastery": {
+        "title": "FCFS Scheduling Mastery",
+        "mastered_label": "FCFS Scheduling Mastered",
+        "levels": [
+            { "id": "learn", "label": "Learn", "completion": { "type": "course_completion" } },
+            {
+                "id": "practice", "label": "Practice", "prerequisites": ["learn"], "current_state_label": "READY / CPU / COMPLETED",
+                "guidance": { "start_message": "Choose which process should enter the CPU next.", "hints": { "limit": 1, "items": [{ "content": "FCFS always selects the process at the front of Ready Queue." }] } },
+                "controls": [{ "operation": "run-p1", "label": "RUN P1" }, { "operation": "run-p2", "label": "RUN P2" }, { "operation": "run-p3", "label": "RUN P3" }], "scenario": { "processes": [{ "id": "P1", "burst": 4 }, { "id": "P2", "burst": 2 }, { "id": "P3", "burst": 3 }] },
+                "challenge": { "phases": [{ "title": "Run the first arrival", "instruction": "Complete P1 first, then continue in arrival order.", "target": { "label": "TARGET", "description": "P1 → P2 → P3" }, "goal": { "type": "outcome_equals", "expected_outcome": "complete" }, "success": "✓ Practice Complete", "feedback": "Look at the front of Ready Queue." }] }, "constraints": {}
+            },
+            {
+                "id": "apply", "label": "Apply", "prerequisites": ["practice"], "current_state_label": "READY / CPU / COMPLETED",
+                "guidance": { "start_message": "Different burst times do not change FCFS arrival order.", "hints": { "limit": 1, "items": [{ "content": "Burst time changes how long a process runs, not who starts first." }] } },
+                "controls": [{ "operation": "run-p1", "label": "RUN P1" }, { "operation": "run-p2", "label": "RUN P2" }, { "operation": "run-p3", "label": "RUN P3" }], "scenario": { "processes": [{ "id": "P1", "burst": 2 }, { "id": "P2", "burst": 5 }, { "id": "P3", "burst": 3 }] },
+                "challenge": { "phases": [{ "title": "Keep arrival order", "instruction": "Complete every process in FCFS order with less guidance.", "target": { "label": "TARGET", "description": "Arrival order remains P1 → P2 → P3." }, "goal": { "type": "outcome_equals", "expected_outcome": "complete" }, "success": "✓ Apply Complete", "feedback": "The first arrival never gets skipped in FCFS." }] }, "constraints": {}
+            },
+            {
+                "id": "solve", "label": "Solve", "prerequisites": ["apply"], "current_state_label": "READY / CPU / COMPLETED",
+                "guidance": { "start_message": "Derive the full execution order with no hints.", "hints": { "limit": 0, "items": [] } },
+                "controls": [{ "operation": "run-p1", "label": "RUN P1" }, { "operation": "run-p2", "label": "RUN P2" }, { "operation": "run-p3", "label": "RUN P3" }], "scenario": { "processes": [{ "id": "P1", "burst": 5 }, { "id": "P2", "burst": 1 }, { "id": "P3", "burst": 4 }] },
+                "challenge": { "phases": [{ "title": "Solve the schedule", "instruction": "Complete the full schedule in strict arrival order.", "target": { "label": "TARGET", "description": "No shorter process may jump ahead." }, "goal": { "type": "outcome_equals", "expected_outcome": "complete" }, "success": "✓ Solve Complete", "feedback": "FCFS means first come, not shortest burst." }] }, "constraints": {}
+            },
+            {
+                "id": "mastery", "label": "Mastery", "prerequisites": ["solve"], "current_state_label": "READY / CPU / COMPLETED",
+                "guidance": { "start_message": "A randomized process set is waiting. Run it independently.", "hints": { "limit": 0, "items": [] } },
+                "controls": [{ "operation": "run-p1", "label": "RUN P1" }, { "operation": "run-p2", "label": "RUN P2" }, { "operation": "run-p3", "label": "RUN P3" }], "scenario": { "generator": "fcfs-mastery", "generator_version": 1, "scenario_rules": {} },
+                "challenge": { "phases": [{ "title": "Master an FCFS schedule", "instruction": "Complete the randomized Ready Queue without hints.", "target": { "label": "TARGET", "description": "Every process must run exactly in arrival order." }, "goal": { "type": "outcome_equals", "expected_outcome": "complete" }, "success": "✓ Mastery Complete", "feedback": "Use arrival order, not burst size, to decide." }] }, "constraints": {}
+            },
+            {
+                "id": "expert", "label": "Expert", "kind": "expert", "prerequisites": ["mastery"],
+                "expert": {
+                    "generator": "fcfs-expert", "generator_version": 1, "replayable": true, "scenario_rules": {},
+                    "thinking": { "title": "Calculate FCFS before it runs", "objective_label": "Mental schedule", "instruction": "Predict execution order and waiting times before the visual replay.", "starting_stack_label": "Ready Queue", "sequence_label": "Processes to simulate", "do_not_execute": "Do not run processes yet. Build the timeline in your head.", "prediction_label": "Your prediction", "prediction_fields": [{ "id": "executionOrder", "label": "Execution order", "prompt": "List the process order, separated by commas.", "type": "text_list" }, { "id": "waitingTimes", "label": "Waiting times", "prompt": "List waiting times for P1, P2, P3, separated by commas.", "type": "text" }], "submit_label": "Check my prediction", "continue_label": "Continue to Expert FCFS →", "empty_message": "Complete both predictions before continuing.", "replay_message": "Now replay the schedule.", "your_prediction_label": "Your prediction", "actual_label": "Result", "actual_result": "Execution order: {{final_state}}. Waiting times: {{next_pop}}." },
+                    "solve": { "title": "Expert FCFS", "instruction": "Run the randomized Ready Queue with no hints. Correct arrival order and timing reasoning are the score.", "target_label": "TARGET", "your_label": "READY / CPU / COMPLETED", "available_values_label": "Choose next process", "metric_label": "Scheduling decisions", "hints_label": "Hints: none", "operation_rule": "FCFS always runs the process that arrived first.", "controls": [{ "operation": "run-p1", "label": "RUN P1" }, { "operation": "run-p2", "label": "RUN P2" }, { "operation": "run-p3", "label": "RUN P3" }], "feedback": "Only the front process may enter the CPU.", "solved_message": "✓ Expert FCFS Solved", "solved_result": "The randomized FCFS execution order is correct.", "new_challenge_label": "New Expert Challenge" }
+                }
+            }
+        ]
+    }
 }

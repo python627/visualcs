@@ -79,5 +79,353 @@
             "type": "example",
             "content": "In [10, 20, 30, 40, 50, 60, 70], check 40 first. Since 60 is larger, fade out 10 through 40. The new middle is 60, so it is found."
         }
-    ]
+    ],
+
+    "teaching": {
+        "introduction": {
+            "title": "Meet Binary Search",
+            "content": "Binary Search finds a value in a sorted list by checking the middle instead of checking every item one by one.",
+            "points": [
+                "The list must be sorted.",
+                "The middle comparison removes one impossible half.",
+                "You will watch the search area shrink."
+            ]
+        },
+        "worked_example": {
+            "title": "Find 60 by halving",
+            "content": "The middle value tells us which half could still contain the target.",
+            "steps": [
+                { "action": "Check the middle", "visual": "[10] [20] [30] [40] [50] [60] [70]\n                 ↑ middle", "explanation": "40 is smaller than the target 60." },
+                { "action": "Discard the left half", "visual": "10  20  30  40  faded\n[50] [60] [70] remain", "explanation": "Values up to 40 cannot be 60, so the search keeps only the right half." },
+                { "action": "Check again", "visual": "[50] [60] [70]\n      ↑ found", "explanation": "The new middle is 60, so the target is found." }
+            ],
+            "conclusion": "Each comparison removes many values at once, which is why Binary Search is fast.",
+            "next": { "title": "Search the array below.", "content": "Use the middle value and notice which values fade away." }
+        },
+        "guided_practice": {
+            "action_explanations": {
+                "check-middle": "The middle value is the best comparison because it divides the remaining search area.",
+                "eliminate-half": "The faded half cannot contain the target, so the search continues only where the target could be.",
+                "find-target": "The target matches the current middle value, so the search is complete."
+            }
+        },
+        "challenge": {
+            "title": "Binary Search Challenge",
+            "start_message": "Find the target again by using the middle and discarding only impossible values.",
+            "continue_message": "Challenge complete. Keep stepping through the sorted array to see the search reset.",
+            "phases": [
+                {
+                    "title": "Find 60 efficiently",
+                    "instruction": "Use the middle comparison, remove the impossible half, and reach the target.",
+                    "target": { "label": "Target", "description": "Find 60 while leaving the discarded half visibly faded." },
+                    "expected_operations": ["check-middle", "eliminate-half", "check-middle", "find-target"],
+                    "success": "✓ Target found with Binary Search",
+                    "feedback": "Use the middle comparison before deciding which half can be discarded."
+                }
+            ]
+        },
+        "recall": {
+            "title": "Recall",
+            "prompt": "In your own words, why must the values be sorted for Binary Search to work?",
+            "submit_label": "Submit recall",
+            "empty_message": "Write a short explanation before submitting.",
+            "completion_message": "✓ Recall completed",
+            "model_answer": "Sorting makes a middle comparison meaningful: if the target is larger or smaller than the middle, an entire half is known to be impossible."
+        }
+    },
+
+    "mastery": {
+        "title": "Binary Search Mastery",
+        "mastered_label": "Binary Search Mastered",
+        "levels": [
+            {
+                "id": "learn",
+                "label": "Learn",
+                "completion": {
+                    "type": "course_completion"
+                }
+            },
+            {
+                "id": "practice",
+                "label": "Practice",
+                "prerequisites": ["learn"],
+                "guidance": {
+                    "start_message": "Use the highlighted middle value to decide which half can still contain the target.",
+                    "hints": {
+                        "limit": 1,
+                        "items": [
+                            {
+                                "content": "Compare 73 with the highlighted middle value. If the target is larger, keep the right half."
+                            }
+                        ]
+                    }
+                },
+                "metrics": {
+                    "operation_label": "Comparisons"
+                },
+            "operation_rule": "Each middle comparison counts once. Declaring NOT FOUND after the search area is empty does not add a comparison.",
+                "controls": [
+                    { "operation": "left", "label": "SEARCH LEFT" },
+                    { "operation": "found", "label": "TARGET FOUND" },
+                    { "operation": "right", "label": "SEARCH RIGHT" }
+                ],
+                "scenario": {
+                    "type": "binary-search",
+                    "values": [10, 21, 35, 48, 59, 73, 86, 94, 108],
+                    "target": 73
+                },
+                "challenge": {
+                    "phases": [
+                        {
+                            "title": "Find 73",
+                            "instruction": "Decide what Binary Search should do after each middle comparison.",
+                            "target": {
+                                "label": "Target",
+                                "description": "Find 73 in the sorted array."
+                            },
+                            "goal": {
+                                "type": "outcome_equals",
+                                "expected_outcome": "found"
+                            },
+                            "success": "✓ Practice Complete",
+                            "feedback": "Compare the target with the highlighted middle value before choosing a direction."
+                        }
+                    ]
+                },
+                "constraints": {}
+            },
+            {
+                "id": "apply",
+                "label": "Apply",
+                "prerequisites": ["practice"],
+                "guidance": {
+                    "start_message": "Choose the search direction yourself. The array is still sorted, but Byte will not explain the comparison before you decide.",
+                    "hints": {
+                        "limit": 1,
+                        "items": [
+                            {
+                                "content": "Only compare the target with the current middle. Do not use values that have already faded."
+                            }
+                        ]
+                    }
+                },
+                "metrics": {
+                    "operation_label": "Comparisons"
+                },
+            "operation_rule": "Each middle comparison counts once. Declaring NOT FOUND after the search area is empty does not add a comparison.",
+                "controls": [
+                    { "operation": "left", "label": "SEARCH LEFT" },
+                    { "operation": "found", "label": "TARGET FOUND" },
+                    { "operation": "right", "label": "SEARCH RIGHT" }
+                ],
+                "scenario": {
+                    "type": "binary-search",
+                    "values": [7, 15, 22, 31, 45, 58, 64, 79, 93, 101, 116],
+                    "target": 22
+                },
+                "challenge": {
+                    "phases": [
+                        {
+                            "title": "Find 22 with fewer prompts",
+                            "instruction": "Keep narrowing the current search area until the target is the middle value.",
+                            "target": {
+                                "label": "Target",
+                                "description": "Find 22 without being told which half to choose."
+                            },
+                            "goal": {
+                                "type": "outcome_equals",
+                                "expected_outcome": "found"
+                            },
+                            "success": "✓ Apply Complete",
+                            "feedback": "Recheck the target and current middle value before committing to a direction."
+                        }
+                    ]
+                },
+                "constraints": {}
+            },
+            {
+                "id": "solve",
+                "label": "Solve",
+                "prerequisites": ["apply"],
+                "guidance": {
+                    "start_message": "This target is not guaranteed to be present. Keep searching until you have evidence that no candidates remain.",
+                    "hints": {
+                        "limit": 1,
+                        "items": [
+                            {
+                                "content": "NOT FOUND is valid only after every remaining candidate has been eliminated."
+                            }
+                        ]
+                    }
+                },
+                "metrics": {
+                    "operation_label": "Comparisons"
+                },
+            "operation_rule": "Each middle comparison counts once. Declaring NOT FOUND after the search area is empty does not add a comparison.",
+                "controls": [
+                    { "operation": "left", "label": "SEARCH LEFT" },
+                    { "operation": "found", "label": "TARGET FOUND" },
+                    { "operation": "right", "label": "SEARCH RIGHT" },
+                    { "operation": "not-found", "label": "NOT FOUND" }
+                ],
+                "scenario": {
+                    "type": "binary-search",
+                    "values": [8, 19, 27, 42, 56, 68, 81, 95, 109],
+                    "target": 73
+                },
+                "challenge": {
+                    "phases": [
+                        {
+                            "title": "Prove 73 is absent",
+                            "instruction": "Search carefully. Choose NOT FOUND only once the current search area is empty.",
+                            "target": {
+                                "label": "Target",
+                                "description": "Determine whether 73 exists in the sorted array."
+                            },
+                            "goal": {
+                                "type": "outcome_equals",
+                                "expected_outcome": "not_found"
+                            },
+                            "success": "✓ Solve Complete",
+                            "feedback": "There is still a possible candidate. Compare the target with the highlighted middle first."
+                        }
+                    ]
+                },
+                "constraints": {}
+            },
+            {
+                "id": "mastery",
+                "label": "Mastery",
+                "prerequisites": ["solve"],
+                "guidance": {
+                    "start_message": "This unfamiliar sorted array was generated for this attempt. Decide every step without hints.",
+                    "hints": {
+                        "limit": 0,
+                        "items": []
+                    }
+                },
+                "metrics": {
+                    "operation_label": "Comparisons"
+                },
+            "operation_rule": "Each middle comparison counts once. Declaring NOT FOUND after the search area is empty does not add a comparison. No hints are available.",
+                "controls": [
+                    { "operation": "left", "label": "SEARCH LEFT" },
+                    { "operation": "found", "label": "TARGET FOUND" },
+                    { "operation": "right", "label": "SEARCH RIGHT" },
+                    { "operation": "not-found", "label": "NOT FOUND" }
+                ],
+                "scenario": {
+                    "generator": "binary-search-mastery",
+                    "generator_version": 1,
+                    "scenario_rules": {}
+                },
+                "challenge": {
+                    "phases": [
+                        {
+                            "title": "Master an unfamiliar search",
+                            "instruction": "Work from the current middle value until you correctly find the target or prove that it is absent.",
+                            "target": {
+                                "label": "Search challenge",
+                                "description": "The target may be present or absent."
+                            },
+                            "goal": {
+                                "type": "outcome_in",
+                                "expected_outcomes": ["found", "not_found"]
+                            },
+                            "success": "✓ Mastery Complete",
+                            "feedback": "Use only the current middle comparison to choose the next step."
+                        }
+                    ]
+                },
+                "constraints": {}
+            },
+            {
+                "id": "expert",
+                "label": "Expert",
+                "kind": "expert",
+                "prerequisites": ["mastery"],
+                "guidance": {
+                    "hints": {
+                        "limit": 0,
+                        "items": []
+                    }
+                },
+                "expert": {
+                    "generator": "binary-search-expert",
+                    "generator_version": 1,
+                    "replayable": true,
+                    "scenario_rules": {},
+                    "thinking": {
+                        "title": "Think before you search",
+                        "start_message": "Mentally follow each middle comparison before the search is replayed.",
+                        "objective_label": "Think first",
+                        "instruction": "Use the sorted starting array and target to predict Binary Search's comparison path.",
+                        "starting_stack_label": "Starting Array",
+                        "target_label": "Target",
+                        "sequence_label": "Operations to simulate",
+                        "do_not_execute": "Do not make search decisions yet. Follow the comparisons mentally from top to bottom.",
+                        "prediction_label": "Your prediction",
+                        "prediction_fields": [
+                            {
+                                "id": "comparedValues",
+                                "label": "Values compared, in order",
+                                "prompt": "Which middle values will Binary Search compare against?",
+                                "type": "number_list",
+                                "placeholder": "For example: 47, 79"
+                            },
+                            {
+                                "id": "comparisonCount",
+                                "label": "Number of comparisons",
+                                "prompt": "How many comparisons will it take?",
+                                "type": "number"
+                            },
+                            {
+                                "id": "outcome",
+                                "label": "Final result",
+                                "prompt": "Will the target be FOUND or NOT FOUND?",
+                                "type": "choice",
+                                "options": [
+                                    { "value": "found", "label": "FOUND" },
+                                    { "value": "not_found", "label": "NOT FOUND" }
+                                ]
+                            }
+                        ],
+                        "submit_label": "Check my prediction",
+                        "continue_label": "Continue to Expert Search →",
+                        "empty_message": "Complete every prediction before continuing.",
+                        "replay_message": "Now watch the search replay one comparison at a time.",
+                        "your_prediction_label": "Your prediction",
+                        "actual_label": "Result",
+                        "actual_result": "Binary Search compared: {{compared_values}}. Comparisons: {{comparison_count}}. Result: {{outcome}}.",
+                        "found_label": "FOUND",
+                        "not_found_label": "NOT FOUND"
+                    },
+                    "solve": {
+                        "title": "Expert Search",
+                        "start_message": "Choose every Binary Search decision yourself. The best comparison count remains hidden until you finish.",
+                        "instruction": "Find the target or prove it absent. No path, next middle, or hints are revealed.",
+                        "target_label": "SEARCH TASK",
+                        "your_label": "CURRENT SEARCH AREA",
+                        "available_values_label": "Search decisions",
+                        "metric_label": "Comparisons",
+                        "hints_label": "Hints: none",
+            "operation_rule": "Each middle comparison counts once. Declaring NOT FOUND after the search area is empty does not add a comparison.",
+                        "controls": [
+                            { "operation": "left", "label": "SEARCH LEFT" },
+                            { "operation": "found", "label": "TARGET FOUND" },
+                            { "operation": "right", "label": "SEARCH RIGHT" },
+                            { "operation": "not-found", "label": "NOT FOUND" }
+                        ],
+                        "feedback": "Compare the target with the current middle before deciding.",
+                        "solved_message": "✓ Expert Challenge Solved",
+                        "solved_result": "Your comparisons: {{comparisons}}. Optimal comparisons: {{optimal_operations}}.",
+                        "try_optimal_label": "Try for {{optimal_operations}}",
+                        "perfect_message": "🏆 PERFECT EXPERT",
+                        "perfect_result": "Minimum comparisons achieved: {{optimal_operations}}.",
+                        "new_challenge_label": "New Expert Challenge"
+                    }
+                }
+            }
+        ]
+    }
 }

@@ -88,5 +88,107 @@
             "type": "example",
             "content": "Insert 50 first. Insert 30: it is smaller, so it goes left. Insert 70: it is larger, so it goes right. Insert 40: go left from 50, then right from 30."
         }
-    ]
+    ],
+
+    "teaching": {
+        "introduction": {
+            "title": "Meet the Binary Search Tree",
+            "content": "A Binary Search Tree organizes values so comparisons tell you which direction to go. Smaller values go left and larger values go right.",
+            "points": [
+                "The first value becomes the root.",
+                "Each comparison chooses LEFT or RIGHT.",
+                "You will insert values and see their paths."
+            ]
+        },
+        "worked_example": {
+            "title": "Place one value by comparison",
+            "content": "Insertion does not guess a position. It follows comparisons from the root until an empty child position is found.",
+            "steps": [
+                { "action": "Start", "visual": "     [50]\n   /      \\\n empty    empty", "explanation": "50 is the root." },
+                { "action": "Compare 30", "visual": "30 < 50  →  LEFT", "explanation": "30 is smaller than the root, so it follows the left path." },
+                { "action": "Insert 30", "visual": "     [50]\n     /\n   [30]", "explanation": "The left position was empty, so 30 lands there." }
+            ],
+            "conclusion": "Every insertion follows the same smaller-left, larger-right rule.",
+            "next": { "title": "Insert the sequence below.", "content": "Watch each comparison before the next node appears." }
+        },
+        "guided_practice": {
+            "action_explanations": {
+                "insert-root": "The first value becomes the root, where every later comparison begins.",
+                "insert-smaller": "A smaller value follows the left side of the tree.",
+                "insert-larger": "A larger value follows the right side of the tree.",
+                "follow-comparisons": "Comparisons continue until an empty child position gives the value a home.",
+                "build-tree": "The completed tree keeps smaller values left and larger values right at every node."
+            }
+        },
+        "challenge": {
+            "title": "BST Challenge",
+            "start_message": "Use comparisons to build the requested part of the tree.",
+            "continue_message": "Challenge complete. Keep inserting values to explore more paths.",
+            "phases": [
+                {
+                    "title": "Build the first split",
+                    "instruction": "Create a root with one smaller left child and one larger right child.",
+                    "target": { "label": "Target", "description": "     50\n   /    \\\n 30      70" },
+                    "expected_operations": ["insert-root", "insert-smaller", "insert-larger"],
+                    "success": "✓ First split built correctly",
+                    "feedback": "Compare each new value with the root before inserting it."
+                },
+                {
+                    "title": "Finish the branches",
+                    "instruction": "Continue inserting until each side has its smaller and larger child.",
+                    "target": { "label": "Target", "description": "20 and 40 under 30; 60 and 80 under 70." },
+                    "expected_operations": ["follow-comparisons", "follow-comparisons", "follow-comparisons", "build-tree"],
+                    "success": "✓ Challenge Complete",
+                    "feedback": "Follow the highlighted comparison path until an empty child position appears."
+                }
+            ]
+        },
+        "recall": {
+            "title": "Recall",
+            "prompt": "In your own words, why does a BST place a smaller value on the left?",
+            "submit_label": "Submit recall",
+            "empty_message": "Write a short explanation before submitting.",
+            "completion_message": "✓ Recall completed",
+            "model_answer": "Keeping smaller values on the left and larger values on the right preserves an ordered structure, so comparisons can guide searching and insertion."
+        }
+    },
+    "mastery": {
+        "title": "Binary Search Tree Mastery",
+        "mastered_label": "Binary Search Tree Mastered",
+        "levels": [
+            { "id": "learn", "label": "Learn", "completion": { "type": "course_completion" } },
+            {
+                "id": "practice", "label": "Practice", "prerequisites": ["learn"], "current_state_label": "YOUR TREE",
+                "guidance": { "start_message": "Insert the short sequence and watch each comparison choose a branch.", "hints": { "limit": 1, "items": [{ "content": "Compare every new value with the root before choosing left or right." }] } },
+                "controls": [{ "operation": "insert", "label": "INSERT NEXT" }], "scenario": { "values": [50, 30, 70], "expected_outcome": "built" },
+                "challenge": { "phases": [{ "title": "Build the first split", "instruction": "Insert 50, 30, then 70 to make a root with two children.", "target": { "label": "TARGET TREE", "description": "50 at the root; 30 left; 70 right." }, "goal": { "type": "outcome_equals", "expected_outcome": "built" }, "success": "✓ Practice Complete", "feedback": "Follow the highlighted comparison path before each insertion." }] }, "constraints": {}
+            },
+            {
+                "id": "apply", "label": "Apply", "prerequisites": ["practice"], "current_state_label": "YOUR TREE",
+                "guidance": { "start_message": "Predict each value's branch yourself, then insert it.", "hints": { "limit": 1, "items": [{ "content": "Smaller moves left; larger moves right at every node you visit." }] } },
+                "controls": [{ "operation": "insert", "label": "INSERT NEXT" }], "scenario": { "values": [50, 30, 70, 20, 40], "expected_outcome": "built" },
+                "challenge": { "phases": [{ "title": "Place each value", "instruction": "Build the requested five-node BST without a guided route.", "target": { "label": "TARGET TREE", "description": "20 and 40 must become children below 30." }, "goal": { "type": "outcome_equals", "expected_outcome": "built" }, "success": "✓ Apply Complete", "feedback": "At each node, compare the incoming value before moving again." }] }, "constraints": {}
+            },
+            {
+                "id": "solve", "label": "Solve", "prerequisites": ["apply"], "current_state_label": "YOUR TREE",
+                "guidance": { "start_message": "Build the target tree from a new insertion sequence with no hints.", "hints": { "limit": 0, "items": [] } },
+                "controls": [{ "operation": "insert", "label": "INSERT NEXT" }], "scenario": { "values": [60, 35, 80, 20, 45, 70, 90], "expected_outcome": "built" },
+                "challenge": { "phases": [{ "title": "Build the target BST", "instruction": "Insert every value and preserve the BST ordering rule.", "target": { "label": "TARGET TREE", "description": "Each smaller branch must remain left of its parent; each larger branch right." }, "goal": { "type": "outcome_equals", "expected_outcome": "built" }, "success": "✓ Solve Complete", "feedback": "Do not stop at the root: follow comparisons until an empty child position appears." }] }, "constraints": {}
+            },
+            {
+                "id": "mastery", "label": "Mastery", "prerequisites": ["solve"], "current_state_label": "YOUR TREE",
+                "guidance": { "start_message": "This insertion sequence is randomized. Build the tree independently.", "hints": { "limit": 0, "items": [] } },
+                "controls": [{ "operation": "insert", "label": "INSERT NEXT" }], "scenario": { "generator": "bst-mastery", "generator_version": 1, "scenario_rules": {} },
+                "challenge": { "phases": [{ "title": "Master a new BST", "instruction": "Use the randomized sequence to construct the final BST.", "target": { "label": "TARGET TREE", "description": "Use comparisons—not position guessing—to determine every child." }, "goal": { "type": "outcome_equals", "expected_outcome": "built" }, "success": "✓ Mastery Complete", "feedback": "Every insertion starts at the root and follows the ordering rule." }] }, "constraints": {}
+            },
+            {
+                "id": "expert", "label": "Expert", "kind": "expert", "prerequisites": ["mastery"],
+                "expert": {
+                    "generator": "bst-expert", "generator_version": 1, "replayable": true, "scenario_rules": {},
+                    "thinking": { "title": "Predict the final tree", "objective_label": "Mental insertion", "instruction": "Simulate each insertion before the tree is drawn.", "starting_stack_label": "Starting Tree", "sequence_label": "Insertions to simulate", "do_not_execute": "Do not insert yet. Decide each parent-child relationship mentally.", "prediction_label": "Your prediction", "prediction_fields": [{ "id": "root", "label": "Root value", "prompt": "What value is the root?", "type": "number" }, { "id": "links", "label": "Parent → child links", "prompt": "List the final links, separated by commas (for example 50→30, 50→70).", "type": "text_list" }], "submit_label": "Check my prediction", "continue_label": "Continue to Expert Tree →", "empty_message": "Complete both predictions before continuing.", "replay_message": "Now watch each insertion build the tree.", "your_prediction_label": "Your prediction", "actual_label": "Result", "actual_result": "Root: {{next_pop}}. Parent-child links: {{final_state}}." },
+                    "solve": { "title": "Expert BST", "instruction": "Build the randomized tree with no hints. Structural correctness is the score.", "target_label": "TARGET TREE", "your_label": "YOUR TREE", "available_values_label": "Insertion action", "metric_label": "Insertions", "hints_label": "Hints: none", "operation_rule": "Each value follows comparisons from the root until an empty child position is found.", "controls": [{ "operation": "insert", "label": "INSERT NEXT" }], "feedback": "Use the BST rule at every node, not only at the root.", "solved_message": "✓ Expert Tree Solved", "solved_result": "The randomized BST structure is complete.", "new_challenge_label": "New Expert Challenge" }
+                }
+            }
+        ]
+    }
 }

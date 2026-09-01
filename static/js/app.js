@@ -6,4 +6,6 @@ playground.mount();
 
 teachingEngine.connect(playground);
 
+masteryEngine.connect(playground);
+
 resetMission();

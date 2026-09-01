@@ -82,5 +82,112 @@
             "type": "example",
             "content": "ADD 7, then ADD 14, creating 7 → 14. REMOVE takes away 7, so HEAD now points to 14."
         }
-    ]
+    ],
+
+    "teaching": {
+        "introduction": {
+            "title": "Meet the Linked List",
+            "content": "A Linked List stores items as separate nodes. Each node knows where the next node is, so the list forms a chain.",
+            "points": [
+                "A node holds one value.",
+                "A link connects it to the next node.",
+                "You will build a chain and watch HEAD move."
+            ]
+        },
+        "worked_example": {
+            "title": "Watch a chain form",
+            "content": "Each new node connects to the end of the chain instead of taking a fixed position in an array.",
+            "steps": [
+                { "action": "ADD 10", "visual": "HEAD → [10] → null", "explanation": "HEAD points to the first node." },
+                { "action": "ADD 20", "visual": "HEAD → [10] → [20] → null", "explanation": "The first node links to the new node." },
+                { "action": "REMOVE", "visual": "HEAD → [20] → null", "explanation": "Removing the first node makes HEAD follow its next link." }
+            ],
+            "conclusion": "The nodes do not need to sit next to each other; their links keep the chain connected.",
+            "next": { "title": "Build a chain below.", "content": "Add nodes, then remove the first one and watch HEAD change." }
+        },
+        "guided_practice": {
+            "action_explanations": {
+                "add": [
+                    "The first node becomes the place where HEAD starts.",
+                    "A new node joins the chain through a next link.",
+                    "The chain now has another connected node."
+                ],
+                "remove": "The first node leaves, so HEAD follows the link to the next node."
+            }
+        },
+        "challenge": {
+            "title": "Linked List Challenge",
+            "start_message": "Build a short connected chain, then change where HEAD points.",
+            "continue_message": "Challenge complete. Keep experimenting with links and HEAD.",
+            "phases": [
+                {
+                    "title": "Build a three-node chain",
+                    "instruction": "Create three connected nodes. Compare the chain in the playground with the target.",
+                    "target": { "label": "Target", "description": "HEAD → [node] → [node] → [node] → null" },
+                    "expected_operations": ["add", "add", "add"],
+                    "success": "✓ Three nodes are linked",
+                    "feedback": "A chain needs three added nodes before it matches the target."
+                },
+                {
+                    "title": "Move HEAD forward",
+                    "instruction": "Remove the first node so HEAD points to the next node.",
+                    "target": { "label": "New target", "description": "HEAD starts at the second node in the original chain." },
+                    "expected_operations": ["remove"],
+                    "success": "✓ Challenge Complete",
+                    "feedback": "Look at the first node and where HEAD should point next."
+                }
+            ]
+        },
+        "recall": {
+            "title": "Recall",
+            "prompt": "In your own words, how does a Linked List keep its nodes connected?",
+            "submit_label": "Submit recall",
+            "empty_message": "Write a short explanation before submitting.",
+            "completion_message": "✓ Recall completed",
+            "model_answer": "Each node stores a link or reference to the next node. Following those links lets the list form a chain from HEAD to null."
+        }
+    },
+    "mastery": {
+        "title": "Linked List Mastery",
+        "mastered_label": "Linked List Mastered",
+        "levels": [
+            { "id": "learn", "label": "Learn", "completion": { "type": "course_completion" } },
+            {
+                "id": "practice", "label": "Practice", "prerequisites": ["learn"], "current_state_label": "YOUR LIST",
+                "guidance": { "start_message": "Build the requested chain from HEAD to null.", "hints": { "limit": 1, "items": [{ "content": "ADD appends a node; HEAD remains at the first node." }] } },
+                "controls": [{ "operation": "add", "label": "ADD NODE" }, { "operation": "remove", "label": "REMOVE HEAD" }],
+                "scenario": { "initial_state": [], "operation_values": { "add": [10, 20, 30] } },
+                "challenge": { "phases": [{ "title": "Build a chain", "instruction": "Build HEAD → 10 → 20 → 30 → null.", "target": { "label": "TARGET LIST", "items": [10, 20, 30] }, "goal": { "type": "state_equals", "expected_state": [10, 20, 30] }, "success": "✓ Practice Complete", "feedback": "Follow the nodes from HEAD to null." }] }, "constraints": {}
+            },
+            {
+                "id": "apply", "label": "Apply", "prerequisites": ["practice"], "current_state_label": "YOUR LIST",
+                "guidance": { "start_message": "Transform the linked list without being told each button.", "hints": { "limit": 1, "items": [{ "content": "REMOVE moves HEAD forward; ADD attaches a node at the tail." }] } },
+                "controls": [{ "operation": "add", "label": "ADD NODE" }, { "operation": "remove", "label": "REMOVE HEAD" }],
+                "scenario": { "initial_state": [10, 20, 30], "operation_values": { "add": [40] } },
+                "challenge": { "phases": [{ "title": "Transform the chain", "instruction": "Turn HEAD → 10 → 20 → 30 into HEAD → 20 → 30 → 40.", "target": { "label": "TARGET LIST", "items": [20, 30, 40] }, "goal": { "type": "state_equals", "expected_state": [20, 30, 40] }, "success": "✓ Apply Complete", "feedback": "Compare the HEAD node and tail node with the target." }] }, "constraints": {}
+            },
+            {
+                "id": "solve", "label": "Solve", "prerequisites": ["apply"], "current_state_label": "YOUR LIST",
+                "guidance": { "start_message": "Reach the target chain using at most three list operations.", "hints": { "limit": 0, "items": [] } },
+                "controls": [{ "operation": "add", "label": "ADD NODE" }, { "operation": "remove", "label": "REMOVE HEAD" }],
+                "scenario": { "initial_state": [14, 33, 58], "operation_values": { "add": [72] } },
+                "challenge": { "phases": [{ "title": "Solve the list puzzle", "instruction": "Transform START into TARGET in three operations or fewer.", "target": { "label": "TARGET LIST", "items": [33, 58, 72] }, "goal": { "type": "state_equals", "expected_state": [33, 58, 72] }, "success": "✓ Solve Complete", "feedback": "Only the HEAD node can be removed directly." }] }, "constraints": { "max_operations": 3, "operation_limit_message": "Operation limit reached. Retry with a shorter plan." }
+            },
+            {
+                "id": "mastery", "label": "Mastery", "prerequisites": ["solve"], "current_state_label": "YOUR LIST",
+                "guidance": { "start_message": "Work with an unfamiliar chain independently.", "hints": { "limit": 0, "items": [] } },
+                "controls": [{ "operation": "add", "label": "ADD NODE" }, { "operation": "remove", "label": "REMOVE HEAD" }],
+                "scenario": { "generator": "linked-list-mastery", "generator_version": 1, "scenario_rules": {} },
+                "challenge": { "phases": [{ "title": "Master an unfamiliar chain", "instruction": "Transform the randomized list into the target structure.", "target": { "label": "TARGET LIST" }, "goal": { "type": "state_equals", "expected_state_from_scenario": "target_state" }, "success": "✓ Mastery Complete", "feedback": "Trace from HEAD and compare every next link with the target." }] }, "constraints": {}
+            },
+            {
+                "id": "expert", "label": "Expert", "kind": "expert", "prerequisites": ["mastery"],
+                "expert": {
+                    "generator": "linked-list-expert", "generator_version": 1, "replayable": true, "scenario_rules": {},
+                    "thinking": { "title": "Think through the links", "objective_label": "Mental simulation", "instruction": "Track which node becomes HEAD and which node becomes the tail before the replay.", "starting_stack_label": "Starting Linked List", "sequence_label": "Operations to simulate", "do_not_execute": "Do not modify the list yet. Follow the links mentally.", "prediction_label": "Your prediction", "prediction_fields": [{ "id": "finalState", "label": "Final nodes (HEAD → tail)", "prompt": "Which node values remain in the chain?", "type": "number_list" }, { "id": "nextRemoval", "label": "Next REMOVE value", "prompt": "Which HEAD value would REMOVE take next?", "type": "number" }], "submit_label": "Check my prediction", "continue_label": "Continue to Expert List →", "empty_message": "Complete both predictions before continuing.", "replay_message": "Now replay the node operations.", "your_prediction_label": "Your prediction", "actual_label": "Result", "actual_result": "Final chain: {{final_state}}. Next REMOVE: {{next_pop}}." },
+                    "solve": { "title": "Expert Linked List", "instruction": "Transform START into TARGET with no hints. Reason from HEAD and tail.", "target_label": "TARGET LIST", "your_label": "YOUR LIST", "available_values_label": "List actions", "metric_label": "Operations", "hints_label": "Hints: none", "operation_rule": "ADD changes the tail; REMOVE changes HEAD.", "controls": [{ "operation": "add", "label": "ADD NODE" }, { "operation": "remove", "label": "REMOVE HEAD" }], "feedback": "Check which end each list operation changes.", "solved_message": "✓ Expert List Solved", "solved_result": "You completed the randomized linked-list transformation.", "new_challenge_label": "New Expert Challenge" }
+                }
+            }
+        ]
+    }
 }

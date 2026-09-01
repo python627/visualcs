@@ -18,6 +18,7 @@
 {% set guided_practice = teaching.guided_practice or lesson.get("guided_teaching") %}
 {% set challenge = teaching.challenge or lesson.get("challenge") %}
 {% set recall = teaching.recall or lesson.get("recall") %}
+{% set mastery = lesson.get("mastery") %}
 
     <header class="topbar">
     <h1>🎓 VisualCS</h1>
@@ -175,15 +176,25 @@
 
                 {% else %}
 
-                <div class="teaching-stack teaching-stack-compact" aria-label="Stack after {{ step.action }}">
+                    {% if worked_example.visual_type == "stack" %}
 
-                    {% for item in step["items"] %}
+                    <div class="teaching-stack teaching-stack-compact" aria-label="Stack after {{ step.action }}">
 
-                    <span class="teaching-stack-block">{{ item }}</span>
+                        {% for item in step["items"] %}
 
-                    {% endfor %}
+                        <span class="teaching-stack-block">{{ item }}</span>
 
-                </div>
+                        {% endfor %}
+
+                    </div>
+
+                    {% else %}
+
+                    <div class="worked-example-state" aria-label="Example state after {{ step.action }}">
+                        {{ step.visual or step.action }}
+                    </div>
+
+                    {% endif %}
 
                 {% endif %}
 
@@ -231,6 +242,12 @@
            ⏱ {{ lesson.estimated_time }}
         </div>
 
+        {% if mastery %}
+
+        <section id="mastery-panel" class="mastery-panel" aria-live="polite"></section>
+
+        {% endif %}
+
     </aside>
 
     <section class="playground">
@@ -238,6 +255,12 @@
     <h2>📦 Playground</h2>
 
     <div class="playground-learning-area">
+
+        {% if mastery %}
+
+        <section id="mastery-challenge-panel" class="challenge-panel mastery-challenge-panel" aria-live="polite" hidden></section>
+
+        {% endif %}
 
         {% if challenge %}
 
@@ -251,11 +274,23 @@
 
                 <div id="animation-layer"></div>
 
+                {% if mastery %}
+
+                <p id="mastery-your-stack-label" class="mastery-your-stack-label" hidden>YOUR STACK</p>
+
+                {% endif %}
+
                 <div id="stack"></div>
 
             </div>
 
             <div class="buttons">
+
+                {% if mastery %}
+
+                <p class="mastery-controls-label">Available operations</p>
+
+                {% endif %}
 
                 {% for control in lesson.playground.controls %}
 
@@ -282,6 +317,8 @@
 
     <div class="mission-status">
 
+    <div class="guided-mission-progress">
+
         <div class="status-title">
             Mission Progress
         </div>
@@ -303,11 +340,19 @@
 
     <hr>
 
+    </div>
+
     <div id="message">
 
         Welcome! Let's discover how a {{ lesson.topic }} works.
 
     </div>
+
+    {% if mastery %}
+
+    <div id="mastery-feedback" class="mastery-feedback" aria-live="polite"></div>
+
+    {% endif %}
 
     {% if guided_practice and guided_practice.prediction %}
 
@@ -407,6 +452,14 @@
 
 <script src="{{ url_for('static', filename='js/alternate_explanations.js') }}"></script>
 
+<script src="{{ url_for('static', filename='js/challenge_runner.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/scenario_factory.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/expert_attempt_runner.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/mastery_engine.js') }}"></script>
+
 <script src="{{ url_for('static', filename='js/teaching_engine.js') }}"></script>
 
 <script src="{{ url_for('static', filename='js/mission.js') }}"></script>
@@ -422,6 +475,8 @@
 
 <script src="{{ url_for('static', filename='js/engine/stack_playground.js') }}"></script>
 
+<script src="{{ url_for('static', filename='js/engine/stack_expert_generator.js') }}"></script>
+
 <script src="{{ url_for('static', filename='js/engine/queue_playground.js') }}"></script>
 
 <script src="{{ url_for('static', filename='js/objects/linked_list.js') }}"></script>
@@ -429,6 +484,10 @@
 <script src="{{ url_for('static', filename='js/engine/linked_list_playground.js') }}"></script>
 
 <script src="{{ url_for('static', filename='js/engine/binary_search_playground.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/engine/binary_search_expert_generator.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/engine/remaining_mastery_generators.js') }}"></script>
 
 <script src="{{ url_for('static', filename='js/engine/bubble_sort_playground.js') }}"></script>
 

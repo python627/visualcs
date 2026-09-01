@@ -1,12 +1,15 @@
 function createRelationalKeysPlayground() {
 
-    const playgroundData = LESSON.playground;
-    const { tables, relationship } = playgroundData;
-    const sourceTable = tables[relationship.source_table];
-    const targetTable = tables[relationship.target_table];
+    let playgroundData = LESSON.playground;
+    let { tables, relationship } = playgroundData;
+    let sourceTable = tables[relationship.source_table];
+    let targetTable = tables[relationship.target_table];
 
     let traceIndex = 0;
     let phase = "find";
+    let masteryScenario = null;
+    let masteryMode = false;
+    let replayToken = 0;
 
     function getTrace(index = traceIndex) {
 
@@ -206,6 +209,11 @@ function createRelationalKeysPlayground() {
 
     function traceRelation() {
 
+        if (masteryMode) {
+            setByteMessage("Choose the payment whose foreign key you want to trace in the focused mastery controls.");
+            return;
+        }
+
         const trace = getTrace();
 
         if (phase === "find") {
@@ -298,6 +306,79 @@ function createRelationalKeysPlayground() {
 
     }
 
+    function traceMastery(operation) {
+        if (!masteryMode) return;
+        const paymentId = operation.replace("trace-", "").toUpperCase();
+        const expectedId = masteryScenario?.target_payment;
+        const paymentIndex = relationship.trace_order.indexOf(paymentId);
+
+        if (paymentId !== expectedId || paymentIndex === -1) {
+            masteryEngine.operationCompleted({
+                operation,
+                state: { outcome: null },
+                feedback: `Look for ${expectedId}. Its STUDENT_ID is the foreign-key value this challenge asks you to trace.`
+            });
+            return;
+        }
+
+        traceIndex = paymentIndex;
+        const trace = getTrace();
+        phase = "complete-next";
+        render({
+            foreignKeyHighlighted: true,
+            traceVisible: true,
+            primaryKeyHighlighted: true,
+            studentHighlighted: true,
+            statusText: `${trace.payment[sourceTable.primary_key]}.STUDENT_ID = ${trace.payment[relationship.foreign_key]} references ${trace.student.name}.`
+        });
+        masteryEngine.operationCompleted({
+            operation,
+            state: { outcome: "matched", payment: paymentId, student: trace.student.name },
+            feedback: `${paymentId} points to ${trace.student.name} through a foreign-key to primary-key match.`
+        });
+    }
+
+    function configureMasteryData(scenario) {
+        const students = scenario?.students || [];
+        const payments = scenario?.payments || [];
+        playgroundData = {
+            tables: {
+                students: {
+                    title: "STUDENTS",
+                    primary_key: "id",
+                    columns: [{ key: "id", label: "ID" }, { key: "name", label: "NAME" }],
+                    rows: students
+                },
+                payments: {
+                    title: "PAYMENTS",
+                    primary_key: "payment_id",
+                    columns: [{ key: "payment_id", label: "PAYMENT_ID" }, { key: "student_id", label: "STUDENT_ID" }],
+                    rows: payments
+                }
+            },
+            relationship: {
+                source_table: "payments",
+                foreign_key: "student_id",
+                target_table: "students",
+                primary_key: "id",
+                trace_order: payments.map(payment => payment.payment_id)
+            }
+        };
+        ({ tables, relationship } = playgroundData);
+        sourceTable = tables.payments;
+        targetTable = tables.students;
+        traceIndex = Math.max(0, relationship.trace_order.indexOf(scenario?.target_payment));
+        phase = "find";
+    }
+
+    function renderRelationshipCard(title, scenario, container) {
+        const card = document.createElement("section");
+        card.className = "mastery-state-card";
+        const payment = scenario?.payments?.find(item => item.payment_id === scenario?.target_payment);
+        card.innerHTML = `<span class="challenge-target-label">${title}</span><p>Trace <strong>${scenario?.target_payment || "a payment"}</strong>${payment ? ` · STUDENT_ID ${payment.student_id}` : ""}</p>`;
+        container.appendChild(card);
+    }
+
     function resetRelationship() {
 
         traceIndex = 0;
@@ -315,7 +396,52 @@ function createRelationalKeysPlayground() {
             resetRelationship();
         },
         reset() {
+            replayToken++;
+            masteryScenario = null;
+            masteryMode = false;
+            playgroundData = LESSON.playground;
+            ({ tables, relationship } = playgroundData);
+            sourceTable = tables[relationship.source_table];
+            targetTable = tables[relationship.target_table];
             resetRelationship();
+        },
+        resetForChallenge() {
+            this.reset();
+        },
+        configureMasteryScenario(scenario) {
+            replayToken++;
+            masteryScenario = scenario || {};
+            masteryMode = true;
+            configureMasteryData(scenario);
+            render({ statusText: `Trace ${scenario?.target_payment} from PAYMENTS to STUDENTS.` });
+        },
+        performMasteryOperation(operation) {
+            if (operation.startsWith("trace-")) traceMastery(operation);
+        },
+        endMasteryMode() { masteryMode = false; masteryScenario = null; },
+        async replayExpertSimulation(simulation) {
+            if (!simulation || !Array.isArray(simulation.steps)) return;
+            const token = ++replayToken;
+            for (const step of simulation.steps) {
+                await new Promise(resolve => window.setTimeout(resolve, 470));
+                if (token !== replayToken) return;
+                const paymentId = step.operation.replace("trace-", "").toUpperCase();
+                const index = relationship.trace_order.indexOf(paymentId);
+                if (index < 0) continue;
+                traceIndex = index;
+                const trace = getTrace();
+                render({ foreignKeyHighlighted: true, traceVisible: true, primaryKeyHighlighted: true, studentHighlighted: true, statusText: `${paymentId} references ${trace.student.name}.` });
+            }
+        },
+        renderExpertThinkingState({ labels }, container) {
+            renderRelationshipCard(labels.title || "Related records", masteryScenario, container);
+        },
+        renderMasteryStates({ scenario, target }, container) {
+            renderRelationshipCard("FOREIGN-KEY TASK", scenario, container);
+            const goal = document.createElement("section");
+            goal.className = "mastery-state-card";
+            goal.innerHTML = `<span class="challenge-target-label">${target.label || "TARGET"}</span><p>${target.description || "Trace the requested foreign key to its matching primary-key row."}</p>`;
+            container.appendChild(goal);
         }
     };
 

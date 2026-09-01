@@ -94,5 +94,108 @@
             "type": "example",
             "content": "P1 starts with 5 units and uses 2, leaving 3. It moves behind P2 and P3. P2 then uses 2 and returns with 1, so the queue keeps rotating."
         }
-    ]
+    ],
+
+    "teaching": {
+        "introduction": {
+            "title": "Meet Round Robin",
+            "content": "Round Robin shares one CPU by giving each waiting process a short turn instead of letting the first one keep the CPU until it finishes.",
+            "points": [
+                "A time quantum is the maximum length of one CPU turn.",
+                "An unfinished process returns to the back of Ready Queue.",
+                "You will watch the queue rotate so each process gets a chance."
+            ]
+        },
+        "worked_example": {
+            "title": "Watch one turn rotate",
+            "content": "The time quantum is 2 units, so P1 cannot use more than 2 units in one turn.",
+            "steps": [
+                { "action": "P1 enters CPU", "visual": "READY: P2(3) → P3(4)\nCPU: P1(5)", "explanation": "P1 begins at the front of the ready queue." },
+                { "action": "Use quantum 2", "visual": "CPU: P1(3 remaining)", "explanation": "P1 uses two units and still has three units of work left." },
+                { "action": "Return to queue", "visual": "READY: P2(3) → P3(4) → P1(3)", "explanation": "Because P1 is unfinished, it goes to the back and P2 gets the next turn." }
+            ],
+            "conclusion": "Short turns let several processes share the CPU fairly.",
+            "next": { "title": "Rotate the ready queue.", "content": "Use NEXT STEP to follow each CPU turn and its remaining time." }
+        },
+        "guided_practice": {
+            "action_explanations": {
+                "run-first-process": "P1 leaves the front of Ready Queue and receives the first CPU turn.",
+                "use-time-quantum": "P1 can use only two units this turn, so it still has work remaining.",
+                "return-to-ready-queue": "P1 is unfinished, so it returns to the back and makes room for P2.",
+                "run-next-process": "P2 now gets a turn because it moved to the front while P1 returned to the back.",
+                "continue-rotating": "Each turn either completes a process or sends it to the back, keeping the queue rotating.",
+                "complete-all": "Every process has used enough turns to finish, so the completed list contains them all."
+            }
+        },
+        "challenge": {
+            "title": "Round Robin Challenge",
+            "start_message": "Share the CPU fairly by following the time quantum and letting the ready queue rotate.",
+            "continue_message": "Challenge complete. Keep exploring to watch later turns finish the processes.",
+            "phases": [
+                {
+                    "title": "Rotate P1",
+                    "instruction": "Give P1 one quantum, then decide what happens because it is still unfinished.",
+                    "target": { "label": "Goal", "description": "After P1 uses 2 units, it should have 3 left and be behind P2 and P3 in Ready Queue." },
+                    "expected_operations": ["run-first-process", "use-time-quantum", "return-to-ready-queue"],
+                    "success": "✓ P1 rotated to the back",
+                    "feedback": "Use the time quantum, then check whether P1 has finished before deciding where it belongs."
+                },
+                {
+                    "title": "Give P2 its turn",
+                    "instruction": "Let the process now at the front use the CPU and resolve its turn.",
+                    "target": { "label": "Goal", "description": "P2 should run next and, because it still has work left, rejoin the back of the queue." },
+                    "expected_operations": ["run-next-process", "continue-rotating", "continue-rotating"],
+                    "success": "✓ The queue rotated again",
+                    "feedback": "The front process gets the next turn; unfinished work always returns to the rear."
+                }
+            ]
+        },
+        "recall": {
+            "title": "Recall",
+            "prompt": "In your own words, why does an unfinished process return to the back of the ready queue in Round Robin?",
+            "submit_label": "Submit recall",
+            "empty_message": "Write a short explanation before submitting.",
+            "completion_message": "✓ Recall completed",
+            "model_answer": "Round Robin gives a process only one time quantum. If work remains, it goes to the back so the other waiting processes can receive their turns too."
+        }
+    },
+    "mastery": {
+        "title": "Round Robin Mastery",
+        "mastered_label": "Round Robin Mastered",
+        "levels": [
+            { "id": "learn", "label": "Learn", "completion": { "type": "course_completion" } },
+            {
+                "id": "practice", "label": "Practice", "prerequisites": ["learn"], "current_state_label": "READY / CPU / COMPLETED",
+                "guidance": { "start_message": "Choose the process at the front for each time quantum.", "hints": { "limit": 1, "items": [{ "content": "After an unfinished turn, the process moves to the back of Ready Queue." }] } },
+                "controls": [{ "operation": "run-p1", "label": "RUN P1" }, { "operation": "run-p2", "label": "RUN P2" }, { "operation": "run-p3", "label": "RUN P3" }], "scenario": { "quantum": 2, "processes": [{ "id": "P1", "burst": 3 }, { "id": "P2", "burst": 2 }, { "id": "P3", "burst": 2 }] },
+                "challenge": { "phases": [{ "title": "Follow the rotation", "instruction": "Run the front process each turn until every process completes.", "target": { "label": "TARGET", "description": "Unfinished work rotates to the rear." }, "goal": { "type": "outcome_equals", "expected_outcome": "complete" }, "success": "✓ Practice Complete", "feedback": "The front of Ready Queue always gets the next quantum." }] }, "constraints": {}
+            },
+            {
+                "id": "apply", "label": "Apply", "prerequisites": ["practice"], "current_state_label": "READY / CPU / COMPLETED",
+                "guidance": { "start_message": "Predict which process reaches the CPU next after each rotation.", "hints": { "limit": 1, "items": [{ "content": "A process that still has work goes behind every waiting process." }] } },
+                "controls": [{ "operation": "run-p1", "label": "RUN P1" }, { "operation": "run-p2", "label": "RUN P2" }, { "operation": "run-p3", "label": "RUN P3" }], "scenario": { "quantum": 2, "processes": [{ "id": "P1", "burst": 5 }, { "id": "P2", "burst": 3 }, { "id": "P3", "burst": 2 }] },
+                "challenge": { "phases": [{ "title": "Predict the queue rotation", "instruction": "Complete the schedule by selecting the front process each round.", "target": { "label": "TARGET", "description": "Respect both queue order and the quantum." }, "goal": { "type": "outcome_equals", "expected_outcome": "complete" }, "success": "✓ Apply Complete", "feedback": "Check who returns to the rear before choosing again." }] }, "constraints": {}
+            },
+            {
+                "id": "solve", "label": "Solve", "prerequisites": ["apply"], "current_state_label": "READY / CPU / COMPLETED",
+                "guidance": { "start_message": "Solve a new Round Robin schedule with no hints.", "hints": { "limit": 0, "items": [] } },
+                "controls": [{ "operation": "run-p1", "label": "RUN P1" }, { "operation": "run-p2", "label": "RUN P2" }, { "operation": "run-p3", "label": "RUN P3" }], "scenario": { "quantum": 3, "processes": [{ "id": "P1", "burst": 6 }, { "id": "P2", "burst": 4 }, { "id": "P3", "burst": 5 }] },
+                "challenge": { "phases": [{ "title": "Solve the rotating schedule", "instruction": "Complete the schedule while tracking remaining burst times yourself.", "target": { "label": "TARGET", "description": "Every process gets fair turns until completion." }, "goal": { "type": "outcome_equals", "expected_outcome": "complete" }, "success": "✓ Solve Complete", "feedback": "Do not let a process use more than one quantum per turn." }] }, "constraints": {}
+            },
+            {
+                "id": "mastery", "label": "Mastery", "prerequisites": ["solve"], "current_state_label": "READY / CPU / COMPLETED",
+                "guidance": { "start_message": "A randomized queue and time quantum are ready. Work independently.", "hints": { "limit": 0, "items": [] } },
+                "controls": [{ "operation": "run-p1", "label": "RUN P1" }, { "operation": "run-p2", "label": "RUN P2" }, { "operation": "run-p3", "label": "RUN P3" }], "scenario": { "generator": "round-robin-mastery", "generator_version": 1, "scenario_rules": {} },
+                "challenge": { "phases": [{ "title": "Master Round Robin", "instruction": "Run the randomized process set fairly until every process completes.", "target": { "label": "TARGET", "description": "Use the displayed time quantum for every turn." }, "goal": { "type": "outcome_equals", "expected_outcome": "complete" }, "success": "✓ Mastery Complete", "feedback": "The front process gets a turn; unfinished work returns to the rear." }] }, "constraints": {}
+            },
+            {
+                "id": "expert", "label": "Expert", "kind": "expert", "prerequisites": ["mastery"],
+                "expert": {
+                    "generator": "round-robin-expert", "generator_version": 1, "replayable": true, "scenario_rules": {},
+                    "thinking": { "title": "Simulate the rotations", "objective_label": "Mental schedule", "instruction": "Predict the first queue state and final completion order before execution.", "starting_stack_label": "Starting Ready Queue", "sequence_label": "Scheduling rounds to simulate", "do_not_execute": "Do not run the schedule yet. Move one quantum at a time in your head.", "prediction_label": "Your prediction", "prediction_fields": [{ "id": "firstRounds", "label": "Queue after three quanta", "prompt": "List Ready Queue order after three quanta.", "type": "text_list" }, { "id": "completionOrder", "label": "Completion order", "prompt": "List process completion order.", "type": "text_list" }], "submit_label": "Check my prediction", "continue_label": "Continue to Expert Round Robin →", "empty_message": "Complete both predictions before continuing.", "replay_message": "Now replay the scheduling rounds.", "your_prediction_label": "Your prediction", "actual_label": "Result", "actual_result": "Completion order: {{final_state}}. Queue after three quanta: {{next_pop}}." },
+                    "solve": { "title": "Expert Round Robin", "instruction": "Run the randomized process set with no hints. Correct queue rotation and completion order are the score.", "target_label": "TARGET", "your_label": "READY / CPU / COMPLETED", "available_values_label": "Choose next process", "metric_label": "Scheduling decisions", "hints_label": "Hints: none", "operation_rule": "Only the front process may use the next time quantum.", "controls": [{ "operation": "run-p1", "label": "RUN P1" }, { "operation": "run-p2", "label": "RUN P2" }, { "operation": "run-p3", "label": "RUN P3" }], "feedback": "Track where unfinished work returns before picking the next process.", "solved_message": "✓ Expert Round Robin Solved", "solved_result": "The randomized Round Robin schedule is complete.", "new_challenge_label": "New Expert Challenge" }
+                }
+            }
+        ]
+    }
 }

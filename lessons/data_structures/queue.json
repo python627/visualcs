@@ -211,5 +211,57 @@
         "completion_message": "✓ Recall completed",
         "model_answer": "A Queue removes from the front. New items join at the rear, so the item that has waited the longest reaches the front and leaves first."
     }
+    },
+    "mastery": {
+        "title": "Queue Mastery",
+        "mastered_label": "Queue Mastered",
+        "levels": [
+            { "id": "learn", "label": "Learn", "completion": { "type": "course_completion" } },
+            {
+                "id": "practice", "label": "Practice", "prerequisites": ["learn"],
+                "current_state_label": "YOUR QUEUE",
+                "guidance": { "start_message": "Build the target Queue. Watch which end is FRONT and which is REAR.", "hints": { "limit": 1, "items": [{ "content": "New items always join at the REAR." }] } },
+                "controls": [{ "operation": "enqueue", "label": "ENQUEUE" }, { "operation": "dequeue", "label": "DEQUEUE" }],
+                "scenario": { "initial_state": [], "operation_values": { "enqueue": [10, 20, 30] } },
+                "challenge": { "phases": [{ "title": "Build the waiting line", "instruction": "Build FRONT → [10] → [20] → [30] ← REAR.", "target": { "label": "TARGET QUEUE", "items": [10, 20, 30] }, "goal": { "type": "state_equals", "expected_state": [10, 20, 30] }, "success": "✓ Practice Complete", "feedback": "Compare your Queue with the target from FRONT to REAR." }] },
+                "constraints": {}
+            },
+            {
+                "id": "apply", "label": "Apply", "prerequisites": ["practice"], "current_state_label": "YOUR QUEUE",
+                "guidance": { "start_message": "Transform the Queue without a button-by-button recipe.", "hints": { "limit": 1, "items": [{ "content": "Only DEQUEUE changes the FRONT; ENQUEUE always changes the REAR." }] } },
+                "controls": [{ "operation": "enqueue", "label": "ENQUEUE" }, { "operation": "dequeue", "label": "DEQUEUE" }],
+                "scenario": { "initial_state": [10, 20, 30], "operation_values": { "enqueue": [40] } },
+                "challenge": { "phases": [{ "title": "Transform the Queue", "instruction": "Turn [10, 20, 30] into [20, 30, 40].", "target": { "label": "TARGET QUEUE", "items": [20, 30, 40] }, "goal": { "type": "state_equals", "expected_state": [20, 30, 40] }, "success": "✓ Apply Complete", "feedback": "Think about which item has been waiting longest before adding anything." }] },
+                "constraints": {}
+            },
+            {
+                "id": "solve", "label": "Solve", "prerequisites": ["apply"], "current_state_label": "YOUR QUEUE",
+                "guidance": { "start_message": "Reach the target using at most three Queue operations.", "hints": { "limit": 0, "items": [] } },
+                "controls": [{ "operation": "enqueue", "label": "ENQUEUE" }, { "operation": "dequeue", "label": "DEQUEUE" }],
+                "scenario": { "initial_state": [14, 27, 39], "operation_values": { "enqueue": [52] } },
+                "challenge": { "phases": [{ "title": "Solve the Queue puzzle", "instruction": "Transform START into TARGET in three operations or fewer.", "target": { "label": "TARGET QUEUE", "items": [39, 52] }, "goal": { "type": "state_equals", "expected_state": [39, 52] }, "success": "✓ Solve Complete", "feedback": "The only removable item is at FRONT." }] },
+                "constraints": { "max_operations": 3, "operation_limit_message": "Operation limit reached. The target Queue was not achieved." }
+            },
+            {
+                "id": "mastery", "label": "Mastery", "prerequisites": ["solve"], "current_state_label": "YOUR QUEUE",
+                "guidance": { "start_message": "This Queue is new. Work independently with no hints.", "hints": { "limit": 0, "items": [] } },
+                "controls": [{ "operation": "enqueue", "label": "ENQUEUE" }, { "operation": "dequeue", "label": "DEQUEUE" }],
+                "scenario": { "generator": "queue-mastery", "generator_version": 1, "scenario_rules": {} },
+                "challenge": { "phases": [{ "title": "Master an unfamiliar Queue", "instruction": "Transform the randomized Queue into its target state.", "target": { "label": "TARGET QUEUE" }, "goal": { "type": "state_equals", "expected_state_from_scenario": "target_state" }, "success": "✓ Mastery Complete", "feedback": "Check FRONT and REAR after every decision." }] },
+                "constraints": {}
+            },
+            {
+                "id": "expert", "label": "Expert", "kind": "expert", "prerequisites": ["mastery"],
+                "expert": {
+                    "generator": "queue-expert", "generator_version": 1, "replayable": true, "scenario_rules": {},
+                    "thinking": {
+                        "title": "Think before the Queue moves", "objective_label": "Mental simulation", "instruction": "Follow the Queue operations mentally before the replay.", "starting_stack_label": "Starting Queue", "sequence_label": "Operations to simulate", "do_not_execute": "Do not perform these operations yet. Track FRONT and REAR in your head.", "prediction_label": "Your prediction",
+                        "prediction_fields": [{ "id": "finalState", "label": "Final Queue (FRONT → REAR)", "prompt": "What will the Queue contain after all operations?", "type": "number_list" }, { "id": "nextRemoval", "label": "Next DEQUEUE value", "prompt": "Which value would leave next?", "type": "number" }],
+                        "submit_label": "Check my prediction", "continue_label": "Continue to Expert Queue →", "empty_message": "Complete both predictions before continuing.", "replay_message": "Now replay the Queue sequence.", "your_prediction_label": "Your prediction", "actual_label": "Result", "actual_result": "Final Queue: {{final_state}}. Next DEQUEUE: {{next_pop}}."
+                    },
+                    "solve": { "title": "Expert Queue", "instruction": "Transform START into TARGET with no hints. Plan from FRONT to REAR.", "target_label": "TARGET QUEUE", "your_label": "YOUR QUEUE", "available_values_label": "Queue actions", "metric_label": "Operations", "hints_label": "Hints: none", "operation_rule": "Every ENQUEUE or DEQUEUE counts as one operation.", "controls": [{ "operation": "enqueue", "label": "ENQUEUE" }, { "operation": "dequeue", "label": "DEQUEUE" }], "feedback": "Compare the current Queue with the target from the front.", "solved_message": "✓ Expert Queue Solved", "solved_result": "You completed the randomized Queue transformation.", "new_challenge_label": "New Expert Challenge" }
+                }
+            }
+        ]
     }
 }

@@ -79,5 +79,107 @@
             "type": "example",
             "content": "Start with [50, 20, 40, 10, 30]. Compare 50 and 20, then swap. Compare 50 and 40, then swap again. The larger 50 keeps moving right during the pass."
         }
-    ]
+    ],
+
+    "teaching": {
+        "introduction": {
+            "title": "Meet Bubble Sort",
+            "content": "Bubble Sort puts values in order by comparing neighboring values and swapping them only when they are backwards.",
+            "points": [
+                "It looks at one pair of neighbors at a time.",
+                "A larger left value moves right by swapping.",
+                "You will watch values gradually reach their final places."
+            ]
+        },
+        "worked_example": {
+            "title": "Watch one swap",
+            "content": "Start with a small unsorted row and compare the first two neighbors.",
+            "steps": [
+                { "action": "Compare", "visual": "[50] [20] [40]", "explanation": "50 is to the left of 20, but it is larger, so this pair is out of order." },
+                { "action": "Swap", "visual": "[20] [50] [40]", "explanation": "Swap the pair so the smaller value moves left and the larger value moves right." },
+                { "action": "Continue", "visual": "[20] [50] [40]", "explanation": "Now compare 50 with its next neighbor. Repeating this is one pass." }
+            ],
+            "conclusion": "During a pass, large values keep moving right until one reaches its final position.",
+            "next": { "title": "Now watch the full array sort.", "content": "Use NEXT STEP to compare each highlighted pair." }
+        },
+        "guided_practice": {
+            "action_explanations": {
+                "compare-adjacent": "These two neighbors are the only values Bubble Sort is deciding about right now.",
+                "swap": "The larger value moved one position right, bringing this pair into order.",
+                "continue-pass": "Move to the next neighboring pair; the same comparison rule applies again.",
+                "complete-pass": "One value has bubbled all the way to its final position at the right.",
+                "sorted-array": "Every pair is now in order, so the whole array is sorted."
+            }
+        },
+        "challenge": {
+            "title": "Bubble Sort Challenge",
+            "start_message": "Move 50 toward its final place by following the comparison rule yourself.",
+            "continue_message": "Challenge complete. You can keep using NEXT STEP to finish sorting the array.",
+            "phases": [
+                {
+                    "title": "Fix the first pair",
+                    "instruction": "Compare the first two values and make that pair ordered.",
+                    "target": { "label": "Goal", "description": "Turn [50] [20] into [20] [50] without changing the third value yet." },
+                    "expected_operations": ["compare-adjacent", "swap"],
+                    "success": "✓ First pair fixed",
+                    "feedback": "Look at the highlighted neighboring pair and decide whether its left value is larger."
+                },
+                {
+                    "title": "Finish 50's first pass",
+                    "instruction": "Keep comparing 50 with the next neighbor until it reaches the far right.",
+                    "target": { "label": "Goal", "description": "Let the largest value, 50, bubble to the end of the first pass." },
+                    "expected_operations": ["continue-pass", "compare-adjacent", "swap", "continue-pass", "compare-adjacent", "swap", "continue-pass", "compare-adjacent", "swap", "complete-pass"],
+                    "success": "✓ 50 reached its final position",
+                    "feedback": "Continue through the adjacent pairs and swap only when the left value is larger."
+                }
+            ]
+        },
+        "recall": {
+            "title": "Recall",
+            "prompt": "In your own words, why does a large value move toward the right during Bubble Sort?",
+            "submit_label": "Submit recall",
+            "empty_message": "Write a short explanation before submitting.",
+            "completion_message": "✓ Recall completed",
+            "model_answer": "Bubble Sort compares neighboring values. When a larger value is on the left, it swaps with the smaller neighbor, so repeated swaps move the larger value right."
+        }
+    },
+    "mastery": {
+        "title": "Bubble Sort Mastery",
+        "mastered_label": "Bubble Sort Mastered",
+        "levels": [
+            { "id": "learn", "label": "Learn", "completion": { "type": "course_completion" } },
+            {
+                "id": "practice", "label": "Practice", "prerequisites": ["learn"], "current_state_label": "YOUR ARRAY",
+                "guidance": { "start_message": "Complete a small pass. Decide whether the highlighted pair swaps or stays.", "hints": { "limit": 1, "items": [{ "content": "Swap only when the left value is larger than its right neighbor." }] } },
+                "controls": [{ "operation": "swap", "label": "SWAP" }, { "operation": "keep", "label": "KEEP ORDER" }], "scenario": { "values": [30, 10], "target_state": [10, 30] },
+                "challenge": { "phases": [{ "title": "Complete one comparison", "instruction": "Put [30, 10] into ascending order.", "target": { "label": "TARGET ARRAY", "items": [10, 30] }, "goal": { "type": "outcome_equals", "expected_outcome": "sorted" }, "success": "✓ Practice Complete", "feedback": "Compare the two highlighted values before choosing." }] }, "constraints": {}
+            },
+            {
+                "id": "apply", "label": "Apply", "prerequisites": ["practice"], "current_state_label": "YOUR ARRAY",
+                "guidance": { "start_message": "Sort this array with fewer prompts. Each adjacent pair needs its own decision.", "hints": { "limit": 1, "items": [{ "content": "A KEEP decision is just as important as a SWAP decision." }] } },
+                "controls": [{ "operation": "swap", "label": "SWAP" }, { "operation": "keep", "label": "KEEP ORDER" }], "scenario": { "values": [40, 10, 30], "target_state": [10, 30, 40] },
+                "challenge": { "phases": [{ "title": "Sort with decisions", "instruction": "Choose the correct swap decision for every highlighted pair.", "target": { "label": "TARGET ARRAY", "items": [10, 30, 40] }, "goal": { "type": "outcome_equals", "expected_outcome": "sorted" }, "success": "✓ Apply Complete", "feedback": "Only swap an out-of-order neighboring pair." }] }, "constraints": {}
+            },
+            {
+                "id": "solve", "label": "Solve", "prerequisites": ["apply"], "current_state_label": "YOUR ARRAY",
+                "guidance": { "start_message": "Sort the array while tracking comparisons and swaps yourself.", "hints": { "limit": 0, "items": [] } },
+                "controls": [{ "operation": "swap", "label": "SWAP" }, { "operation": "keep", "label": "KEEP ORDER" }], "scenario": { "values": [50, 20, 40, 10], "target_state": [10, 20, 40, 50] },
+                "challenge": { "phases": [{ "title": "Solve the sort", "instruction": "Sort the complete array without hints.", "target": { "label": "TARGET ARRAY", "items": [10, 20, 40, 50] }, "goal": { "type": "outcome_equals", "expected_outcome": "sorted" }, "success": "✓ Solve Complete", "feedback": "Bubble Sort compares neighbors from left to right, pass after pass." }] }, "constraints": {}
+            },
+            {
+                "id": "mastery", "label": "Mastery", "prerequisites": ["solve"], "current_state_label": "YOUR ARRAY",
+                "guidance": { "start_message": "This array is randomized. Predict each swap decision with no hints.", "hints": { "limit": 0, "items": [] } },
+                "controls": [{ "operation": "swap", "label": "SWAP" }, { "operation": "keep", "label": "KEEP ORDER" }], "scenario": { "generator": "bubble-sort-mastery", "generator_version": 1, "scenario_rules": {} },
+                "challenge": { "phases": [{ "title": "Master an unfamiliar sort", "instruction": "Sort the randomized array through correct pair-by-pair decisions.", "target": { "label": "TARGET ARRAY" }, "goal": { "type": "outcome_equals", "expected_outcome": "sorted" }, "success": "✓ Mastery Complete", "feedback": "Look only at the highlighted neighboring values." }] }, "constraints": {}
+            },
+            {
+                "id": "expert", "label": "Expert", "kind": "expert", "prerequisites": ["mastery"],
+                "expert": {
+                    "generator": "bubble-sort-expert", "generator_version": 1, "replayable": true, "scenario_rules": {},
+                    "thinking": { "title": "Simulate a Bubble Sort pass", "objective_label": "Think first", "instruction": "Before the array moves, predict the complete first pass.", "starting_stack_label": "Starting Array", "sequence_label": "Comparisons to simulate", "do_not_execute": "Do not click SWAP or KEEP yet. Work through every pair mentally.", "prediction_label": "Your prediction", "prediction_fields": [{ "id": "finalState", "label": "Array after the pass", "prompt": "What is the array after this pass?", "type": "number_list" }, { "id": "comparisons", "label": "Comparison count", "prompt": "How many adjacent comparisons occur?", "type": "number" }, { "id": "swaps", "label": "Swap count", "prompt": "How many pairs swap?", "type": "number" }], "submit_label": "Check my prediction", "continue_label": "Continue to Expert Sort →", "empty_message": "Complete every prediction before continuing.", "replay_message": "Now replay the pass one pair at a time.", "your_prediction_label": "Your prediction", "actual_label": "Result", "actual_result": "Array after pass: {{final_state}}. Swaps: {{next_pop}}." },
+                    "solve": { "title": "Expert Bubble Sort", "instruction": "Sort the randomized array with no hints. Accuracy of each comparison is the challenge.", "target_label": "TARGET ARRAY", "your_label": "YOUR ARRAY", "available_values_label": "Pair decision", "metric_label": "Comparisons", "hints_label": "Hints: none", "operation_rule": "Every highlighted neighboring pair needs one correct SWAP or KEEP decision.", "controls": [{ "operation": "swap", "label": "SWAP" }, { "operation": "keep", "label": "KEEP ORDER" }], "feedback": "Do not invent a shortcut: decide the current adjacent pair.", "solved_message": "✓ Expert Sort Solved", "solved_result": "The randomized array is sorted through correct Bubble Sort decisions.", "new_challenge_label": "New Expert Challenge" }
+                }
+            }
+        ]
+    }
 }

@@ -1,15 +1,17 @@
 function createPacketRoutingPlayground() {
 
-    const network = LESSON.playground;
-    const nodesById = new Map(network.nodes.map(node => [node.id, node]));
+    let network = LESSON.playground;
+    let nodesById = new Map(network.nodes.map(node => [node.id, node]));
     const edgeKey = (from, to) => `${from}->${to}`;
-    const firstRouterId = network.route[1];
-    const selectedNextHopId = network.route[2];
-    const alternativeHopId = network.edges.find(
+    let firstRouterId = network.route[1];
+    let selectedNextHopId = network.route[2];
+    let alternativeEdge = network.edges.find(
         edge => edge.from === firstRouterId && edge.to !== selectedNextHopId
-    ).to;
-    const selectedNextHop = nodesById.get(selectedNextHopId);
-    const alternativeHop = nodesById.get(alternativeHopId);
+    );
+    let alternativeHopId = alternativeEdge?.to;
+    let alternativeHopAvailable = !alternativeEdge?.disabled;
+    let selectedNextHop = nodesById.get(selectedNextHopId);
+    let alternativeHop = nodesById.get(alternativeHopId);
 
     let packetLocation = network.source;
     let phase = "send";
@@ -21,6 +23,30 @@ function createPacketRoutingPlayground() {
     let packetElement;
     let nodeElements = new Map();
     let edgeElements = new Map();
+    let masteryMode = false;
+    let masteryScenario = null;
+    let replayToken = 0;
+
+    function configureNetwork(scenario = {}) {
+        network = {
+            ...LESSON.playground,
+            nodes: scenario.nodes || LESSON.playground.nodes,
+            edges: scenario.edges || LESSON.playground.edges,
+            source: scenario.source || LESSON.playground.source,
+            destination: scenario.destination || LESSON.playground.destination,
+            route: scenario.route || LESSON.playground.route
+        };
+        nodesById = new Map(network.nodes.map(node => [node.id, node]));
+        firstRouterId = network.route[1];
+        selectedNextHopId = network.route[2];
+        alternativeEdge = network.edges.find(edge => (
+            edge.from === firstRouterId && edge.to !== selectedNextHopId
+        ));
+        alternativeHopId = alternativeEdge?.to;
+        alternativeHopAvailable = !alternativeEdge?.disabled;
+        selectedNextHop = nodesById.get(selectedNextHopId);
+        alternativeHop = nodesById.get(alternativeHopId);
+    }
 
     function setPacketPosition(nodeId, animate = false) {
 
@@ -64,7 +90,7 @@ function createPacketRoutingPlayground() {
         const traversedEdges = getTraversedEdges();
         const routeChoiceEdges = new Set(
             network.edges
-                .filter(edge => edge.from === firstRouterId)
+                .filter(edge => edge.from === firstRouterId && !edge.disabled)
                 .map(edge => edgeKey(edge.from, edge.to))
         );
         statusElement.textContent = statusText;
@@ -86,8 +112,8 @@ function createPacketRoutingPlayground() {
         if (examiningRouter || routeSelected) {
             decisionElement.hidden = false;
             decisionElement.innerHTML = routeSelected
-                ? `${nodesById.get(firstRouterId).label} selects <strong>${selectedNextHop.label} → ${nodesById.get(network.destination).label}</strong>. The ${alternativeHop.label} path stays visible, but it does not lead to the destination.`
-                : `${nodesById.get(firstRouterId).label} can choose <strong>${alternativeHop.label}</strong> or <strong>${selectedNextHop.label}</strong>. It examines the packet's destination: ${nodesById.get(network.destination).label}.`;
+                ? `${nodesById.get(firstRouterId).label} selects <strong>${selectedNextHop.label} → ${nodesById.get(network.destination).label}</strong>. ${alternativeHopAvailable ? `The ${alternativeHop?.label || "other"} path stays visible, but it does not lead to the destination.` : `The ${alternativeHop?.label || "other"} link is unavailable.`}`
+                : `${nodesById.get(firstRouterId).label} can choose ${alternativeHopAvailable ? `<strong>${alternativeHop?.label || "another route"}</strong> or ` : ""}<strong>${selectedNextHop.label}</strong>. It examines the packet's destination: ${nodesById.get(network.destination).label}.`;
         }
         else {
             decisionElement.hidden = true;
@@ -108,6 +134,7 @@ function createPacketRoutingPlayground() {
         line.setAttribute("x2", destination.x);
         line.setAttribute("y2", destination.y);
         line.classList.add("nr-edge");
+        line.classList.toggle("nr-edge-disabled", Boolean(edge.disabled));
 
         svg.appendChild(line);
         edgeElements.set(edgeKey(edge.from, edge.to), line);
@@ -148,7 +175,7 @@ function createPacketRoutingPlayground() {
 
         const routeInfo = document.createElement("div");
         routeInfo.className = "nr-route-info";
-        routeInfo.innerHTML = "<span><b>SOURCE</b> Computer A</span><span><b>DESTINATION</b> Server C</span>";
+        routeInfo.innerHTML = `<span><b>SOURCE</b> ${nodesById.get(network.source).label}</span><span><b>DESTINATION</b> ${nodesById.get(network.destination).label}</span>`;
 
         decisionElement = document.createElement("p");
         decisionElement.className = "nr-decision";
@@ -195,6 +222,11 @@ function createPacketRoutingPlayground() {
     }
 
     function nextStep() {
+
+        if (masteryMode) {
+            setByteMessage("Choose the next hop that moves the packet toward its destination.");
+            return;
+        }
 
         if (routeFinished) {
             resetRoute();
@@ -280,6 +312,54 @@ function createPacketRoutingPlayground() {
 
     }
 
+    function chooseMasteryHop(operation) {
+        if (!masteryMode || routeFinished) return;
+        const selected = operation.replace("to-", "");
+        const routeIndex = network.route.indexOf(packetLocation);
+        const expected = network.route[routeIndex + 1];
+
+        if (selected !== expected) {
+            const link = network.edges.find(edge => (
+                edge.from === packetLocation && edge.to === selected
+            ));
+            const unavailableMessage = link?.disabled
+                ? `${nodesById.get(selected)?.label || selected} is connected by an unavailable link. Choose an active route toward the destination.`
+                : null;
+            masteryEngine.operationCompleted({
+                operation,
+                state: { outcome: null, location: packetLocation },
+                feedback: unavailableMessage || `The packet is at ${nodesById.get(packetLocation).label}. Check which connected hop continues toward ${nodesById.get(network.destination).label}.`
+            });
+            return;
+        }
+
+        packetLocation = selected;
+        examiningRouter = packetLocation === firstRouterId;
+        routeSelected = routeIndex >= 1;
+        routeFinished = packetLocation === network.destination;
+        updateNetwork(
+            routeFinished
+                ? `The packet reached ${nodesById.get(network.destination).label}.`
+                : `The packet moves to ${nodesById.get(packetLocation).label}.`,
+            true
+        );
+        masteryEngine.operationCompleted({
+            operation,
+            state: { outcome: routeFinished ? "delivered" : null, location: packetLocation },
+            feedback: routeFinished
+                ? `The packet arrived at ${nodesById.get(network.destination).label}.`
+                : `Good route choice. The packet is now at ${nodesById.get(packetLocation).label}.`,
+            progress: !routeFinished
+        });
+    }
+
+    function renderRouteCard(title, route, container) {
+        const card = document.createElement("section");
+        card.className = "mastery-state-card";
+        card.innerHTML = `<span class="challenge-target-label">${title}</span><p>${(route || []).map(node => nodesById.get(node)?.label || node).join(" → ")}</p>`;
+        container.appendChild(card);
+    }
+
     return {
         mount() {
             buildNetwork();
@@ -287,7 +367,50 @@ function createPacketRoutingPlayground() {
             resetRoute();
         },
         reset() {
+            replayToken++;
+            masteryMode = false;
+            masteryScenario = null;
+            configureNetwork();
+            buildNetwork();
             resetRoute();
+        },
+        resetForChallenge() {
+            this.reset();
+        },
+        configureMasteryScenario(scenario) {
+            replayToken++;
+            masteryMode = true;
+            masteryScenario = scenario || {};
+            configureNetwork(scenario);
+            buildNetwork();
+            resetRoute();
+        },
+        performMasteryOperation(operation) {
+            if (operation.startsWith("to-")) chooseMasteryHop(operation);
+        },
+        endMasteryMode() { masteryMode = false; masteryScenario = null; },
+        async replayExpertSimulation(simulation) {
+            if (!simulation || !Array.isArray(simulation.route)) return;
+            const token = ++replayToken;
+            packetLocation = network.source;
+            resetRoute();
+            for (const nodeId of simulation.route.slice(1)) {
+                await new Promise(resolve => window.setTimeout(resolve, 460));
+                if (token !== replayToken) return;
+                packetLocation = nodeId;
+                routeFinished = nodeId === network.destination;
+                updateNetwork(`Packet moves to ${nodesById.get(nodeId).label}.`, true);
+            }
+        },
+        renderExpertThinkingState({ labels }, container) {
+            renderRouteCard(labels.title || "Starting route", masteryScenario?.route || network.route, container);
+        },
+        renderMasteryStates({ scenario, target }, container) {
+            renderRouteCard("ROUTE OPTIONS", scenario?.route || network.route, container);
+            const goal = document.createElement("section");
+            goal.className = "mastery-state-card";
+            goal.innerHTML = `<span class="challenge-target-label">${target.label || "TARGET"}</span><p>${target.description || `Deliver the packet to ${nodesById.get(network.destination).label}.`}</p>`;
+            container.appendChild(goal);
         }
     };
 

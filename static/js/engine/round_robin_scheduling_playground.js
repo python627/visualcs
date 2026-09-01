@@ -1,13 +1,18 @@
 function createRoundRobinSchedulingPlayground() {
 
     const originalProcesses = LESSON.playground.processes.map(process => ({ ...process }));
-    const timeQuantum = LESSON.playground.time_quantum;
+    const lessonTimeQuantum = LESSON.playground.time_quantum;
 
     let readyQueue = [];
     let runningProcess = null;
     let completedProcesses = [];
     let phase = "enter";
     let schedulingFinished = false;
+    let timeQuantum = lessonTimeQuantum;
+    let masteryScenario = null;
+    let masteryMode = false;
+    let masteryBusy = false;
+    let replayToken = 0;
 
     function createProcessCard(process, state, options = {}) {
 
@@ -149,7 +154,9 @@ function createRoundRobinSchedulingPlayground() {
 
     function resetSchedule() {
 
-        readyQueue = originalProcesses.map(process => ({
+        const processes = masteryScenario?.processes || originalProcesses;
+        timeQuantum = masteryScenario?.quantum || lessonTimeQuantum;
+        readyQueue = processes.map(process => ({
             ...process,
             remaining: process.burst
         }));
@@ -174,6 +181,11 @@ function createRoundRobinSchedulingPlayground() {
     }
 
     function nextStep() {
+
+        if (masteryMode) {
+            setByteMessage("Choose the process at the front of the Ready Queue for the next quantum.");
+            return;
+        }
 
         if (schedulingFinished) {
             resetSchedule();
@@ -277,13 +289,128 @@ function createRoundRobinSchedulingPlayground() {
 
     }
 
+    function runMasteryProcess(operation) {
+        if (!masteryMode || masteryBusy || schedulingFinished) return;
+        const selectedId = operation.replace("run-", "").toUpperCase();
+        const expected = readyQueue[0];
+        if (!expected) return;
+
+        if (selectedId !== expected.id) {
+            masteryEngine.operationCompleted({
+                operation,
+                state: { outcome: null, ready: readyQueue.map(process => process.id) },
+                feedback: `${expected.id} is at the front of Ready Queue, so it gets the next time quantum.`
+            });
+            return;
+        }
+
+        masteryBusy = true;
+        runningProcess = readyQueue.shift();
+        const used = Math.min(timeQuantum, runningProcess.remaining);
+        render({ enteringCpu: true, statusText: `${runningProcess.id} enters the CPU for up to ${timeQuantum} units.` });
+
+        setTimeout(() => {
+            const process = runningProcess;
+            process.remaining -= used;
+            runningProcess = null;
+            let completedId = null;
+            let returningId = null;
+            if (process.remaining === 0) {
+                completedProcesses.push(process);
+                completedId = process.id;
+            }
+            else {
+                readyQueue.push(process);
+                returningId = process.id;
+            }
+            schedulingFinished = readyQueue.length === 0;
+            masteryBusy = false;
+            render({
+                completingId: completedId,
+                returningId,
+                statusText: completedId
+                    ? `${completedId} finished and moved to Completed.`
+                    : `${returningId} is unfinished and returns to the back of Ready Queue.`
+            });
+            masteryEngine.operationCompleted({
+                operation,
+                state: {
+                    outcome: schedulingFinished ? "complete" : null,
+                    ready: readyQueue.map(item => item.id),
+                    completed: completedProcesses.map(item => item.id)
+                },
+                feedback: schedulingFinished
+                    ? "All processes have completed after taking turns."
+                    : `${readyQueue[0].id} is now at the front for the next turn.`,
+                progress: !schedulingFinished
+            });
+        }, 440);
+    }
+
+    function renderRoundRobinCard(title, processes, quantum, container) {
+        const card = document.createElement("section");
+        card.className = "mastery-state-card";
+        card.innerHTML = `<span class="challenge-target-label">${title}</span><p>Quantum ${quantum} · ${processes?.map(process => `${process.id} (${process.burst}u)`).join(" → ") || "empty"}</p>`;
+        container.appendChild(card);
+    }
+
     return {
         mount() {
             getControl("next-step").onclick = nextStep;
             resetSchedule();
         },
         reset() {
+            replayToken++;
+            masteryScenario = null;
+            masteryMode = false;
+            masteryBusy = false;
             resetSchedule();
+        },
+        resetForChallenge() {
+            replayToken++;
+            masteryScenario = null;
+            masteryMode = false;
+            masteryBusy = false;
+            resetSchedule();
+        },
+        configureMasteryScenario(scenario) {
+            replayToken++;
+            masteryScenario = scenario || {};
+            masteryMode = true;
+            masteryBusy = false;
+            resetSchedule();
+        },
+        performMasteryOperation(operation) {
+            if (operation.startsWith("run-")) runMasteryProcess(operation);
+        },
+        endMasteryMode() { masteryMode = false; masteryScenario = null; masteryBusy = false; },
+        async replayExpertSimulation(simulation) {
+            if (!simulation || !Array.isArray(simulation.initial_state) || !Array.isArray(simulation.steps)) return;
+            const token = ++replayToken;
+            masteryScenario = { processes: simulation.initial_state, quantum: simulation.quantum || LESSON.playground.time_quantum };
+            masteryMode = true;
+            resetSchedule();
+            for (const step of simulation.steps) {
+                await new Promise(resolve => window.setTimeout(resolve, 390));
+                if (token !== replayToken) return;
+                const process = readyQueue.shift();
+                if (!process) return;
+                process.remaining -= step.used;
+                if (process.remaining > 0) readyQueue.push(process);
+                else completedProcesses.push(process);
+                schedulingFinished = readyQueue.length === 0;
+                render({ statusText: step.label, completingId: process.remaining === 0 ? process.id : null, returningId: process.remaining > 0 ? process.id : null });
+            }
+        },
+        renderExpertThinkingState({ initialState, labels }, container) {
+            renderRoundRobinCard(labels.title || "Starting Ready Queue", initialState, timeQuantum, container);
+        },
+        renderMasteryStates({ scenario, target }, container) {
+            renderRoundRobinCard("START READY QUEUE", scenario?.processes || [], scenario?.quantum || timeQuantum, container);
+            const outcome = document.createElement("section");
+            outcome.className = "mastery-state-card";
+            outcome.innerHTML = `<span class="challenge-target-label">${target.label || "TARGET"}</span><p>${target.description || "Run every process until it completes, rotating unfinished work to the rear."}</p>`;
+            container.appendChild(outcome);
         }
     };
 

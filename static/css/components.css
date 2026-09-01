@@ -976,6 +976,12 @@
     transition:stroke .35s, stroke-width .35s, opacity .35s, filter .35s;
 }
 
+.nr-edge.nr-edge-disabled{
+    stroke:#64748b;
+    stroke-dasharray:5 7;
+    opacity:.42;
+}
+
 .nr-edge.nr-traversed{
     stroke:#38bdf8;
     stroke-width:5;
@@ -1866,6 +1872,26 @@
 
 }
 
+.worked-example-state{
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:82px;
+    padding:12px;
+    border:1px solid #1d4ed8;
+    border-radius:10px;
+    background:#0f1b31;
+    color:#bfdbfe;
+    font-family:monospace;
+    font-size:13px;
+    font-weight:bold;
+    line-height:1.5;
+    text-align:center;
+    white-space:pre-line;
+
+}
+
 .worked-example-step p{
 
     color:#cbd5e1;
@@ -2047,13 +2073,15 @@
 
 }
 
-.playground:has(#challenge-panel:not([hidden])){
+.playground:has(#challenge-panel:not([hidden])),
+.playground:has(#mastery-challenge-panel:not([hidden])){
 
     text-align:left;
 
 }
 
-.playground:has(#challenge-panel:not([hidden])) .playground-learning-area{
+.playground:has(#challenge-panel:not([hidden])) .playground-learning-area,
+.playground:has(#mastery-challenge-panel:not([hidden])) .playground-learning-area{
 
     display:grid;
     grid-template-columns:minmax(190px, .9fr) minmax(220px, 1fr);
@@ -2063,20 +2091,23 @@
 
 }
 
-.playground:has(#challenge-panel:not([hidden])) .challenge-panel{
+.playground:has(#challenge-panel:not([hidden])) .challenge-panel,
+.playground:has(#mastery-challenge-panel:not([hidden])) .mastery-challenge-panel{
 
     margin-top:0;
 
 }
 
-.playground:has(#challenge-panel:not([hidden])) .playground-interaction{
+.playground:has(#challenge-panel:not([hidden])) .playground-interaction,
+.playground:has(#mastery-challenge-panel:not([hidden])) .playground-interaction{
 
     min-width:0;
     text-align:center;
 
 }
 
-.playground:has(#challenge-panel:not([hidden])) .playground-area{
+.playground:has(#challenge-panel:not([hidden])) .playground-area,
+.playground:has(#mastery-challenge-panel:not([hidden])) .playground-area{
 
     margin:0 auto 20px;
 
@@ -2142,6 +2173,1095 @@
     font-weight:bold;
     letter-spacing:.08em;
     text-transform:uppercase;
+
+}
+
+.challenge-target-description{
+
+    color:#d1fae5;
+    font-size:14px;
+    line-height:1.45;
+
+}
+
+
+.mastery-panel{
+
+    margin-top:22px;
+    padding-top:18px;
+    border-top:1px solid #26334f;
+
+}
+
+
+.mastery-card h3{
+
+    margin-bottom:12px;
+    font-size:18px;
+
+}
+
+
+.mastery-levels{
+
+    display:grid;
+    gap:7px;
+    margin:0;
+    padding:0;
+    list-style:none;
+
+}
+
+
+.mastery-level{
+
+    display:flex;
+    align-items:center;
+    gap:8px;
+    color:#cbd5e1;
+    font-size:14px;
+
+}
+
+
+.mastery-level-icon{
+
+    width:18px;
+    text-align:center;
+    font-weight:bold;
+
+}
+
+
+.mastery-level-completed{
+
+    color:#86efac;
+
+}
+
+
+.mastery-level-unlocked{
+
+    color:#7dd3fc;
+
+}
+
+
+.mastery-level-locked{
+
+    color:#64748b;
+
+}
+
+
+.mastery-level button{
+
+    margin-left:auto;
+    padding:5px 9px;
+    border:1px solid #2563eb;
+    border-radius:7px;
+    background:#1d4ed8;
+    color:white;
+    font-size:12px;
+    cursor:pointer;
+
+}
+
+
+.mastery-complete{
+
+    margin-top:14px;
+    color:#86efac;
+    font-weight:bold;
+
+}
+
+
+.mastery-challenge-card{
+
+    min-height:0;
+
+}
+
+
+.mastery-your-stack-label{
+
+    margin:0 0 6px;
+    color:#bfdbfe;
+    font-size:12px;
+    font-weight:bold;
+    letter-spacing:.08em;
+    text-align:center;
+
+}
+
+
+.mastery-objective,
+.mastery-attempt-details > div,
+.mastery-state-card{
+
+    border:1px solid #26334f;
+    border-radius:9px;
+    background:#111b31;
+
+}
+
+
+.mastery-objective{
+
+    margin-top:12px;
+    padding:10px 12px;
+
+}
+
+
+.mastery-objective span,
+.mastery-attempt-details span{
+
+    color:#93c5fd;
+    font-size:11px;
+    font-weight:bold;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+
+}
+
+
+.mastery-objective p{
+
+    margin:5px 0 0;
+    color:#e2e8f0;
+    font-size:14px;
+    line-height:1.45;
+
+}
+
+
+.mastery-state-comparison{
+
+    display:grid;
+    grid-template-columns:repeat(2, minmax(0, 1fr));
+    gap:8px;
+    margin-top:12px;
+
+}
+
+
+.mastery-state-card{
+
+    padding:10px;
+    min-width:0;
+
+}
+
+
+.mastery-state-card .challenge-stack-target{
+
+    margin-top:8px;
+
+}
+
+
+.mastery-state-empty{
+
+    margin:8px 0 0;
+    color:#94a3b8;
+    font-size:13px;
+
+}
+
+
+.mastery-attempt-details{
+
+    display:grid;
+    grid-template-columns:repeat(2, minmax(0, 1fr));
+    gap:8px;
+    margin-top:12px;
+
+}
+
+
+.mastery-attempt-details > div{
+
+    padding:10px;
+
+}
+
+
+.mastery-attempt-details p,
+.mastery-attempt-details ul{
+
+    margin:5px 0 0;
+    color:#dbeafe;
+    font-size:13px;
+    line-height:1.45;
+
+}
+
+
+.mastery-attempt-details ul{
+
+    padding-left:17px;
+
+}
+
+
+.mastery-operations,
+.mastery-attempt-feedback,
+.mastery-progress-feedback,
+.mastery-result-detail{
+
+    margin-top:12px;
+    font-size:14px;
+    font-weight:bold;
+
+}
+
+
+.mastery-operations{
+
+    color:#bfdbfe;
+
+}
+
+
+.mastery-attempt-feedback{
+
+    color:#fde68a;
+
+}
+
+
+.mastery-progress-feedback{
+
+    color:#dbeafe;
+
+}
+
+
+.mastery-result-detail{
+
+    color:#bbf7d0;
+
+}
+
+
+/* Focus the page on the active mastery puzzle without changing normal lessons. */
+body:has(#mastery-challenge-panel:not([hidden])) .lesson-onboarding,
+body:has(#mastery-challenge-panel:not([hidden])) .lesson-stage-indicator,
+body:has(#mastery-challenge-panel:not([hidden])) .topbar .progress-box,
+body:has(#mastery-challenge-panel:not([hidden])) .discoveries,
+body:has(#mastery-challenge-panel:not([hidden])) #lesson-recall,
+body:has(#mastery-challenge-panel:not([hidden])) .notes{
+
+    display:none;
+
+}
+
+
+.dashboard:has(#mastery-challenge-panel:not([hidden])){
+
+    grid-template-columns:minmax(0, 1fr);
+    grid-template-areas:
+        "mastery"
+        "playground"
+        "byte";
+    gap:16px;
+
+}
+
+
+.dashboard:has(#mastery-challenge-panel:not([hidden])) .mission-card{
+
+    grid-area:mastery;
+    padding:14px 20px;
+
+}
+
+
+.dashboard:has(#mastery-challenge-panel:not([hidden])) .mission-card > h2,
+.dashboard:has(#mastery-challenge-panel:not([hidden])) .mission-card > h3,
+.dashboard:has(#mastery-challenge-panel:not([hidden])) .mission-card > p,
+.dashboard:has(#mastery-challenge-panel:not([hidden])) .mission-card > .meta{
+
+    display:none;
+
+}
+
+
+.dashboard:has(#mastery-challenge-panel:not([hidden])) .mastery-panel{
+
+    margin:0;
+    padding:0;
+    border:0;
+
+}
+
+
+.dashboard:has(#mastery-challenge-panel:not([hidden])) .mastery-card{
+
+    display:flex;
+    align-items:center;
+    gap:18px;
+
+}
+
+
+.dashboard:has(#mastery-challenge-panel:not([hidden])) .mastery-card h3{
+
+    margin:0;
+    white-space:nowrap;
+
+}
+
+
+.dashboard:has(#mastery-challenge-panel:not([hidden])) .mastery-levels{
+
+    display:flex;
+    flex:1;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:6px;
+
+}
+
+
+.dashboard:has(#mastery-challenge-panel:not([hidden])) .mastery-level{
+
+    gap:5px;
+    font-size:13px;
+
+}
+
+
+.dashboard:has(#mastery-challenge-panel:not([hidden])) .mastery-level:not(:last-child)::after{
+
+    content:"→";
+    margin-left:6px;
+    color:#475569;
+
+}
+
+
+.dashboard:has(#mastery-challenge-panel:not([hidden])) .mastery-level-icon{
+
+    width:auto;
+
+}
+
+
+.dashboard:has(#mastery-challenge-panel:not([hidden])) .mastery-complete{
+
+    margin:0 0 0 auto;
+    white-space:nowrap;
+
+}
+
+
+.dashboard:has(#mastery-challenge-panel:not([hidden])) .playground{
+
+    grid-area:playground;
+    padding:22px;
+
+}
+
+
+.dashboard:has(#mastery-challenge-panel:not([hidden])) .playground > h2{
+
+    display:none;
+
+}
+
+
+.dashboard:has(#mastery-challenge-panel:not([hidden])) #challenge-panel{
+
+    display:none;
+
+}
+
+
+.dashboard:has(#mastery-challenge-panel:not([hidden])) .playground-learning-area{
+
+    display:grid;
+    grid-template-columns:repeat(3, minmax(0, 1fr));
+    grid-template-areas:
+        "header header header"
+        "objective objective objective"
+        "start current target"
+        "facts controls controls"
+        "feedback feedback feedback"
+        "actions actions actions";
+    gap:14px;
+    align-items:start;
+    margin:0;
+
+}
+
+
+.dashboard:has(#mastery-challenge-panel:not([hidden])) .mastery-challenge-panel,
+.dashboard:has(#mastery-challenge-panel:not([hidden])) .mastery-challenge-card,
+.dashboard:has(#mastery-challenge-panel:not([hidden])) .mastery-state-comparison,
+.dashboard:has(#mastery-challenge-panel:not([hidden])) .playground-interaction{
+
+    display:contents;
+
+}
+
+
+.dashboard:has(#mastery-challenge-panel:not([hidden])) .mastery-puzzle-header{
+
+    grid-area:header;
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:16px;
+    padding-bottom:10px;
+    border-bottom:1px solid #26334f;
+
+}
+
+
+.dashboard:has(#mastery-challenge-panel:not([hidden])) .mastery-puzzle-header h3{
+
+    margin:0;
+    color:#f8fafc;
+    font-size:20px;
+
+}
+
+
+.dashboard:has(#mastery-challenge-panel:not([hidden])) .mastery-objective{
+
+    grid-area:objective;
+    margin:0;
+    padding:0;
+    border:0;
+    background:transparent;
+
+}
+
+
+.dashboard:has(#mastery-challenge-panel:not([hidden])) .mastery-state-card{
+
+    margin:0;
+    padding:12px;
+    min-height:170px;
+    border-color:#334155;
+    background:#111b31;
+
+}
+
+
+.dashboard:has(#mastery-challenge-panel:not([hidden])) .mastery-state-card:nth-child(1){
+
+    grid-area:start;
+
+}
+
+
+.dashboard:has(#mastery-challenge-panel:not([hidden])) .mastery-state-card:nth-child(2){
+
+    grid-area:target;
+
+}
+
+
+.dashboard:has(#mastery-challenge-panel:not([hidden])) .playground-area{
+
+    grid-area:current;
+    min-width:0;
+    margin:0;
+    padding:12px;
+    min-height:170px;
+    border:1px solid #334155;
+    border-radius:9px;
+    background:#111b31;
+
+}
+
+
+.dashboard:has(#mastery-challenge-panel:not([hidden])) #stack{
+
+    width:min(100%, 180px);
+    height:auto;
+    min-height:132px;
+    margin:8px auto 0;
+
+}
+
+
+.dashboard:has(#mastery-challenge-panel:not([hidden])) .mastery-your-stack-label{
+
+    margin:0 0 8px;
+
+}
+
+
+.dashboard:has(#mastery-challenge-panel:not([hidden])) .mastery-quick-facts{
+
+    grid-area:facts;
+    align-self:center;
+
+}
+
+
+.dashboard:has(#mastery-challenge-panel:not([hidden])) .mastery-quick-facts p{
+
+    margin:0;
+    font-size:13px;
+    line-height:1.55;
+
+}
+
+
+.dashboard:has(#mastery-challenge-panel:not([hidden])) .mastery-hints{
+
+    color:#dbeafe;
+
+}
+
+
+.dashboard:has(#mastery-challenge-panel:not([hidden])) .mastery-operation-rule{
+
+    color:#94a3b8;
+
+}
+
+
+.dashboard:has(#mastery-challenge-panel:not([hidden])) .buttons{
+
+    grid-area:controls;
+    justify-self:start;
+    align-self:center;
+    flex-wrap:wrap;
+    width:min(100%, 300px);
+    margin:0;
+
+}
+
+
+.mastery-operation-controls{
+
+    grid-area:controls;
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    align-self:center;
+
+}
+
+
+/*
+ * Levels that supply focused mastery controls must not leave the ordinary
+ * playground controls in the same grid cell.  Apart from being redundant,
+ * the two button rows can overlap and send a click to the wrong operation.
+ * Stack deliberately keeps its original PUSH/POP controls, so this applies
+ * only when a level has supplied its own mastery controls.
+ */
+.dashboard:has(#mastery-challenge-panel:not([hidden]) .mastery-operation-controls) .playground-interaction .buttons{
+
+    display:none;
+
+}
+
+
+.mastery-operation-controls button{
+
+    padding:8px 10px;
+    border:1px solid #6ee7b7;
+    border-radius:8px;
+    background:#047857;
+    color:white;
+    font-size:13px;
+    font-weight:bold;
+
+}
+
+
+.mastery-operation-controls button:hover{
+
+    background:#059669;
+
+}
+
+
+/* Binary Search needs decision controls, not the normal lesson NEXT STEP button. */
+.dashboard:has(#mastery-challenge-panel.mastery-binary-search) .playground-interaction .buttons{
+
+    display:none;
+
+}
+
+
+.dashboard:has(#mastery-challenge-panel.mastery-binary-search) #stack.binary-search-view{
+
+    width:100%;
+    min-height:170px;
+    margin:0;
+    padding:14px;
+    gap:12px;
+
+}
+
+
+.dashboard:has(#mastery-challenge-panel.mastery-binary-search) .binary-search-array{
+
+    justify-content:flex-start;
+    gap:6px;
+    overflow-x:auto;
+    padding-bottom:4px;
+
+}
+
+
+.dashboard:has(#mastery-challenge-panel.mastery-binary-search) .search-value{
+
+    width:44px;
+    height:42px;
+    flex:0 0 auto;
+    border-radius:9px;
+    font-size:14px;
+
+}
+
+
+.binary-search-status,
+.binary-search-decision-feedback{
+
+    margin:0;
+    color:#dbeafe;
+    font-size:13px;
+    line-height:1.45;
+
+}
+
+
+.binary-search-decision-feedback{
+
+    color:#fde68a;
+
+}
+
+
+.binary-mastery-array{
+
+    display:flex;
+    flex-wrap:wrap;
+    gap:6px;
+    margin-top:9px;
+
+}
+
+
+.binary-mastery-array span{
+
+    min-width:34px;
+    padding:5px 7px;
+    border:1px solid #7dd3fc;
+    border-radius:7px;
+    background:#0c4a6e;
+    color:white;
+    font-size:12px;
+    font-weight:bold;
+    text-align:center;
+
+}
+
+
+.binary-mastery-task p,
+.binary-mastery-guide p,
+.binary-expert-target{
+
+    margin:8px 0 0;
+    color:#dbeafe;
+    font-size:13px;
+    line-height:1.45;
+
+}
+
+
+.binary-expert-start .binary-mastery-array{
+
+    max-height:130px;
+    overflow:auto;
+
+}
+
+
+.mastery-controls-label{
+
+    display:none;
+
+}
+
+
+.dashboard:has(#mastery-challenge-panel:not([hidden])) .mastery-controls-label{
+
+    display:block;
+    flex-basis:100%;
+    margin:0 0 2px;
+    color:#93c5fd;
+    font-size:11px;
+    font-weight:bold;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+
+}
+
+
+.dashboard:has(#mastery-challenge-panel:not([hidden])) .mastery-outcome{
+
+    grid-area:feedback;
+    min-height:0;
+
+}
+
+
+.dashboard:has(#mastery-challenge-panel:not([hidden])) .mastery-outcome p{
+
+    margin:0;
+
+}
+
+
+.dashboard:has(#mastery-challenge-panel:not([hidden])) .challenge-actions{
+
+    grid-area:actions;
+    margin-top:0;
+
+}
+
+
+/* Expert uses the same focused mastery puzzle, with a think-first stage. */
+.dashboard:has(#mastery-challenge-panel.expert-thinking) .playground-learning-area{
+
+    grid-template-columns:minmax(150px, .72fr) minmax(230px, 1fr) minmax(250px, 1.15fr);
+    grid-template-areas:
+        "header header header"
+        "objective objective objective"
+        "start trace prediction"
+        "actual actual actual"
+        "feedback feedback feedback"
+        "actions actions actions";
+
+}
+
+
+.dashboard:has(#mastery-challenge-panel.expert-thinking) .playground-learning-area > .playground-interaction .buttons,
+.dashboard:has(#mastery-challenge-panel.expert-solve) .playground-learning-area > .playground-interaction .buttons{
+
+    display:none;
+
+}
+
+
+.expert-trace,
+.expert-prediction-fields,
+.expert-actual-result{
+
+    padding:12px;
+    border:1px solid #334155;
+    border-radius:9px;
+    background:#111b31;
+
+}
+
+
+.expert-trace{
+
+    grid-area:trace;
+
+}
+
+
+.expert-trace > span,
+.expert-controls > span{
+
+    color:#93c5fd;
+    font-size:11px;
+    font-weight:bold;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+
+}
+
+
+.expert-trace ol{
+
+    display:grid;
+    grid-template-columns:1fr;
+    gap:7px;
+    margin:10px 0 0;
+    padding-left:22px;
+    color:#e2e8f0;
+    font-size:14px;
+    font-weight:bold;
+
+}
+
+
+.expert-trace li::marker{
+
+    color:#7dd3fc;
+    font-weight:bold;
+
+}
+
+
+.expert-prediction-fields{
+
+    grid-area:prediction;
+    display:grid;
+    grid-template-columns:1fr;
+    gap:10px;
+
+}
+
+
+.expert-prediction-fields label{
+
+    display:grid;
+    gap:6px;
+    color:#bfdbfe;
+    font-size:12px;
+    font-weight:bold;
+
+}
+
+
+.expert-prediction-fields input,
+.expert-prediction-fields select{
+
+    width:100%;
+    padding:9px 10px;
+    border:1px solid #475569;
+    border-radius:7px;
+    background:#0f172a;
+    color:white;
+    font-size:14px;
+
+}
+
+
+.expert-actual-result{
+
+    grid-area:actual;
+    color:#dbeafe;
+
+}
+
+
+.expert-actual-result strong{
+
+    color:#fef3c7;
+
+}
+
+
+.expert-actual-result p{
+
+    margin:6px 0 0;
+    line-height:1.5;
+
+}
+
+
+.expert-thinking-start-state{
+
+    grid-area:start;
+    align-self:start;
+
+}
+
+
+.dashboard:has(#mastery-challenge-panel.expert-thinking) .expert-thinking-start-state .mastery-state-card{
+
+    width:min(100%, 210px);
+    min-height:0;
+
+}
+
+
+.expert-stack-boundary{
+
+    display:block;
+    margin-top:8px;
+    color:#fef3c7;
+    font-size:11px;
+    font-weight:bold;
+    letter-spacing:.08em;
+
+}
+
+
+.expert-stack-boundary + .challenge-stack-target{
+
+    margin-top:6px;
+
+}
+
+
+.expert-prediction-heading{
+
+    color:#93c5fd;
+    font-size:11px;
+    font-weight:bold;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+
+}
+
+
+.expert-prediction-fields p,
+.expert-trace p{
+
+    grid-column:1 / -1;
+    margin:0;
+    color:#e2e8f0;
+    font-size:14px;
+    line-height:1.45;
+
+}
+
+
+.expert-trace p{
+
+    margin-top:7px;
+    color:#fde68a;
+
+}
+
+
+.expert-result-explanation{
+
+    color:#fef3c7;
+
+}
+
+
+/* A mental simulation deliberately hides all normal Stack controls and state. */
+.dashboard:has(#mastery-challenge-panel.expert-stage-think) .playground-area,
+.dashboard:has(#mastery-challenge-panel.expert-stage-think) .mastery-your-stack-label{
+
+    display:none;
+
+}
+
+
+/* Review keeps the same sequence visible, then places the replay before Continue. */
+.dashboard:has(#mastery-challenge-panel.expert-stage-review) .playground-learning-area{
+
+    grid-template-areas:
+        "header header header"
+        "objective objective objective"
+        "start trace prediction"
+        "actual actual actual"
+        "feedback feedback feedback"
+        "current current current"
+        "actions actions actions";
+
+}
+
+
+.expert-controls{
+
+    grid-area:controls;
+    display:grid;
+    gap:8px;
+    align-self:center;
+
+}
+
+
+.expert-push-values{
+
+    display:flex;
+    flex-wrap:wrap;
+    gap:7px;
+
+}
+
+
+.expert-controls button{
+
+    padding:8px 10px;
+    border:1px solid #6ee7b7;
+    border-radius:8px;
+    background:#047857;
+    color:white;
+    font-size:13px;
+    font-weight:bold;
+
+}
+
+
+.expert-controls button:hover{
+
+    background:#059669;
+
+}
+
+
+.expert-perfect-result{
+
+    color:#fef3c7 !important;
+    font-size:16px;
+
+}
+
+
+.dashboard:has(#mastery-challenge-panel:not([hidden])) .byte-card{
+
+    grid-area:byte;
+    padding:16px 20px;
+
+}
+
+
+.dashboard:has(#mastery-challenge-panel:not([hidden])) .byte-card h2{
+
+    margin:0 0 8px;
+    font-size:18px;
+
+}
+
+
+.dashboard:has(#mastery-challenge-panel:not([hidden])) .guided-mission-progress,
+.dashboard:has(#mastery-challenge-panel:not([hidden])) .byte-card .prediction-panel,
+.dashboard:has(#mastery-challenge-panel:not([hidden])) .byte-card .alternate-explanations,
+.dashboard:has(#mastery-challenge-panel:not([hidden])) .byte-card #lesson-continue{
+
+    display:none;
+
+}
+
+
+.mastery-feedback{
+
+    display:none;
+
+}
+
+
+.dashboard:has(#mastery-challenge-panel:not([hidden])) #message{
+
+    display:none;
+
+}
+
+
+.dashboard:has(#mastery-challenge-panel:not([hidden])) .mastery-feedback{
+
+    display:block;
+    color:#dbeafe;
+    line-height:1.5;
+
+}
+
+
+.dashboard:has(#mastery-challenge-panel:not([hidden])) .mastery-feedback p{
+
+    margin:0;
 
 }
 
@@ -2287,9 +3407,107 @@
 
     }
 
-    .playground:has(#challenge-panel:not([hidden])) .playground-learning-area{
+    .playground:has(#challenge-panel:not([hidden])) .playground-learning-area,
+    .playground:has(#mastery-challenge-panel:not([hidden])) .playground-learning-area{
 
         grid-template-columns:1fr;
+
+    }
+
+    .mastery-state-comparison,
+    .mastery-attempt-details{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .dashboard:has(#mastery-challenge-panel:not([hidden])){
+
+        grid-template-areas:
+            "mastery"
+            "playground"
+            "byte";
+        padding:20px;
+
+    }
+
+    .dashboard:has(#mastery-challenge-panel:not([hidden])) .mastery-card,
+    .dashboard:has(#mastery-challenge-panel:not([hidden])) .mastery-puzzle-header{
+
+        align-items:flex-start;
+        flex-direction:column;
+        gap:8px;
+
+    }
+
+    .dashboard:has(#mastery-challenge-panel:not([hidden])) .playground-learning-area{
+
+        grid-template-columns:1fr;
+        grid-template-areas:
+            "header"
+            "objective"
+            "start"
+            "current"
+            "target"
+            "facts"
+            "controls"
+            "feedback"
+            "actions";
+
+    }
+
+    .dashboard:has(#mastery-challenge-panel.expert-thinking) .playground-learning-area{
+
+        grid-template-areas:
+            "header"
+            "objective"
+            "start"
+            "trace"
+            "prediction"
+            "actions"
+            "feedback"
+            "actual"
+            "current";
+
+    }
+
+    .dashboard:has(#mastery-challenge-panel.expert-stage-review) .playground-learning-area{
+
+        grid-template-areas:
+            "header"
+            "objective"
+            "start"
+            "trace"
+            "prediction"
+            "actual"
+            "feedback"
+            "current"
+            "actions";
+
+    }
+
+    .expert-prediction-fields{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .expert-trace ol{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .dashboard:has(#mastery-challenge-panel:not([hidden])) .mastery-state-card,
+    .dashboard:has(#mastery-challenge-panel:not([hidden])) .playground-area{
+
+        min-height:0;
+
+    }
+
+    .dashboard:has(#mastery-challenge-panel:not([hidden])) .buttons{
+
+        width:100%;
 
     }
 

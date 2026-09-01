@@ -118,5 +118,110 @@
             "type": "example",
             "content": "Payment P001 stores STUDENT_ID 102. Follow 102 to Students.ID 102, which identifies Mary. The foreign key leads to the matching primary-key row."
         }
-    ]
+    ],
+
+    "teaching": {
+        "introduction": {
+            "title": "Meet Database Keys",
+            "content": "Databases use keys so they can identify one record exactly and connect records in different tables without copying all the details.",
+            "points": [
+                "A primary key uniquely identifies one row.",
+                "A foreign key stores a matching value from another table.",
+                "You will trace a payment back to the student it belongs to."
+            ]
+        },
+        "worked_example": {
+            "title": "Trace one payment",
+            "content": "A foreign-key value is a clue that points to one matching primary-key row.",
+            "steps": [
+                { "action": "Read the payment", "visual": "PAYMENTS: P001 | STUDENT_ID 102", "explanation": "P001 stores 102 in its STUDENT_ID column. That is the foreign key to follow." },
+                { "action": "Find the match", "visual": "STUDENTS: ID 102 | Mary", "explanation": "Students.ID is a primary key, so exactly one student has ID 102." },
+                { "action": "Connect them", "visual": "P001 → STUDENT_ID 102 → Students.ID 102 → Mary", "explanation": "The matching values connect this payment record to Mary." }
+            ],
+            "conclusion": "The foreign key does not need to repeat Mary's name; its matching ID creates the relationship.",
+            "next": { "title": "Trace the highlighted relationship.", "content": "Use TRACE RELATION to follow a foreign-key value across the two tables." }
+        },
+        "guided_practice": {
+            "action_explanations": {
+                "find-foreign-key": "STUDENT_ID is the foreign-key value stored in the payment row; it is the link to follow.",
+                "trace-to-students": "The line follows the same number from PAYMENTS.STUDENT_ID to STUDENTS.ID.",
+                "match-primary-key": "A primary key is unique, so matching 102 identifies only one Students row.",
+                "identify-student": "The row with ID 102 belongs to Mary, so Mary made this payment.",
+                "complete-another-relationship": "Another payment can use the same kind of ID match to connect to its student."
+            }
+        },
+        "challenge": {
+            "title": "Relationship Challenge",
+            "start_message": "Trace a payment to its student by following the key values rather than guessing from the names.",
+            "continue_message": "Challenge complete. Keep tracing payments to see the same relationship rule work again.",
+            "phases": [
+                {
+                    "title": "Identify the first student",
+                    "instruction": "Follow P001's STUDENT_ID until you can name the matching student.",
+                    "target": { "label": "Goal", "description": "Match PAYMENTS.STUDENT_ID 102 with STUDENTS.ID 102 and identify Mary." },
+                    "expected_operations": ["find-foreign-key", "trace-to-students", "match-primary-key", "identify-student"],
+                    "success": "✓ P001 connected to Mary",
+                    "feedback": "Start at the payment's STUDENT_ID, then look for the same value in the Students primary-key column."
+                },
+                {
+                    "title": "Trace another payment",
+                    "instruction": "Use the same key-matching idea for the next payment relationship.",
+                    "target": { "label": "Goal", "description": "Show that a different STUDENT_ID can point to a different uniquely identified student." },
+                    "expected_operations": ["complete-another-relationship"],
+                    "success": "✓ Another key relationship traced",
+                    "feedback": "The foreign key must match the primary-key value in the other table."
+                }
+            ]
+        },
+        "recall": {
+            "title": "Recall",
+            "prompt": "In your own words, how does a foreign key connect a payment to the correct student?",
+            "submit_label": "Submit recall",
+            "empty_message": "Write a short explanation before submitting.",
+            "completion_message": "✓ Recall completed",
+            "model_answer": "The payment's foreign key stores a student ID. That value matches the unique primary key in Students, which identifies the related student row."
+        }
+    },
+    "mastery": {
+        "title": "Keys & Relationships Mastery",
+        "mastered_label": "Keys & Relationships Mastered",
+        "levels": [
+            { "id": "learn", "label": "Learn", "completion": { "type": "course_completion" } },
+            {
+                "id": "practice", "label": "Practice", "prerequisites": ["learn"], "current_state_label": "YOUR RELATIONSHIP TRACE",
+                "guidance": { "start_message": "Trace the requested payment's foreign key to a Student row.", "hints": { "limit": 1, "items": [{ "content": "A foreign key value must match the primary-key value in the related table." }] } },
+                "controls": [{ "operation": "trace-p001", "label": "TRACE P001" }, { "operation": "trace-p002", "label": "TRACE P002" }, { "operation": "trace-p003", "label": "TRACE P003" }],
+                "scenario": { "students": [{ "id": 101, "name": "John" }, { "id": 102, "name": "Mary" }, { "id": 103, "name": "Peter" }], "payments": [{ "payment_id": "P001", "student_id": 102 }, { "payment_id": "P002", "student_id": 101 }, { "payment_id": "P003", "student_id": 103 }], "target_payment": "P001" },
+                "challenge": { "phases": [{ "title": "Trace one relationship", "instruction": "Identify which STUDENTS row P001.STUDENT_ID references.", "target": { "label": "TARGET", "description": "P001 → STUDENT_ID 102 → Mary" }, "goal": { "type": "outcome_equals", "expected_outcome": "matched" }, "success": "✓ Practice Complete", "feedback": "Find the same ID in the Students primary-key column." }] }, "constraints": {}
+            },
+            {
+                "id": "apply", "label": "Apply", "prerequisites": ["practice"], "current_state_label": "YOUR RELATIONSHIP TRACE",
+                "guidance": { "start_message": "Choose the requested record without being told the matching name.", "hints": { "limit": 1, "items": [{ "content": "PAYMENTS.STUDENT_ID points to STUDENTS.ID, not to the name directly." }] } },
+                "controls": [{ "operation": "trace-p001", "label": "TRACE P001" }, { "operation": "trace-p002", "label": "TRACE P002" }, { "operation": "trace-p003", "label": "TRACE P003" }],
+                "scenario": { "students": [{ "id": 201, "name": "Asha" }, { "id": 202, "name": "Diego" }, { "id": 203, "name": "Mina" }], "payments": [{ "payment_id": "P001", "student_id": 203 }, { "payment_id": "P002", "student_id": 201 }, { "payment_id": "P003", "student_id": 202 }], "target_payment": "P003" },
+                "challenge": { "phases": [{ "title": "Identify the related record", "instruction": "Trace P003 to its uniquely identified student.", "target": { "label": "TARGET", "description": "Use matching key values, not row position." }, "goal": { "type": "outcome_equals", "expected_outcome": "matched" }, "success": "✓ Apply Complete", "feedback": "Read P003.STUDENT_ID, then look for the exact Students ID." }] }, "constraints": {}
+            },
+            {
+                "id": "solve", "label": "Solve", "prerequisites": ["apply"], "current_state_label": "YOUR RELATIONSHIP TRACE",
+                "guidance": { "start_message": "Solve a new foreign-key trace without hints.", "hints": { "limit": 0, "items": [] } },
+                "controls": [{ "operation": "trace-p001", "label": "TRACE P001" }, { "operation": "trace-p002", "label": "TRACE P002" }, { "operation": "trace-p003", "label": "TRACE P003" }],
+                "scenario": { "students": [{ "id": 301, "name": "Noah" }, { "id": 302, "name": "Priya" }, { "id": 303, "name": "Sam" }], "payments": [{ "payment_id": "P001", "student_id": 302 }, { "payment_id": "P002", "student_id": 303 }, { "payment_id": "P003", "student_id": 301 }], "target_payment": "P002" },
+                "challenge": { "phases": [{ "title": "Solve the key trace", "instruction": "Trace the requested payment to its valid primary-key match.", "target": { "label": "TARGET", "description": "Find the related student through the key value." }, "goal": { "type": "outcome_equals", "expected_outcome": "matched" }, "success": "✓ Solve Complete", "feedback": "The relationship is defined by equal ID values." }] }, "constraints": {}
+            },
+            {
+                "id": "mastery", "label": "Mastery", "prerequisites": ["solve"], "current_state_label": "YOUR RELATIONSHIP TRACE",
+                "guidance": { "start_message": "Trace a randomized relationship with distractor records and no hints.", "hints": { "limit": 0, "items": [] } },
+                "controls": [{ "operation": "trace-p001", "label": "TRACE P001" }, { "operation": "trace-p002", "label": "TRACE P002" }, { "operation": "trace-p003", "label": "TRACE P003" }], "scenario": { "generator": "relational-keys-mastery", "generator_version": 1, "scenario_rules": {} },
+                "challenge": { "phases": [{ "title": "Master the relationship", "instruction": "Trace the requested randomized foreign key to the matching student.", "target": { "label": "TARGET", "description": "Ignore distractor records and match the key value." }, "goal": { "type": "outcome_equals", "expected_outcome": "matched" }, "success": "✓ Mastery Complete", "feedback": "A primary key identifies exactly one row." }] }, "constraints": {}
+            },
+            {
+                "id": "expert", "label": "Expert", "kind": "expert", "prerequisites": ["mastery"],
+                "expert": {
+                    "generator": "relational-keys-expert", "generator_version": 1, "replayable": true, "scenario_rules": {},
+                    "thinking": { "title": "Reason about the key relationships", "objective_label": "Think first", "instruction": "Before tracing visually, identify which references are valid and who the target payment belongs to.", "starting_stack_label": "Related Tables", "sequence_label": "References to simulate", "do_not_execute": "Do not trace records yet. Match every foreign-key value mentally.", "prediction_label": "Your prediction", "prediction_fields": [{ "id": "validPayments", "label": "Valid payment references", "prompt": "List payment IDs with valid references.", "type": "text_list" }, { "id": "student", "label": "Target student", "prompt": "Which student does the target payment reference?", "type": "text" }], "submit_label": "Check my prediction", "continue_label": "Continue to Expert Keys →", "empty_message": "Complete both predictions before continuing.", "replay_message": "Now replay the key traces.", "your_prediction_label": "Your prediction", "actual_label": "Result", "actual_result": "Valid references: {{final_state}}. Target student: {{next_pop}}." },
+                    "solve": { "title": "Expert Key Relationships", "instruction": "Trace the randomized target with no hints. Referential-integrity reasoning is the score.", "target_label": "TARGET", "your_label": "YOUR RELATIONSHIP TRACE", "available_values_label": "Trace a payment", "metric_label": "Relationship decisions", "hints_label": "Hints: none", "operation_rule": "A foreign key is valid only when it matches an existing primary key.", "controls": [{ "operation": "trace-p001", "label": "TRACE P001" }, { "operation": "trace-p002", "label": "TRACE P002" }, { "operation": "trace-p003", "label": "TRACE P003" }], "feedback": "Trace the requested foreign key to the matching Students ID.", "solved_message": "✓ Expert Keys Solved", "solved_result": "The randomized relationship was traced correctly.", "new_challenge_label": "New Expert Challenge" }
+                }
+            }
+        ]
+    }
 }
