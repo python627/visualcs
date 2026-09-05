@@ -26,6 +26,12 @@ KNOWN_CAPABILITIES = frozenset({
     "routing",
     "sorting",
     "scheduling",
+    "array_access",
+    "hashing",
+    "heap_operations",
+    "searching",
+    "divide_and_conquer",
+    "graph_traversal",
 })
 
 
@@ -44,6 +50,14 @@ KNOWN_PLAYGROUND_TYPES = frozenset({
     "relational-keys",
     "packet-routing",
     "selection-sort",
+    "array-operations",
+    "hash-table",
+    "min-heap",
+    "linear-search",
+    "insertion-sort",
+    "merge-sort",
+    "breadth-first-search",
+    "depth-first-search",
 })
 
 

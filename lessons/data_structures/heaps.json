@@ -1,0 +1,149 @@
+{
+  "schema_version": 2,
+  "metadata": {
+    "id": "heaps",
+    "order": 8,
+    "subject_order": 1,
+    "subject": "Data Structures",
+    "topic": "Min Heaps",
+    "title": "Discover Min Heaps",
+    "description": "Insert values into a complete tree and watch the smallest value rise to the root.",
+    "difficulty": "Beginner",
+    "estimated_time": "16 min"
+  },
+  "learning_objectives": [
+    "Describe a complete binary tree as the shape of a heap.",
+    "Explain why the minimum value stays at the root.",
+    "Follow bubble-up swaps during insertion."
+  ],
+  "capabilities": ["interactive_state", "heap_operations", "target_transformation", "sequence_simulation", "prediction"],
+  "teaching": {
+    "mission": { "title": "Bubble up the minimum", "description": "Insert values and notice how a smaller child swaps upward toward the root." },
+    "introduction": {
+      "title": "A min heap keeps its smallest value on top",
+      "content": "A min heap is a complete binary tree stored in an array. Every parent is no larger than its children, so the smallest value is always at the root.",
+      "points": ["New values begin at the next open position.", "A value swaps with its parent only when it is smaller.", "The tree shape stays complete while values bubble up."],
+      "visual": { "type": "array", "label": "HEAP ARRAY", "items": [40, 20, 35, 10] }
+    },
+    "worked_example": {
+      "visual_type": "array",
+      "title": "Insert 10 and bubble it up",
+      "content": "The new value starts at the end, then compares with its parent.",
+      "steps": [
+        { "action": "ADD 10", "items": [40, 20, 35, 10], "explanation": "10 is placed at the next open position in the complete tree." },
+        { "action": "SWAP WITH 20", "items": [40, 10, 35, 20], "explanation": "10 is smaller than its parent 20, so it swaps upward." },
+        { "action": "SWAP WITH 40", "items": [10, 40, 35, 20], "explanation": "10 is still smaller than 40, so it reaches the root." }
+      ],
+      "conclusion": "Bubble-up stops when the new value is no smaller than its parent or it reaches the root.",
+      "next": { "title": "Now build a min heap.", "content": "Insert one value at a time and watch the root stay smallest." }
+    },
+    "guided_practice": {
+      "action_explanations": {
+        "next-step": ["The value entered the next open position of the complete tree.", "A smaller child swapped with its parent to restore the min-heap rule.", "The root remains the smallest value after bubble-up.", "Every value is now arranged as a valid min heap."]
+      },
+      "prediction": {
+        "before_operation": "next-step",
+        "heading": "Before the next insert…",
+        "question": "Which value will be inserted next?",
+        "choices": [18, 24, 7],
+        "selection_message": "Your prediction: {prediction}. Insert the next value to check it.",
+        "pending_message": "Predict the next insertion before continuing.",
+        "required_message": "Choose the value you think comes next.",
+        "result": { "correct": "Your insertion prediction was right.", "incorrect": "Your prediction was {prediction}.", "actual": "The next insertion adds {actual} before bubble-up.", "concept": { "steps": ["INSERT", "↓", "COMPARE WITH PARENT"] } }
+      }
+    },
+    "challenge": {
+      "title": "Min Heap challenge",
+      "start_message": "Build the heap by inserting each value and letting smaller values bubble upward.",
+      "continue_message": "Challenge complete. Keep inserting values to practise the heap rule.",
+      "phases": [{
+        "title": "Build the min heap",
+        "instruction": "Insert all values until YOUR HEAP matches the target array.",
+        "target": { "label": "TARGET HEAP", "items": [10, 20, 35, 40] },
+        "expected_operations": ["next-step", "next-step", "next-step", "next-step"],
+        "success": "✓ Min heap built correctly",
+        "feedback": "Insert the next value, then swap upward only while it is smaller than its parent."
+      }]
+    },
+    "recall": {
+      "title": "Recall",
+      "prompt": "In your own words, why does the smallest value stay at the root of a min heap?",
+      "submit_label": "Submit recall",
+      "empty_message": "Write a short explanation first.",
+      "completion_message": "✓ Recall completed",
+      "model_answer": "Each parent is no larger than its children. When a smaller value is inserted, bubble-up swaps carry it toward the root until the min-heap rule is restored."
+    }
+  },
+  "visualization": {
+    "type": "min-heap",
+    "values": [40, 20, 35, 10],
+    "controls": [{ "id": "next-step", "label": "NEXT STEP", "operation": "next-step" }],
+    "actions": [
+      { "label": "Insert the first value", "operation": "next-step", "task": "Place the next value at the complete tree's open position." },
+      { "label": "Insert another value", "operation": "next-step", "task": "Place the value, compare it with its parent, and decide whether to swap." },
+      { "label": "Bubble a smaller value upward", "operation": "next-step", "task": "Choose SWAP only while the child is smaller than its parent." },
+      { "label": "Complete the min heap", "operation": "next-step", "task": "Finish the final insertion and restore the parent rule." }
+    ]
+  },
+  "practice": { "challenge": { "title": "Min Heap challenge", "start_message": "Insert the values and preserve the parent-child rule.", "continue_message": "You can keep experimenting with heap insertions.", "phases": [{ "title": "Reach the target heap", "instruction": "Insert the values until the target heap array is shown.", "target": { "label": "TARGET HEAP", "items": [10, 20, 35, 40] }, "expected_operations": ["next-step", "next-step", "next-step", "next-step"], "success": "✓ Heap complete", "feedback": "A child moves up only when it is smaller than its parent." }] } },
+  "mastery": {
+    "title": "Min Heap Mastery",
+    "mastered_label": "Min Heaps Mastered",
+    "current_state_label": "YOUR HEAP",
+    "levels": [
+      { "id": "learn", "label": "Learn", "completion": { "type": "course_completion" } },
+      { "id": "practice", "label": "Practice", "prerequisites": ["learn"], "guidance": { "start_message": "Watch each inserted value bubble up to its correct parent position.", "hints": { "limit": 1, "items": [{ "content": "Compare the new value with its parent and swap only if it is smaller." }] } }, "controls": [{ "label": "INSERT NEXT VALUE", "operation": "next-step" }], "scenario": { "values": [30, 18, 24, 7], "initial_state": [], "target_state": [7, 18, 24, 30] }, "challenge": { "phases": [{ "title": "Build a practice heap", "instruction": "Insert every value and restore the min-heap rule.", "target": { "label": "TARGET HEAP", "items": [7, 18, 24, 30] }, "goal": { "type": "state_equals", "state_key": "values", "expected_state": [7, 18, 24, 30] }, "success": "✓ Practice complete", "feedback": "The smallest value should be above every larger child." }] } },
+      { "id": "apply", "label": "Apply", "prerequisites": ["practice"], "guidance": { "start_message": "Decide where each new value settles without a hint.", "hints": { "limit": 0, "items": [] } }, "controls": [{ "label": "INSERT NEXT VALUE", "operation": "next-step" }], "scenario": { "values": [45, 12, 33, 5, 26], "initial_state": [], "target_state": [5, 12, 33, 45, 26] }, "challenge": { "phases": [{ "title": "Apply bubble-up", "instruction": "Build the target heap from the insertion sequence.", "target": { "label": "TARGET HEAP", "items": [5, 12, 33, 45, 26] }, "goal": { "type": "state_equals", "state_key": "values", "expected_state": [5, 12, 33, 45, 26] }, "success": "✓ Apply complete", "feedback": "Keep the complete-tree shape and compare each inserted value with its parent." }] } },
+      { "id": "solve", "label": "Solve", "prerequisites": ["apply"], "metrics": { "operation_label": "Insertions" }, "constraints": { "max_operations": 5, "operation_limit_message": "All five insertions were used before the target heap was reached." }, "guidance": { "start_message": "Plan the insertion sequence and use no more than five inserts.", "hints": { "limit": 0, "items": [] } }, "controls": [{ "label": "INSERT NEXT VALUE", "operation": "next-step" }], "scenario": { "values": [52, 16, 38, 9, 27], "initial_state": [], "target_state": [9, 16, 38, 52, 27] }, "challenge": { "phases": [{ "title": "Solve the heap", "instruction": "Reach TARGET in at most five insertions.", "target": { "label": "TARGET HEAP", "items": [9, 16, 38, 52, 27] }, "goal": { "type": "state_equals", "state_key": "values", "expected_state": [9, 16, 38, 52, 27] }, "success": "✓ Solve complete", "feedback": "Follow the parent relationship after every insertion." }] } },
+      { "id": "mastery", "label": "Mastery", "prerequisites": ["solve"], "guidance": { "start_message": "Build this unfamiliar min heap independently.", "hints": { "limit": 0, "items": [] } }, "controls": [{ "label": "INSERT NEXT VALUE", "operation": "next-step" }], "scenario": { "values": [61, 14, 42, 8, 29], "initial_state": [], "target_state": [8, 14, 42, 61, 29] }, "challenge": { "phases": [{ "title": "Master bubble-up", "instruction": "Insert the unfamiliar sequence and reach the target heap.", "target": { "label": "TARGET HEAP", "items": [8, 14, 42, 61, 29] }, "goal": { "type": "state_equals", "state_key": "values", "expected_state": [8, 14, 42, 61, 29] }, "success": "✓ Mastery complete", "feedback": "A valid min heap has no child smaller than its parent." }] } }
+    ]
+  },
+  "expert": {
+    "id": "expert",
+    "label": "Expert",
+    "prerequisites": ["mastery"],
+    "generator": "min-heap-expert",
+    "generator_version": 1,
+    "required_capabilities": ["heap_operations", "sequence_simulation", "prediction"],
+    "replayable": true,
+    "thinking": {
+      "title": "Predict the bubble-up",
+      "objective_label": "Think first",
+      "instruction": "Mentally insert every value before the heap is replayed.",
+      "starting_stack_label": "EMPTY HEAP",
+      "sequence_label": "INSERTIONS TO SIMULATE",
+      "do_not_execute": "Do not insert yet. Work through each bubble-up in your head.",
+      "prediction_label": "YOUR PREDICTION",
+      "prediction_fields": [
+        { "id": "finalHeap", "label": "Final heap array", "prompt": "What will the final heap array contain?", "type": "number_list", "placeholder": "Smallest to largest is not always heap order" },
+        { "id": "root", "label": "Final root", "prompt": "Which value will be at the root?", "type": "number" }
+      ],
+      "submit_label": "Check my prediction",
+      "continue_label": "Continue to Expert Challenge →",
+      "actual_label": "RESULT",
+      "your_prediction_label": "Your prediction",
+      "actual_result": "Final heap: {{final_state}}. Root: {{next_pop}}.",
+      "feedback": { "all_correct": "You traced every bubble-up correctly.", "incorrect": "Insert at the next open position, then compare upward with each parent." }
+    },
+    "solve": {
+      "title": "Expert Min Heap",
+      "instruction": "Build the unfamiliar heap with no hints.",
+      "target_label": "TARGET HEAP",
+      "your_label": "YOUR HEAP",
+      "metric_label": "Insertions",
+      "hints_label": "Hints: none",
+      "operation_rule": "Each inserted value counts once.",
+      "controls": [{ "operation": "insert-next", "label": "INSERT NEXT VALUE" }],
+      "perfect_message": "🏆 PERFECT EXPERT",
+      "perfect_result": "Every insertion restored the min-heap property.",
+      "new_challenge_label": "New Expert Challenge"
+    }
+  },
+  "assessment": {
+    "quiz": { "question": "Where is the minimum value in a min heap?", "options": ["At the root", "Always at the last leaf", "At any random node", "Outside the heap"], "correct": 0 },
+    "discovery": { "title": "Min Heap discovery", "summary": "A min heap combines a complete tree shape with a parent rule that keeps the smallest value at the root." },
+    "notes": { "sections": [{ "title": "What?", "content": "A min heap is a complete binary tree where every parent is no larger than its children." }, { "title": "Example", "content": "Insert 10 below 20, then swap upward until 10 reaches the root." }, { "title": "Why?", "content": "The parent rule makes the smallest value immediately available at the root." }, { "title": "Remember", "content": "Insert at the next open spot → bubble up while the child is smaller." }] },
+    "alternate_explanations": [{ "title": "Think of a priority line", "type": "analogy", "content": "The most urgent (smallest) number keeps moving toward the front, while the tree stays complete." }, { "title": "Walk through one insert", "type": "example", "content": "Add 7 to [30, 18, 24]. Compare 7 with 18, swap, then compare 7 with 30 and swap again." }]
+  },
+  "completion": { "recall": { "title": "Recall", "prompt": "In your own words, what happens when a newly inserted heap value is smaller than its parent?", "submit_label": "Submit recall", "empty_message": "Write a short explanation first.", "completion_message": "✓ Recall completed", "model_answer": "The new value swaps upward with its parent until it is no longer smaller or reaches the root." } }
+}

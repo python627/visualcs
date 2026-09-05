@@ -9,6 +9,7 @@ class TeachingEngine {
         this.quizAnswered = false;
         this.selectedPrediction = null;
         this.predictionPromptVisible = false;
+        this.predictionResolved = false;
         this.challengeActive = false;
         this.challengeCompleted = false;
         this.challengeRunner = null;
@@ -90,6 +91,57 @@ class TeachingEngine {
     }
 
 
+    renderActiveTask() {
+        if (!window.activeTask) {
+            return;
+        }
+
+        if (this.quizShown || this.recallCompleted || this.courseCompletionShown) {
+            window.activeTask.clear();
+            return;
+        }
+
+        if (this.challengeActive) {
+            const phase = this.getCurrentChallengePhase();
+            if (!phase) {
+                window.activeTask.clear();
+                return;
+            }
+
+            window.activeTask.render({
+                label: "ACTIVE TASK · CHALLENGE",
+                title: phase.title,
+                instruction: phase.instruction,
+                meta: ["Use the playground to decide the next move"]
+            });
+            return;
+        }
+
+        if (typeof masteryEngine !== "undefined" && masteryEngine.isInteractionActive?.()) {
+            return;
+        }
+
+        const actions = Array.isArray(this.lesson.playground?.actions)
+            ? this.lesson.playground.actions
+            : [];
+        const action = actions[this.missionStepIndex];
+
+        if (!action || this.missionCompleted) {
+            window.activeTask.clear();
+            return;
+        }
+
+        const guided = this.getGuidedPractice() || {};
+        window.activeTask.render({
+            label: "YOUR TASK",
+            step: this.missionStepIndex + 1,
+            total: actions.length,
+            title: action.label,
+            instruction: action.task || guided.active_task || action.label
+        });
+    }
+
+
     renderMission() {
         const steps = document.querySelectorAll(".step");
 
@@ -103,6 +155,8 @@ class TeachingEngine {
                 step.classList.add("active");
             }
         });
+
+        this.renderActiveTask();
     }
 
 
@@ -249,6 +303,16 @@ class TeachingEngine {
     }
 
 
+    guardPendingPrediction(operation) {
+        if (this.predictionPromptVisible && this.selectedPrediction === null) {
+            this.prepareOperation(operation);
+            return true;
+        }
+
+        return false;
+    }
+
+
     resolvePrediction(actual, operation) {
         const prediction = this.getPrediction();
         const panel = this.getPredictionPanel();
@@ -304,6 +368,7 @@ class TeachingEngine {
                 ${conceptHTML}
             </div>
         `;
+        this.predictionResolved = true;
     }
 
 
@@ -367,6 +432,7 @@ class TeachingEngine {
             if (
                 prediction
                 && this.selectedPrediction !== null
+                && !this.predictionResolved
                 && (prediction.result_operation || prediction.before_operation) === operation
             ) {
                 this.resolvePrediction(actual, operation);
@@ -504,6 +570,7 @@ class TeachingEngine {
             `;
 
             this.bindChallengeControls();
+            this.renderActiveTask();
             return;
         }
 
@@ -531,6 +598,7 @@ class TeachingEngine {
 
         this.renderChallengeTarget(phase);
         this.bindChallengeControls();
+        this.renderActiveTask();
     }
 
 
@@ -568,7 +636,7 @@ class TeachingEngine {
         this.completedChallengePhaseMessage = null;
         this.playground.resetForChallenge();
         this.renderChallenge();
-        this.setByteMessage(this.getChallenge().start_message);
+        this.setByteMessage("Challenge reset. Start the same problem again and compare your state with the target.");
     }
 
 
@@ -578,6 +646,8 @@ class TeachingEngine {
         if (panel) {
             panel.hidden = true;
         }
+
+        window.activeTask?.clear?.();
 
         this.setByteMessage(this.getChallenge().continue_message);
     }
@@ -631,6 +701,8 @@ class TeachingEngine {
             panel.hidden = true;
             panel.innerHTML = "";
         }
+
+        window.activeTask?.clear?.();
     }
 
 
@@ -648,6 +720,7 @@ class TeachingEngine {
         this.quizShown = true;
         this.quizAnswered = false;
         setLessonStage("quiz");
+        window.activeTask?.clear?.();
 
         const optionsHTML = quiz.options.map((option, index) => `
             <div class="quiz-option" onclick="checkAnswer(${index})">◯ ${option}</div>
@@ -744,7 +817,6 @@ class TeachingEngine {
                 ${nextAction}
             </div>
         `;
-
         panel.querySelector("[data-course-practice]")?.addEventListener("click", () => {
             masteryEngine.startRecommendedLevel();
         });
@@ -752,6 +824,7 @@ class TeachingEngine {
 
 
     completeCourse() {
+        window.activeTask?.clear?.();
         markLessonCompleted(this.lesson.id);
         masteryEngine.recordCourseCompletion();
         this.showCourseCompletion();
@@ -772,6 +845,7 @@ class TeachingEngine {
         }
 
         this.recallCompleted = false;
+        window.activeTask?.clear?.();
         panel.hidden = false;
         panel.innerHTML = `
             <div class="recall-card">
@@ -851,6 +925,7 @@ class TeachingEngine {
         this.resetQuiz();
         this.selectedPrediction = null;
         this.predictionPromptVisible = false;
+        this.predictionResolved = false;
 
         const predictionPanel = this.getPredictionPanel();
 
@@ -869,6 +944,7 @@ class TeachingEngine {
             completionPanel.innerHTML = "";
         }
         this.resetRecall();
+        this.renderActiveTask();
     }
 }
 

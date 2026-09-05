@@ -2314,6 +2314,59 @@
 
 }
 
+/* A compact, shared prompt for the learner's immediate action. */
+.active-task{
+    width:100%;
+    min-width:0;
+    box-sizing:border-box;
+}
+
+.active-task-card{
+    display:grid;
+    gap:6px;
+    padding:12px 14px;
+    border:1px solid #2563eb;
+    border-radius:12px;
+    background:linear-gradient(135deg, #172554, #172036);
+    text-align:left;
+}
+
+.active-task-label{
+    color:#7dd3fc;
+    font-size:11px;
+    font-weight:bold;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+}
+
+.active-task-title{
+    color:#f8fafc;
+    font-size:16px;
+}
+
+.active-task-instruction{
+    margin:0;
+    color:#dbeafe;
+    font-size:14px;
+    line-height:1.45;
+}
+
+.active-task-meta{
+    display:flex;
+    flex-wrap:wrap;
+    gap:7px;
+    margin-top:2px;
+}
+
+.active-task-meta span{
+    padding:4px 8px;
+    border:1px solid #334155;
+    border-radius:999px;
+    color:#cbd5e1;
+    font-size:12px;
+    font-weight:bold;
+}
+
 .playground:has(#challenge-panel:not([hidden])),
 .playground:has(#mastery-challenge-panel:not([hidden])){
 
@@ -2836,6 +2889,7 @@ body:has(#mastery-challenge-panel:not([hidden])) .notes{
     display:grid;
     grid-template-columns:minmax(150px, .7fr) minmax(0, 2.6fr) minmax(150px, .7fr);
     grid-template-areas:
+        "active active active"
         "header header header"
         "objective objective objective"
         "start current target"
@@ -2855,6 +2909,12 @@ body:has(#mastery-challenge-panel:not([hidden])) .notes{
 .dashboard:has(#mastery-challenge-panel:not([hidden])) .playground-interaction{
 
     display:contents;
+
+}
+
+.dashboard:has(#mastery-challenge-panel:not([hidden])) .playground-learning-area > .active-task{
+
+    grid-area:active;
 
 }
 
@@ -3203,6 +3263,7 @@ body:has(#mastery-challenge-panel:not([hidden])) .notes{
 
     grid-template-columns:minmax(0, .8fr) minmax(0, 1.2fr) minmax(0, 1.4fr);
     grid-template-areas:
+        "active active active"
         "header header header"
         "objective objective objective"
         "start trace prediction"
@@ -3728,6 +3789,7 @@ body:has(#mastery-challenge-panel:not([hidden])) .notes{
 
         grid-template-columns:1fr;
         grid-template-areas:
+            "active"
             "header"
             "objective"
             "start"
@@ -3743,6 +3805,7 @@ body:has(#mastery-challenge-panel:not([hidden])) .notes{
     .dashboard:has(#mastery-challenge-panel.expert-thinking) .playground-learning-area{
 
         grid-template-areas:
+            "active"
             "header"
             "objective"
             "start"
@@ -3758,6 +3821,7 @@ body:has(#mastery-challenge-panel:not([hidden])) .notes{
     .dashboard:has(#mastery-challenge-panel.expert-stage-review) .playground-learning-area{
 
         grid-template-areas:
+            "active"
             "header"
             "objective"
             "start"
@@ -3833,4 +3897,215 @@ body:has(#mastery-challenge-panel:not([hidden])) .notes{
 .note-section p{
     margin-top:12px;
     line-height:1.6;
+}
+
+/* Curriculum Expansion Phase 1 playgrounds */
+.curriculum-view {
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+    display: grid;
+    gap: 1rem;
+    justify-items: center;
+}
+
+.curriculum-instruction,
+.hash-rule,
+.heap-array,
+.graph-frontier {
+    width: min(100%, 46rem);
+    margin: 0;
+    color: #c7d6ef;
+    text-align: center;
+    line-height: 1.5;
+}
+
+.curriculum-array {
+    display: flex;
+    justify-content: center;
+    gap: .55rem;
+    width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    padding: .25rem;
+    box-sizing: border-box;
+}
+
+.curriculum-array-cell {
+    position: relative;
+    flex: 0 0 4.25rem;
+    min-height: 4.25rem;
+    display: grid;
+    place-items: center;
+    border: 2px solid #61ccff;
+    border-radius: .75rem;
+    background: #113a58;
+    color: #f4fbff;
+}
+
+.curriculum-array-cell strong { font-size: 1.15rem; }
+.curriculum-index { position: absolute; top: .3rem; left: .45rem; color: #96b5d7; font-size: .72rem; }
+.curriculum-array-cell.is-active { border-color: #ffd166; background: #594719; box-shadow: 0 0 1rem rgba(255, 209, 102, .35); }
+.curriculum-array-cell.is-sorted { border-color: #5ee39b; background: #164c3c; }
+.curriculum-array-cell.is-faded { opacity: .38; }
+
+.hash-table-grid {
+    width: min(100%, 34rem);
+    display: grid;
+    gap: .5rem;
+}
+
+.hash-bucket {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr;
+    align-items: center;
+    min-height: 2.7rem;
+    border: 1px solid #355276;
+    border-radius: .55rem;
+    overflow: hidden;
+    background: #10213d;
+}
+
+.hash-bucket strong { align-self: stretch; display: grid; place-items: center; background: #1a3c62; color: #7cdaff; }
+.hash-bucket span { padding: .5rem .75rem; color: #e5f3ff; }
+.hash-bucket.is-active { border-color: #ffd166; box-shadow: 0 0 .8rem rgba(255, 209, 102, .25); }
+
+.heap-tree {
+    width: min(100%, 30rem);
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: .8rem;
+    justify-items: center;
+}
+
+.heap-node {
+    width: 3.25rem;
+    height: 3.25rem;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    border: 2px solid #61ccff;
+    background: #113a58;
+    font-weight: 700;
+}
+
+.heap-node:nth-child(1) { grid-column: 2 / span 2; }
+.heap-node:nth-child(2) { grid-column: 1 / span 2; }
+.heap-node:nth-child(3) { grid-column: 3 / span 2; }
+.heap-node.is-active { border-color: #ffd166; background: #594719; }
+
+.merge-stages {
+    width: min(100%, 42rem);
+    display: grid;
+    gap: .7rem;
+    padding: 1rem;
+    border: 1px solid #355276;
+    border-radius: .85rem;
+    background: #10213d;
+    color: #e5f3ff;
+}
+
+.merge-stages p { margin: 0; text-align: center; }
+.merge-stages strong { color: #7cdaff; }
+
+.merge-choice-row,
+.search-decision-row,
+.hash-bucket-choices,
+.hash-collision-choices{
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:.55rem;
+    margin-top:.75rem;
+}
+
+.merge-choice,
+.search-decision-row button,
+.hash-decision-panel button{
+    padding:.55rem .8rem;
+    border:1px solid #4c8fc2;
+    border-radius:.55rem;
+    background:#164c73;
+    color:#f4fbff;
+    font-weight:700;
+    cursor:pointer;
+}
+
+.merge-choice:hover,
+.hash-decision-panel button:hover{
+    border-color:#ffd166;
+    background:#1d5f8d;
+}
+
+.hash-decision-panel{
+    display:grid;
+    justify-items:center;
+    gap:.6rem;
+    margin-top:.75rem;
+    padding:.8rem;
+    border:1px solid #355276;
+    border-radius:.75rem;
+    background:#0d1b34;
+    color:#e5f3ff;
+}
+
+.hash-decision-panel label{
+    display:flex;
+    align-items:center;
+    flex-wrap:wrap;
+    justify-content:center;
+    gap:.5rem;
+    color:#c7d6ef;
+}
+
+.hash-decision-panel input{
+    width:6rem;
+    padding:.45rem;
+    border:1px solid #4c8fc2;
+    border-radius:.45rem;
+    background:#10213d;
+    color:#fff;
+    font:inherit;
+    text-align:center;
+}
+
+.graph-map {
+    position: relative;
+    width: min(100%, 34rem);
+    aspect-ratio: 1.7;
+    min-width: 0;
+    border: 1px solid #355276;
+    border-radius: .9rem;
+    background: #10213d;
+    overflow: hidden;
+}
+
+.graph-map svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.graph-map line { stroke: #51729a; stroke-width: .8; }
+.graph-node {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    width: 2.7rem;
+    height: 2.7rem;
+    border-radius: 50%;
+    border: 2px solid #61ccff;
+    background: #113a58;
+    color: #f4fbff;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.graph-node:disabled { cursor: default; opacity: 1; }
+.graph-node.is-frontier { border-color: #ffd166; background: #594719; }
+.graph-node.is-visited { border-color: #5ee39b; background: #164c3c; }
+.graph-node.is-selected { outline: 3px solid rgba(124, 218, 255, .7); }
+
+.mastery-state-card .curriculum-array { justify-content: flex-start; }
+.mastery-state-card .curriculum-array-cell { transform: scale(.78); transform-origin: left center; margin-right: -0.75rem; }
+.mastery-state-card .hash-table-grid { font-size: .8rem; }
+
+@media (max-width: 620px) {
+    .curriculum-array { justify-content: flex-start; }
+    .curriculum-array-cell { flex-basis: 3.7rem; min-height: 3.7rem; }
+    .graph-node { width: 2.25rem; height: 2.25rem; }
 }

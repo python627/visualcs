@@ -958,6 +958,7 @@ class MasteryEngine {
         }
 
         if (!panel || !level || !this.runner || (!this.attemptActive && !this.lastResult)) {
+            window.activeTask?.clear?.();
             if (panel) {
                 panel.hidden = true;
                 panel.innerHTML = "";
@@ -969,6 +970,7 @@ class MasteryEngine {
         const phase = this.runner.getCurrentPhase();
 
         if (!phase) {
+            window.activeTask?.clear?.();
             return;
         }
 
@@ -991,6 +993,13 @@ class MasteryEngine {
         const progressText = this.attemptActive && outcome
             ? (this.lastResult?.feedback || "Target not achieved yet. Compare YOUR STACK with the TARGET STACK.")
             : "";
+
+        window.activeTask?.render?.({
+            label: `ACTIVE TASK · ${level.label}`,
+            title: phase.title,
+            instruction: phase.instruction,
+            meta: [operations, this.getHintsText(level, metrics)]
+        });
 
         panel.hidden = false;
         panel.className = `challenge-panel mastery-challenge-panel mastery-${this.lesson.playground.type}`;
@@ -1062,6 +1071,7 @@ class MasteryEngine {
         const scenario = this.expertScenario;
 
         if (!panel || !level || !definition || !scenario || (!this.attemptActive && !this.lastResult)) {
+            window.activeTask?.clear?.();
             if (panel) {
                 panel.hidden = true;
                 panel.innerHTML = "";
@@ -1076,6 +1086,16 @@ class MasteryEngine {
         const presentationClass = stage === "solve"
             ? "expert-solve"
             : "expert-thinking";
+
+        const stageCopy = stage === "solve"
+            ? definition.solve || {}
+            : definition.thinking || {};
+        window.activeTask?.render?.({
+            label: stage === "solve" ? "ACTIVE TASK · EXPERT CHALLENGE" : "ACTIVE TASK · THINK FIRST",
+            title: stageCopy.title || "Expert task",
+            instruction: stageCopy.instruction || "Work through the problem before continuing.",
+            meta: stage === "solve" ? ["No hints", "Execute your plan"] : ["Predict before execution"]
+        });
 
         panel.hidden = false;
         panel.className = [
@@ -1145,7 +1165,7 @@ class MasteryEngine {
                 </header>
                 <div class="mastery-objective">
                     <span>${thinking.objective_label || "Think first"}</span>
-                    <p>${thinking.instruction || "Predict the result before the Stack animates."}</p>
+                    <p>${thinking.instruction || "Predict the result before the playground runs."}</p>
                 </div>
                 <div id="expert-thinking-start-state" class="expert-thinking-start-state"></div>
                 <div class="expert-trace" aria-label="Operation sequence">
@@ -1167,7 +1187,7 @@ class MasteryEngine {
                         ? `<p class="mastery-attempt-feedback">${this.lastResult.feedback}</p>`
                         : ""}
                     ${submitted && !this.expertReplayComplete
-                        ? `<p class="mastery-progress-feedback">${thinking.replay_message || "Now watch the Stack carry out the sequence."}</p>`
+                        ? `<p class="mastery-progress-feedback">${thinking.replay_message || "Now watch the playground carry out the sequence."}</p>`
                         : ""}
                 </div>
                 <div class="challenge-actions">

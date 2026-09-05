@@ -129,7 +129,13 @@ class ExpertAttemptRunner {
 
 
     getTranscript() {
-        return this.transcript.map(event => ({ ...event, state: [...event.state] }));
+        // Expert scenarios can represent arrays, tables, trees, or graph
+        // traversal state. Preserve the playground's state shape instead of
+        // assuming every lesson is a Stack-like array.
+        return this.transcript.map(event => ({
+            ...event,
+            state: cloneScenarioValue(event.state)
+        }));
     }
 
 
@@ -189,7 +195,7 @@ class ExpertAttemptRunner {
             operation: event.operation,
             value: event.value ?? null,
             removedValue: event.removedValue ?? null,
-            state: Array.isArray(event.state) ? [...event.state] : []
+            state: cloneScenarioValue(event.state)
         });
 
         const challengeResult = this.executionRunner.reportOperation(event);

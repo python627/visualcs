@@ -165,6 +165,8 @@
 
     <div class="playground-learning-area">
 
+        <section id="active-task" class="active-task" aria-live="polite" hidden></section>
+
         {% if mastery %}
 
         <section id="mastery-challenge-panel" class="challenge-panel mastery-challenge-panel" aria-live="polite" hidden></section>
@@ -376,6 +378,8 @@
 
 <script src="{{ url_for('static', filename='js/lesson_capabilities.js') }}"></script>
 
+<script src="{{ url_for('static', filename='js/active_task.js') }}"></script>
+
 <script src="{{ url_for('static', filename='js/expert_attempt_runner.js') }}"></script>
 
 <script src="{{ url_for('static', filename='js/mastery_engine.js') }}"></script>
@@ -412,6 +416,14 @@
 <script src="{{ url_for('static', filename='js/engine/bubble_sort_playground.js') }}"></script>
 
 <script src="{{ url_for('static', filename='js/engine/selection_sort_playground.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/engine/curriculum_generators.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/engine/curriculum_array_playgrounds.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/engine/hash_heap_playgrounds.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/engine/graph_traversal_playgrounds.js') }}"></script>
 
 <script src="{{ url_for('static', filename='js/engine/binary_search_tree_playground.js') }}"></script>
 
