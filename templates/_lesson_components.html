@@ -45,7 +45,7 @@
                 <span>{{ state["rear_label"] if "rear_label" in state else 'REAR' }} &darr;</span>
             </div>
             {% endif %}
-            {% if not compact %}<div>{% endif %}
+            {% if not compact %}<div class="teaching-queue">{% endif %}
                 {% for item in items %}
                 <span class="teaching-queue-block">{{ item }}</span>
                 {% if not loop.last %}<span class="teaching-queue-arrow" aria-hidden="true">&rarr;</span>{% endif %}
