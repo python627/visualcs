@@ -4104,6 +4104,27 @@ body:has(#mastery-challenge-panel:not([hidden])) .notes{
 .mastery-state-card .curriculum-array-cell { transform: scale(.78); transform-origin: left center; margin-right: -0.75rem; }
 .mastery-state-card .hash-table-grid { font-size: .8rem; }
 
+/* Compact reusable visuals for the Phase 2 curriculum lessons. */
+.phase2-view { width: 100%; min-width: 0; }
+.phase2-visual { display: grid; gap: .8rem; width: 100%; min-width: 0; }
+.phase2-state-card, .phase2-zone, .phase2-table-card {
+    padding: .8rem; border: 1px solid #355276; border-radius: .75rem;
+    background: #10213d; color: #e5f3ff;
+}
+.phase2-state-card .challenge-target-label, .phase2-zone h3, .phase2-table-card h3 { display:block; margin-bottom:.45rem; color:#7cdaff; font-size:.78rem; letter-spacing:.05em; }
+.phase2-state-value { margin:0; white-space:pre-wrap; font:inherit; color:#f4fbff; }
+.phase2-zones { grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); }
+.phase2-zone-items { display:flex; flex-wrap:wrap; gap:.45rem; }
+.phase2-item, .phase2-flow-item { padding:.45rem .65rem; border-radius:.5rem; background:#164c73; border:1px solid #4c8fc2; }
+.phase2-flow-row { display:flex; flex-wrap:wrap; align-items:center; justify-content:center; gap:.55rem; padding:1rem; border:1px solid #355276; border-radius:.75rem; background:#10213d; }
+.phase2-flow-arrow { color:#7cdaff; font-size:1.25rem; }
+.phase2-graph-flow { display:flex; flex-wrap:wrap; align-items:center; gap:.55rem; }
+.phase2-table { overflow-x:auto; }
+.phase2-table table { width:100%; border-collapse:collapse; }
+.phase2-table th, .phase2-table td { padding:.45rem .6rem; border:1px solid #355276; text-align:left; }
+.phase2-table th { color:#7cdaff; background:#0d1b34; }
+.phase2-next-instruction { margin:.65rem 0 0; color:#c7d6ef; }
+
 @media (max-width: 620px) {
     .curriculum-array { justify-content: flex-start; }
     .curriculum-array-cell { flex-basis: 3.7rem; min-height: 3.7rem; }

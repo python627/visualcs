@@ -1,0 +1,794 @@
+{
+  "schema_version": 2,
+  "metadata": {
+    "id": "ip-addresses",
+    "order": 2,
+    "subject_order": 5,
+    "subject": "Computer Networks",
+    "topic": "IP Addresses",
+    "title": "Read IP Addresses",
+    "description": "Match a packet destination to a device using a simple IPv4 address.",
+    "difficulty": "Beginner",
+    "estimated_time": "15 min"
+  },
+  "learning_objectives": [
+    "Explain IP Addresses in simple terms.",
+    "Follow one visible IP Addresses example.",
+    "Make a correct decision in the playground."
+  ],
+  "capabilities": [
+    "interactive_state",
+    "routing",
+    "calculation"
+  ],
+  "teaching": {
+    "mission": {
+      "title": "Practise IP Addresses",
+      "description": "Make each decision and watch the consequence."
+    },
+    "introduction": {
+      "title": "IP Addresses: start here",
+      "content": "An IP address identifies a device on a network.",
+      "points": [
+        "Match the packet's destination address with the device that owns it."
+      ],
+      "visual": {
+        "type": "array",
+        "label": "IP Addresses",
+        "items": [
+          "What?",
+          "Example",
+          "Try it"
+        ]
+      }
+    },
+    "worked_example": {
+      "title": "See one example",
+      "content": "Watch one concrete sequence before you try it.",
+      "steps": [
+        {
+          "action": "READ OCTETS",
+          "state": {
+            "zones": {
+              "ADDRESS": [
+                "192",
+                "168",
+                "1",
+                "20"
+              ]
+            }
+          },
+          "explanation": "IPv4 is written as four numeric octets."
+        },
+        {
+          "action": "MATCH",
+          "state": {
+            "zones": {
+              "PACKET": [
+                "192.168.1.20"
+              ],
+              "MATCH": [
+                "Server"
+              ]
+            }
+          },
+          "explanation": "The destination address matches the Server."
+        },
+        {
+          "action": "DELIVER",
+          "state": {
+            "zones": {
+              "DELIVERED": [
+                "Packet → Server"
+              ]
+            }
+          },
+          "explanation": "The matching address identifies where the packet should go."
+        }
+      ],
+      "conclusion": "The visual state changes because the concept follows a rule.",
+      "next": {
+        "title": "Now you try.",
+        "content": "Choose the next meaningful action."
+      }
+    },
+    "guided_practice": {
+      "action_explanations": {
+        "read": "The read action changes the state for a reason.",
+        "match": "The match action changes the state for a reason.",
+        "deliver": "The deliver action changes the state for a reason."
+      }
+    }
+  },
+  "visualization": {
+    "type": "ip-addresses",
+    "view": "zones",
+    "initial_state": {
+      "zones": {
+        "DEVICES": [
+          "Laptop 192.168.1.10",
+          "Server 192.168.1.20"
+        ],
+        "PACKET": [
+          "destination 192.168.1.20"
+        ]
+      }
+    },
+    "guided_steps": [
+      {
+        "operation": "read",
+        "instruction": "Read the four octets",
+        "next_state": {
+          "zones": {
+            "ADDRESS": [
+              "192.168.1.20"
+            ]
+          }
+        },
+        "evaluation_state": [
+          "READ"
+        ]
+      },
+      {
+        "operation": "match",
+        "instruction": "Match the destination device",
+        "next_state": {
+          "zones": {
+            "MATCH": [
+              "Server 192.168.1.20"
+            ]
+          }
+        },
+        "evaluation_state": [
+          "MATCH"
+        ]
+      },
+      {
+        "operation": "deliver",
+        "instruction": "Identify the destination",
+        "next_state": {
+          "zones": {
+            "DELIVERED": [
+              "Server"
+            ]
+          }
+        },
+        "evaluation_state": [
+          "DELIVER"
+        ]
+      }
+    ],
+    "controls": [
+      {
+        "id": "read",
+        "label": "READ ADDRESS",
+        "operation": "read"
+      },
+      {
+        "id": "match",
+        "label": "MATCH DEVICE",
+        "operation": "match"
+      },
+      {
+        "id": "deliver",
+        "label": "DELIVER",
+        "operation": "deliver"
+      }
+    ],
+    "actions": [
+      {
+        "label": "Read the address",
+        "operation": "read",
+        "task": "Read the address"
+      },
+      {
+        "label": "Match the destination",
+        "operation": "match",
+        "task": "Match the destination"
+      },
+      {
+        "label": "Identify the receiving device",
+        "operation": "deliver",
+        "task": "Identify the receiving device"
+      }
+    ],
+    "instruction": "Choose the next meaningful action.",
+    "wrong_action_message": "Compare the active task with the current state before choosing."
+  },
+  "practice": {
+    "challenge": {
+      "title": "IP Addresses challenge",
+      "start_message": "Apply the concept to the displayed state.",
+      "continue_message": "Challenge complete. Keep experimenting.",
+      "phases": [
+        {
+          "title": "Reach the correct result",
+          "instruction": "Use the controls to reach the target state.",
+          "target": {
+            "label": "TARGET",
+            "items": [
+              "COMPLETE"
+            ]
+          },
+          "goal": {
+            "type": "state_equals",
+            "expected_state": [
+              "COMPLETE"
+            ]
+          },
+          "success": "✓ Challenge complete",
+          "feedback": "Compare your state with the target."
+        }
+      ]
+    }
+  },
+  "mastery": {
+    "title": "IP Addresses Mastery",
+    "mastered_label": "IP Addresses Mastered",
+    "current_state_label": "YOUR STATE",
+    "levels": [
+      {
+        "id": "learn",
+        "label": "Learn",
+        "completion": {
+          "type": "course_completion"
+        }
+      },
+      {
+        "id": "practice",
+        "label": "Practice",
+        "prerequisites": [
+          "learn"
+        ],
+        "guidance": {
+          "start_message": "Compare the current state with the objective and choose the next action.",
+          "hints": {
+            "limit": 1,
+            "items": [
+              {
+                "content": "Use the operation that moves the state toward the target."
+              }
+            ]
+          }
+        },
+        "controls": [
+          {
+            "id": "read",
+            "label": "READ ADDRESS",
+            "operation": "read"
+          },
+          {
+            "id": "match",
+            "label": "MATCH DEVICE",
+            "operation": "match"
+          },
+          {
+            "id": "deliver",
+            "label": "DELIVER",
+            "operation": "deliver"
+          }
+        ],
+        "scenario": {
+          "initial_state": {
+            "zones": {
+              "DEVICES": [
+                "Laptop 192.168.1.10",
+                "Server 192.168.1.20"
+              ],
+              "PACKET": [
+                "destination 192.168.1.20"
+              ]
+            }
+          },
+          "operations": [
+            {
+              "operation": "read",
+              "instruction": "Read the four octets",
+              "next_state": {
+                "zones": {
+                  "ADDRESS": [
+                    "192.168.1.20"
+                  ]
+                }
+              },
+              "evaluation_state": [
+                "READ"
+              ]
+            }
+          ]
+        },
+        "challenge": {
+          "phases": [
+            {
+              "title": "Practice task",
+              "instruction": "Reach the target state by making the appropriate decisions.",
+              "target": {
+                "label": "TARGET STATE",
+                "items": [
+                  "COMPLETE"
+                ]
+              },
+              "goal": {
+                "type": "state_equals",
+                "expected_state": [
+                  "COMPLETE"
+                ]
+              },
+              "success": "✓ Practice complete",
+              "feedback": "Compare your current state with the target before choosing again."
+            }
+          ]
+        }
+      },
+      {
+        "id": "apply",
+        "label": "Apply",
+        "prerequisites": [
+          "practice"
+        ],
+        "guidance": {
+          "start_message": "Compare the current state with the objective and choose the next action.",
+          "hints": {
+            "limit": 0,
+            "items": []
+          }
+        },
+        "controls": [
+          {
+            "id": "read",
+            "label": "READ ADDRESS",
+            "operation": "read"
+          },
+          {
+            "id": "match",
+            "label": "MATCH DEVICE",
+            "operation": "match"
+          },
+          {
+            "id": "deliver",
+            "label": "DELIVER",
+            "operation": "deliver"
+          }
+        ],
+        "scenario": {
+          "initial_state": {
+            "zones": {
+              "DEVICES": [
+                "Laptop 192.168.1.10",
+                "Server 192.168.1.20"
+              ],
+              "PACKET": [
+                "destination 192.168.1.20"
+              ]
+            }
+          },
+          "operations": [
+            {
+              "operation": "read",
+              "instruction": "Read the four octets",
+              "next_state": {
+                "zones": {
+                  "ADDRESS": [
+                    "192.168.1.20"
+                  ]
+                }
+              },
+              "evaluation_state": [
+                "READ"
+              ]
+            },
+            {
+              "operation": "match",
+              "instruction": "Match the destination device",
+              "next_state": {
+                "zones": {
+                  "MATCH": [
+                    "Server 192.168.1.20"
+                  ]
+                }
+              },
+              "evaluation_state": [
+                "MATCH"
+              ]
+            }
+          ]
+        },
+        "challenge": {
+          "phases": [
+            {
+              "title": "Apply task",
+              "instruction": "Reach the target state by making the appropriate decisions.",
+              "target": {
+                "label": "TARGET STATE",
+                "items": [
+                  "COMPLETE"
+                ]
+              },
+              "goal": {
+                "type": "state_equals",
+                "expected_state": [
+                  "COMPLETE"
+                ]
+              },
+              "success": "✓ Apply complete",
+              "feedback": "Compare your current state with the target before choosing again."
+            }
+          ]
+        }
+      },
+      {
+        "id": "solve",
+        "label": "Solve",
+        "prerequisites": [
+          "apply"
+        ],
+        "guidance": {
+          "start_message": "Compare the current state with the objective and choose the next action.",
+          "hints": {
+            "limit": 0,
+            "items": []
+          }
+        },
+        "controls": [
+          {
+            "id": "read",
+            "label": "READ ADDRESS",
+            "operation": "read"
+          },
+          {
+            "id": "match",
+            "label": "MATCH DEVICE",
+            "operation": "match"
+          },
+          {
+            "id": "deliver",
+            "label": "DELIVER",
+            "operation": "deliver"
+          }
+        ],
+        "scenario": {
+          "initial_state": {
+            "zones": {
+              "DEVICES": [
+                "Laptop 192.168.1.10",
+                "Server 192.168.1.20"
+              ],
+              "PACKET": [
+                "destination 192.168.1.20"
+              ]
+            }
+          },
+          "operations": [
+            {
+              "operation": "read",
+              "instruction": "Read the four octets",
+              "next_state": {
+                "zones": {
+                  "ADDRESS": [
+                    "192.168.1.20"
+                  ]
+                }
+              },
+              "evaluation_state": [
+                "READ"
+              ]
+            },
+            {
+              "operation": "match",
+              "instruction": "Match the destination device",
+              "next_state": {
+                "zones": {
+                  "MATCH": [
+                    "Server 192.168.1.20"
+                  ]
+                }
+              },
+              "evaluation_state": [
+                "MATCH"
+              ]
+            },
+            {
+              "operation": "deliver",
+              "instruction": "Identify the destination",
+              "next_state": {
+                "zones": {
+                  "DELIVERED": [
+                    "Server"
+                  ]
+                }
+              },
+              "evaluation_state": [
+                "DELIVER"
+              ]
+            }
+          ]
+        },
+        "challenge": {
+          "phases": [
+            {
+              "title": "Solve task",
+              "instruction": "Reach the target state by making the appropriate decisions.",
+              "target": {
+                "label": "TARGET STATE",
+                "items": [
+                  "COMPLETE"
+                ]
+              },
+              "goal": {
+                "type": "state_equals",
+                "expected_state": [
+                  "COMPLETE"
+                ]
+              },
+              "success": "✓ Solve complete",
+              "feedback": "Compare your current state with the target before choosing again."
+            }
+          ]
+        }
+      },
+      {
+        "id": "mastery",
+        "label": "Mastery",
+        "prerequisites": [
+          "solve"
+        ],
+        "guidance": {
+          "start_message": "Compare the current state with the objective and choose the next action.",
+          "hints": {
+            "limit": 0,
+            "items": []
+          }
+        },
+        "controls": [
+          {
+            "id": "read",
+            "label": "READ ADDRESS",
+            "operation": "read"
+          },
+          {
+            "id": "match",
+            "label": "MATCH DEVICE",
+            "operation": "match"
+          },
+          {
+            "id": "deliver",
+            "label": "DELIVER",
+            "operation": "deliver"
+          }
+        ],
+        "scenario": {
+          "initial_state": {
+            "zones": {
+              "DEVICES": [
+                "Laptop 192.168.1.10",
+                "Server 192.168.1.20"
+              ],
+              "PACKET": [
+                "destination 192.168.1.20"
+              ]
+            }
+          },
+          "operations": [
+            {
+              "operation": "read",
+              "instruction": "Read the four octets",
+              "next_state": {
+                "zones": {
+                  "ADDRESS": [
+                    "192.168.1.20"
+                  ]
+                }
+              },
+              "evaluation_state": [
+                "READ"
+              ]
+            },
+            {
+              "operation": "match",
+              "instruction": "Match the destination device",
+              "next_state": {
+                "zones": {
+                  "MATCH": [
+                    "Server 192.168.1.20"
+                  ]
+                }
+              },
+              "evaluation_state": [
+                "MATCH"
+              ]
+            },
+            {
+              "operation": "deliver",
+              "instruction": "Identify the destination",
+              "next_state": {
+                "zones": {
+                  "DELIVERED": [
+                    "Server"
+                  ]
+                }
+              },
+              "evaluation_state": [
+                "DELIVER"
+              ]
+            }
+          ]
+        },
+        "challenge": {
+          "phases": [
+            {
+              "title": "Mastery task",
+              "instruction": "Reach the target state by making the appropriate decisions.",
+              "target": {
+                "label": "TARGET STATE",
+                "items": [
+                  "COMPLETE"
+                ]
+              },
+              "goal": {
+                "type": "state_equals",
+                "expected_state": [
+                  "COMPLETE"
+                ]
+              },
+              "success": "✓ Mastery complete",
+              "feedback": "Compare your current state with the target before choosing again."
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "expert": {
+    "id": "expert",
+    "label": "Expert",
+    "prerequisites": [
+      "mastery"
+    ],
+    "generator": "phase2-expert",
+    "generator_version": 1,
+    "required_capabilities": [
+      "interactive_state",
+      "routing",
+      "calculation"
+    ],
+    "thinking": {
+      "title": "Predict the sequence",
+      "objective_label": "Think first",
+      "instruction": "Mentally follow the sequence before acting.",
+      "starting_stack_label": "STARTING STATE",
+      "sequence_label": "ACTIONS TO SIMULATE",
+      "do_not_execute": "Do not act yet. Work through the sequence in order.",
+      "prediction_label": "YOUR PREDICTION",
+      "prediction_fields": [
+        {
+          "id": "finalState",
+          "label": "Final state",
+          "prompt": "What will the final state contain?",
+          "type": "text",
+          "placeholder": "Describe the result"
+        }
+      ],
+      "submit_label": "Check my prediction",
+      "continue_label": "Continue to Expert Challenge →",
+      "actual_label": "RESULT",
+      "your_prediction_label": "Your prediction",
+      "actual_result": "Final state: {{final_state}}.",
+      "feedback": {
+        "all_correct": "You tracked the sequence.",
+        "incorrect": "Recheck each transition."
+      }
+    },
+    "solve": {
+      "title": "Expert IP Addresses",
+      "instruction": "Apply the sequence with no hints.",
+      "target_label": "TARGET STATE",
+      "your_label": "YOUR STATE",
+      "metric_label": "Actions",
+      "hints_label": "Hints: none",
+      "operation_rule": "Each action counts once.",
+      "controls": [
+        {
+          "id": "read",
+          "label": "READ ADDRESS",
+          "operation": "read"
+        },
+        {
+          "id": "match",
+          "label": "MATCH DEVICE",
+          "operation": "match"
+        },
+        {
+          "id": "deliver",
+          "label": "DELIVER",
+          "operation": "deliver"
+        }
+      ],
+      "perfect_message": "🏆 PERFECT EXPERT",
+      "perfect_result": "You completed the sequence.",
+      "new_challenge_label": "New Expert Challenge"
+    },
+    "scenario_rules": {
+      "initial_state": [
+        "PACKET → 192.168.1.20"
+      ],
+      "steps": [
+        {
+          "operation": "read",
+          "label": "READ OCTETS"
+        },
+        {
+          "operation": "match",
+          "label": "MATCH DEVICE"
+        },
+        {
+          "operation": "deliver",
+          "label": "DELIVER"
+        }
+      ],
+      "final_state": [
+        "SERVER 192.168.1.20"
+      ],
+      "target_state": [
+        "SERVER 192.168.1.20"
+      ]
+    }
+  },
+  "assessment": {
+    "quiz": {
+      "question": "What does a destination IP address identify?",
+      "options": [
+        "The receiving device/network",
+        "The keyboard",
+        "The file size",
+        "The screen"
+      ],
+      "correct": 0
+    },
+    "discovery": {
+      "title": "IP discovery",
+      "summary": "Destination addresses let network devices identify where packets should be delivered."
+    },
+    "notes": {
+      "sections": [
+        {
+          "title": "What?",
+          "content": "An IPv4 address is four numbers that identify a device location."
+        },
+        {
+          "title": "Example",
+          "content": "192.168.1.20 matches the Server with that address."
+        },
+        {
+          "title": "Why?",
+          "content": "Networks use destination addresses to deliver packets."
+        },
+        {
+          "title": "Remember",
+          "content": "Compare all four octets."
+        }
+      ]
+    },
+    "alternate_explanations": [
+      {
+        "title": "Think of a familiar workflow",
+        "type": "analogy",
+        "content": "Imagine IP Addresses as a small real-world process with visible steps."
+      },
+      {
+        "title": "Walk through the example",
+        "type": "example",
+        "content": "Match the packet's destination address with the device that owns it."
+      }
+    ]
+  },
+  "completion": {
+    "recall": {
+      "title": "Recall",
+      "prompt": "In your own words, why must a packet carry a destination IP address?",
+      "submit_label": "Submit recall",
+      "empty_message": "Write a short explanation first.",
+      "completion_message": "✓ Recall completed",
+      "model_answer": "Compare all four octets."
+    }
+  }
+}

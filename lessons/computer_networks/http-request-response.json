@@ -1,0 +1,800 @@
+{
+  "schema_version": 2,
+  "metadata": {
+    "id": "http-request-response",
+    "order": 5,
+    "subject_order": 5,
+    "subject": "Computer Networks",
+    "topic": "HTTP Request / Response",
+    "title": "Trace an HTTP Request",
+    "description": "Follow a browser request to a server response and interpret common status codes.",
+    "difficulty": "Beginner",
+    "estimated_time": "15 min"
+  },
+  "learning_objectives": [
+    "Explain HTTP Request / Response in simple terms.",
+    "Follow one visible HTTP Request / Response example.",
+    "Make a correct decision in the playground."
+  ],
+  "capabilities": [
+    "interactive_state",
+    "sequence_simulation",
+    "decision_tree"
+  ],
+  "teaching": {
+    "mission": {
+      "title": "Practise HTTP Request / Response",
+      "description": "Make each decision and watch the consequence."
+    },
+    "introduction": {
+      "title": "HTTP Request / Response: start here",
+      "content": "HTTP is the conversation between a client and a server.",
+      "points": [
+        "Trace a request, a response status, and the content returned."
+      ],
+      "visual": {
+        "type": "array",
+        "label": "HTTP Request / Response",
+        "items": [
+          "What?",
+          "Example",
+          "Try it"
+        ]
+      }
+    },
+    "worked_example": {
+      "title": "See one example",
+      "content": "Watch one concrete sequence before you try it.",
+      "steps": [
+        {
+          "action": "REQUEST",
+          "state": {
+            "flow": [
+              "Browser",
+              "GET /page",
+              "Server"
+            ],
+            "status": "request sent"
+          },
+          "explanation": "The browser asks for a path with a method such as GET."
+        },
+        {
+          "action": "STATUS",
+          "state": {
+            "flow": [
+              "Server",
+              "200 OK"
+            ],
+            "status": "resource found"
+          },
+          "explanation": "The server reports whether it handled the request."
+        },
+        {
+          "action": "RESPONSE",
+          "state": {
+            "flow": [
+              "200 OK",
+              "HTML content",
+              "Browser"
+            ],
+            "status": "page displayed"
+          },
+          "explanation": "The response body lets the browser render the page."
+        }
+      ],
+      "conclusion": "The visual state changes because the concept follows a rule.",
+      "next": {
+        "title": "Now you try.",
+        "content": "Choose the next meaningful action."
+      }
+    },
+    "guided_practice": {
+      "action_explanations": {
+        "request": "The request action changes the state for a reason.",
+        "status": "The status action changes the state for a reason.",
+        "response": "The response action changes the state for a reason."
+      }
+    }
+  },
+  "visualization": {
+    "type": "http-request",
+    "view": "flow",
+    "initial_state": {
+      "flow": [
+        "Browser",
+        "GET /page",
+        "Server",
+        "200 OK",
+        "Page content"
+      ],
+      "status": "ready"
+    },
+    "guided_steps": [
+      {
+        "operation": "request",
+        "instruction": "Build the browser request",
+        "next_state": {
+          "flow": [
+            "Browser",
+            "GET /page",
+            "Server"
+          ],
+          "status": "request"
+        },
+        "evaluation_state": [
+          "REQUEST"
+        ]
+      },
+      {
+        "operation": "status",
+        "instruction": "Choose the matching status",
+        "next_state": {
+          "flow": [
+            "Server",
+            "200 OK"
+          ],
+          "status": "success"
+        },
+        "evaluation_state": [
+          "STATUS"
+        ]
+      },
+      {
+        "operation": "response",
+        "instruction": "Deliver the response body",
+        "next_state": {
+          "flow": [
+            "200 OK",
+            "content",
+            "Browser"
+          ],
+          "status": "complete"
+        },
+        "evaluation_state": [
+          "RESPONSE"
+        ]
+      }
+    ],
+    "controls": [
+      {
+        "id": "request",
+        "label": "SEND REQUEST",
+        "operation": "request"
+      },
+      {
+        "id": "status",
+        "label": "READ STATUS",
+        "operation": "status"
+      },
+      {
+        "id": "response",
+        "label": "SHOW RESPONSE",
+        "operation": "response"
+      },
+      {
+        "id": "missing",
+        "label": "SIMULATE 404",
+        "operation": "missing"
+      }
+    ],
+    "actions": [
+      {
+        "label": "Send a request",
+        "operation": "request",
+        "task": "Send a request"
+      },
+      {
+        "label": "Interpret the status",
+        "operation": "status",
+        "task": "Interpret the status"
+      },
+      {
+        "label": "Read the response body",
+        "operation": "response",
+        "task": "Read the response body"
+      }
+    ],
+    "instruction": "Choose the next meaningful action.",
+    "wrong_action_message": "Compare the active task with the current state before choosing."
+  },
+  "practice": {
+    "challenge": {
+      "title": "HTTP Request / Response challenge",
+      "start_message": "Apply the concept to the displayed state.",
+      "continue_message": "Challenge complete. Keep experimenting.",
+      "phases": [
+        {
+          "title": "Reach the correct result",
+          "instruction": "Use the controls to reach the target state.",
+          "target": {
+            "label": "TARGET",
+            "items": [
+              "COMPLETE"
+            ]
+          },
+          "goal": {
+            "type": "state_equals",
+            "expected_state": [
+              "COMPLETE"
+            ]
+          },
+          "success": "✓ Challenge complete",
+          "feedback": "Compare your state with the target."
+        }
+      ]
+    }
+  },
+  "mastery": {
+    "title": "HTTP Request / Response Mastery",
+    "mastered_label": "HTTP Request / Response Mastered",
+    "current_state_label": "YOUR STATE",
+    "levels": [
+      {
+        "id": "learn",
+        "label": "Learn",
+        "completion": {
+          "type": "course_completion"
+        }
+      },
+      {
+        "id": "practice",
+        "label": "Practice",
+        "prerequisites": [
+          "learn"
+        ],
+        "guidance": {
+          "start_message": "Compare the current state with the objective and choose the next action.",
+          "hints": {
+            "limit": 1,
+            "items": [
+              {
+                "content": "Use the operation that moves the state toward the target."
+              }
+            ]
+          }
+        },
+        "controls": [
+          {
+            "id": "request",
+            "label": "SEND REQUEST",
+            "operation": "request"
+          },
+          {
+            "id": "status",
+            "label": "READ STATUS",
+            "operation": "status"
+          },
+          {
+            "id": "response",
+            "label": "SHOW RESPONSE",
+            "operation": "response"
+          }
+        ],
+        "scenario": {
+          "initial_state": {
+            "flow": [
+              "Browser",
+              "GET /page",
+              "Server",
+              "200 OK",
+              "Page content"
+            ],
+            "status": "ready"
+          },
+          "operations": [
+            {
+              "operation": "request",
+              "instruction": "Build the browser request",
+              "next_state": {
+                "flow": [
+                  "Browser",
+                  "GET /page",
+                  "Server"
+                ],
+                "status": "request"
+              },
+              "evaluation_state": [
+                "REQUEST"
+              ]
+            }
+          ]
+        },
+        "challenge": {
+          "phases": [
+            {
+              "title": "Practice task",
+              "instruction": "Reach the target state by making the appropriate decisions.",
+              "target": {
+                "label": "TARGET STATE",
+                "items": [
+                  "COMPLETE"
+                ]
+              },
+              "goal": {
+                "type": "state_equals",
+                "expected_state": [
+                  "COMPLETE"
+                ]
+              },
+              "success": "✓ Practice complete",
+              "feedback": "Compare your current state with the target before choosing again."
+            }
+          ]
+        }
+      },
+      {
+        "id": "apply",
+        "label": "Apply",
+        "prerequisites": [
+          "practice"
+        ],
+        "guidance": {
+          "start_message": "Compare the current state with the objective and choose the next action.",
+          "hints": {
+            "limit": 0,
+            "items": []
+          }
+        },
+        "controls": [
+          {
+            "id": "request",
+            "label": "SEND REQUEST",
+            "operation": "request"
+          },
+          {
+            "id": "status",
+            "label": "READ STATUS",
+            "operation": "status"
+          },
+          {
+            "id": "response",
+            "label": "SHOW RESPONSE",
+            "operation": "response"
+          }
+        ],
+        "scenario": {
+          "initial_state": {
+            "flow": [
+              "Browser",
+              "GET /page",
+              "Server",
+              "200 OK",
+              "Page content"
+            ],
+            "status": "ready"
+          },
+          "operations": [
+            {
+              "operation": "request",
+              "instruction": "Build the browser request",
+              "next_state": {
+                "flow": [
+                  "Browser",
+                  "GET /page",
+                  "Server"
+                ],
+                "status": "request"
+              },
+              "evaluation_state": [
+                "REQUEST"
+              ]
+            },
+            {
+              "operation": "status",
+              "instruction": "Choose the matching status",
+              "next_state": {
+                "flow": [
+                  "Server",
+                  "200 OK"
+                ],
+                "status": "success"
+              },
+              "evaluation_state": [
+                "STATUS"
+              ]
+            }
+          ]
+        },
+        "challenge": {
+          "phases": [
+            {
+              "title": "Apply task",
+              "instruction": "Reach the target state by making the appropriate decisions.",
+              "target": {
+                "label": "TARGET STATE",
+                "items": [
+                  "COMPLETE"
+                ]
+              },
+              "goal": {
+                "type": "state_equals",
+                "expected_state": [
+                  "COMPLETE"
+                ]
+              },
+              "success": "✓ Apply complete",
+              "feedback": "Compare your current state with the target before choosing again."
+            }
+          ]
+        }
+      },
+      {
+        "id": "solve",
+        "label": "Solve",
+        "prerequisites": [
+          "apply"
+        ],
+        "guidance": {
+          "start_message": "Compare the current state with the objective and choose the next action.",
+          "hints": {
+            "limit": 0,
+            "items": []
+          }
+        },
+        "controls": [
+          {
+            "id": "request",
+            "label": "SEND REQUEST",
+            "operation": "request"
+          },
+          {
+            "id": "status",
+            "label": "READ STATUS",
+            "operation": "status"
+          },
+          {
+            "id": "response",
+            "label": "SHOW RESPONSE",
+            "operation": "response"
+          }
+        ],
+        "scenario": {
+          "initial_state": {
+            "flow": [
+              "Browser",
+              "GET /page",
+              "Server",
+              "200 OK",
+              "Page content"
+            ],
+            "status": "ready"
+          },
+          "operations": [
+            {
+              "operation": "request",
+              "instruction": "Build the browser request",
+              "next_state": {
+                "flow": [
+                  "Browser",
+                  "GET /page",
+                  "Server"
+                ],
+                "status": "request"
+              },
+              "evaluation_state": [
+                "REQUEST"
+              ]
+            },
+            {
+              "operation": "status",
+              "instruction": "Choose the matching status",
+              "next_state": {
+                "flow": [
+                  "Server",
+                  "200 OK"
+                ],
+                "status": "success"
+              },
+              "evaluation_state": [
+                "STATUS"
+              ]
+            },
+            {
+              "operation": "response",
+              "instruction": "Deliver the response body",
+              "next_state": {
+                "flow": [
+                  "200 OK",
+                  "content",
+                  "Browser"
+                ],
+                "status": "complete"
+              },
+              "evaluation_state": [
+                "RESPONSE"
+              ]
+            }
+          ]
+        },
+        "challenge": {
+          "phases": [
+            {
+              "title": "Solve task",
+              "instruction": "Reach the target state by making the appropriate decisions.",
+              "target": {
+                "label": "TARGET STATE",
+                "items": [
+                  "COMPLETE"
+                ]
+              },
+              "goal": {
+                "type": "state_equals",
+                "expected_state": [
+                  "COMPLETE"
+                ]
+              },
+              "success": "✓ Solve complete",
+              "feedback": "Compare your current state with the target before choosing again."
+            }
+          ]
+        }
+      },
+      {
+        "id": "mastery",
+        "label": "Mastery",
+        "prerequisites": [
+          "solve"
+        ],
+        "guidance": {
+          "start_message": "Compare the current state with the objective and choose the next action.",
+          "hints": {
+            "limit": 0,
+            "items": []
+          }
+        },
+        "controls": [
+          {
+            "id": "request",
+            "label": "SEND REQUEST",
+            "operation": "request"
+          },
+          {
+            "id": "status",
+            "label": "READ STATUS",
+            "operation": "status"
+          },
+          {
+            "id": "response",
+            "label": "SHOW RESPONSE",
+            "operation": "response"
+          }
+        ],
+        "scenario": {
+          "initial_state": {
+            "flow": [
+              "Browser",
+              "GET /page",
+              "Server",
+              "200 OK",
+              "Page content"
+            ],
+            "status": "ready"
+          },
+          "operations": [
+            {
+              "operation": "request",
+              "instruction": "Build the browser request",
+              "next_state": {
+                "flow": [
+                  "Browser",
+                  "GET /page",
+                  "Server"
+                ],
+                "status": "request"
+              },
+              "evaluation_state": [
+                "REQUEST"
+              ]
+            },
+            {
+              "operation": "status",
+              "instruction": "Choose the matching status",
+              "next_state": {
+                "flow": [
+                  "Server",
+                  "200 OK"
+                ],
+                "status": "success"
+              },
+              "evaluation_state": [
+                "STATUS"
+              ]
+            },
+            {
+              "operation": "response",
+              "instruction": "Deliver the response body",
+              "next_state": {
+                "flow": [
+                  "200 OK",
+                  "content",
+                  "Browser"
+                ],
+                "status": "complete"
+              },
+              "evaluation_state": [
+                "RESPONSE"
+              ]
+            }
+          ]
+        },
+        "challenge": {
+          "phases": [
+            {
+              "title": "Mastery task",
+              "instruction": "Reach the target state by making the appropriate decisions.",
+              "target": {
+                "label": "TARGET STATE",
+                "items": [
+                  "COMPLETE"
+                ]
+              },
+              "goal": {
+                "type": "state_equals",
+                "expected_state": [
+                  "COMPLETE"
+                ]
+              },
+              "success": "✓ Mastery complete",
+              "feedback": "Compare your current state with the target before choosing again."
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "expert": {
+    "id": "expert",
+    "label": "Expert",
+    "prerequisites": [
+      "mastery"
+    ],
+    "generator": "phase2-expert",
+    "generator_version": 1,
+    "required_capabilities": [
+      "interactive_state",
+      "sequence_simulation",
+      "decision_tree"
+    ],
+    "thinking": {
+      "title": "Predict the sequence",
+      "objective_label": "Think first",
+      "instruction": "Mentally follow the sequence before acting.",
+      "starting_stack_label": "STARTING STATE",
+      "sequence_label": "ACTIONS TO SIMULATE",
+      "do_not_execute": "Do not act yet. Work through the sequence in order.",
+      "prediction_label": "YOUR PREDICTION",
+      "prediction_fields": [
+        {
+          "id": "finalState",
+          "label": "Final state",
+          "prompt": "What will the final state contain?",
+          "type": "text",
+          "placeholder": "Describe the result"
+        }
+      ],
+      "submit_label": "Check my prediction",
+      "continue_label": "Continue to Expert Challenge →",
+      "actual_label": "RESULT",
+      "your_prediction_label": "Your prediction",
+      "actual_result": "Final state: {{final_state}}.",
+      "feedback": {
+        "all_correct": "You tracked the sequence.",
+        "incorrect": "Recheck each transition."
+      }
+    },
+    "solve": {
+      "title": "Expert HTTP Request / Response",
+      "instruction": "Apply the sequence with no hints.",
+      "target_label": "TARGET STATE",
+      "your_label": "YOUR STATE",
+      "metric_label": "Actions",
+      "hints_label": "Hints: none",
+      "operation_rule": "Each action counts once.",
+      "controls": [
+        {
+          "id": "request",
+          "label": "SEND REQUEST",
+          "operation": "request"
+        },
+        {
+          "id": "status",
+          "label": "READ STATUS",
+          "operation": "status"
+        },
+        {
+          "id": "response",
+          "label": "SHOW RESPONSE",
+          "operation": "response"
+        }
+      ],
+      "perfect_message": "🏆 PERFECT EXPERT",
+      "perfect_result": "You completed the sequence.",
+      "new_challenge_label": "New Expert Challenge"
+    },
+    "scenario_rules": {
+      "initial_state": [
+        "GET /page"
+      ],
+      "steps": [
+        {
+          "operation": "request",
+          "label": "SEND REQUEST"
+        },
+        {
+          "operation": "status",
+          "label": "READ STATUS"
+        },
+        {
+          "operation": "response",
+          "label": "SHOW RESPONSE"
+        }
+      ],
+      "final_state": [
+        "200 OK",
+        "CONTENT"
+      ],
+      "target_state": [
+        "200 OK",
+        "CONTENT"
+      ]
+    }
+  },
+  "assessment": {
+    "quiz": {
+      "question": "What does a 404 response mean?",
+      "options": [
+        "The resource was not found",
+        "The request succeeded",
+        "The server rebooted",
+        "The DNS cache hit"
+      ],
+      "correct": 0
+    },
+    "discovery": {
+      "title": "HTTP discovery",
+      "summary": "HTTP separates a client's request from the server's status and response body."
+    },
+    "notes": {
+      "sections": [
+        {
+          "title": "What?",
+          "content": "HTTP carries a request from a client and a response from a server."
+        },
+        {
+          "title": "Example",
+          "content": "GET /page → 200 OK + content. A missing path can return 404."
+        },
+        {
+          "title": "Why?",
+          "content": "Status codes quickly describe success or failure."
+        },
+        {
+          "title": "Remember",
+          "content": "200 means success, 404 means missing, 500 means server error."
+        }
+      ]
+    },
+    "alternate_explanations": [
+      {
+        "title": "Think of a familiar workflow",
+        "type": "analogy",
+        "content": "Imagine HTTP Request / Response as a small real-world process with visible steps."
+      },
+      {
+        "title": "Walk through the example",
+        "type": "example",
+        "content": "Trace a request, a response status, and the content returned."
+      }
+    ]
+  },
+  "completion": {
+    "recall": {
+      "title": "Recall",
+      "prompt": "In your own words, what is the difference between an HTTP request and response?",
+      "submit_label": "Submit recall",
+      "empty_message": "Write a short explanation first.",
+      "completion_message": "✓ Recall completed",
+      "model_answer": "200 means success, 404 means missing, 500 means server error."
+    }
+  }
+}

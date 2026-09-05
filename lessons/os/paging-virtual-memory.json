@@ -1,0 +1,1021 @@
+{
+  "schema_version": 2,
+  "metadata": {
+    "id": "paging-virtual-memory",
+    "order": 5,
+    "subject_order": 3,
+    "subject": "Operating Systems",
+    "topic": "Paging / Virtual Memory",
+    "title": "Translate Virtual Addresses",
+    "description": "Use a page table to translate a logical address into a physical frame and offset.",
+    "difficulty": "Beginner",
+    "estimated_time": "15 min"
+  },
+  "learning_objectives": [
+    "Explain Paging / Virtual Memory in simple terms.",
+    "Follow one visible Paging / Virtual Memory example.",
+    "Make a correct decision in the playground."
+  ],
+  "capabilities": [
+    "interactive_state",
+    "calculation",
+    "sequence_simulation"
+  ],
+  "teaching": {
+    "mission": {
+      "title": "Practise Paging / Virtual Memory",
+      "description": "Make each decision and watch the consequence."
+    },
+    "introduction": {
+      "title": "Paging / Virtual Memory: start here",
+      "content": "Paging splits memory into pages and maps each page to a physical frame.",
+      "points": [
+        "You will look up a page number, then keep its offset."
+      ],
+      "visual": {
+        "type": "array",
+        "label": "Paging / Virtual Memory",
+        "items": [
+          "What?",
+          "Example",
+          "Try it"
+        ]
+      }
+    },
+    "worked_example": {
+      "title": "See one example",
+      "content": "Watch one concrete sequence before you try it.",
+      "steps": [
+        {
+          "action": "SPLIT ADDRESS",
+          "state": {
+            "tables": {
+              "ADDRESS": [
+                [
+                  "PAGE",
+                  "OFFSET"
+                ],
+                [
+                  "1",
+                  "4"
+                ]
+              ]
+            },
+            "result": "page 1, offset 4"
+          },
+          "explanation": "Separate the logical address into page number and offset."
+        },
+        {
+          "action": "LOOK UP PAGE",
+          "state": {
+            "tables": {
+              "PAGE TABLE": [
+                [
+                  "PAGE",
+                  "FRAME"
+                ],
+                [
+                  "1",
+                  "0"
+                ]
+              ]
+            },
+            "result": "page 1 maps to frame 0"
+          },
+          "explanation": "The page table supplies the physical frame."
+        },
+        {
+          "action": "BUILD ADDRESS",
+          "state": {
+            "tables": {
+              "PHYSICAL": [
+                [
+                  "FRAME",
+                  "OFFSET"
+                ],
+                [
+                  "0",
+                  "4"
+                ]
+              ]
+            },
+            "result": "frame 0, offset 4"
+          },
+          "explanation": "The offset stays the same after translation."
+        }
+      ],
+      "conclusion": "The visual state changes because the concept follows a rule.",
+      "next": {
+        "title": "Now you try.",
+        "content": "Choose the next meaningful action."
+      }
+    },
+    "guided_practice": {
+      "action_explanations": {
+        "split": "page 1, offset 4",
+        "lookup": "frame 0",
+        "translate": "frame 0, offset 4"
+      }
+    }
+  },
+  "visualization": {
+    "type": "paging-translation",
+    "view": "table",
+    "initial_state": {
+      "tables": {
+        "PAGE TABLE": [
+          [
+            "PAGE",
+            "FRAME"
+          ],
+          [
+            "0",
+            "3"
+          ],
+          [
+            "1",
+            "0"
+          ],
+          [
+            "2",
+            "5"
+          ]
+        ],
+        "ADDRESS": [
+          [
+            "LOGICAL",
+            "VALUE"
+          ],
+          [
+            "page 1, offset 4",
+            ""
+          ]
+        ]
+      },
+      "result": "ready to translate"
+    },
+    "guided_steps": [
+      {
+        "operation": "split",
+        "instruction": "Split page and offset",
+        "next_state": {
+          "tables": {
+            "ADDRESS": [
+              [
+                "PAGE",
+                "OFFSET"
+              ],
+              [
+                "1",
+                "4"
+              ]
+            ]
+          },
+          "result": "page 1, offset 4"
+        },
+        "evaluation_state": [
+          "SPLIT"
+        ]
+      },
+      {
+        "operation": "lookup",
+        "instruction": "Look up the page",
+        "next_state": {
+          "tables": {
+            "PAGE TABLE": [
+              [
+                "PAGE",
+                "FRAME"
+              ],
+              [
+                "1",
+                "0"
+              ]
+            ]
+          },
+          "result": "frame 0"
+        },
+        "evaluation_state": [
+          "LOOKUP"
+        ]
+      },
+      {
+        "operation": "translate",
+        "instruction": "Build the physical address",
+        "next_state": {
+          "tables": {
+            "PHYSICAL": [
+              [
+                "FRAME",
+                "OFFSET"
+              ],
+              [
+                "0",
+                "4"
+              ]
+            ]
+          },
+          "result": "frame 0, offset 4"
+        },
+        "evaluation_state": [
+          "TRANSLATE"
+        ]
+      }
+    ],
+    "controls": [
+      {
+        "id": "split",
+        "label": "SPLIT ADDRESS",
+        "operation": "split"
+      },
+      {
+        "id": "lookup",
+        "label": "LOOK UP PAGE",
+        "operation": "lookup"
+      },
+      {
+        "id": "translate",
+        "label": "TRANSLATE",
+        "operation": "translate"
+      }
+    ],
+    "actions": [
+      {
+        "label": "Identify the page and offset",
+        "operation": "split",
+        "task": "Identify the page and offset"
+      },
+      {
+        "label": "Look up the matching frame",
+        "operation": "lookup",
+        "task": "Look up the matching frame"
+      },
+      {
+        "label": "Combine frame and offset",
+        "operation": "translate",
+        "task": "Combine frame and offset"
+      }
+    ],
+    "instruction": "Choose the next meaningful action.",
+    "wrong_action_message": "Compare the active task with the current state before choosing."
+  },
+  "practice": {
+    "challenge": {
+      "title": "Paging / Virtual Memory challenge",
+      "start_message": "Apply the concept to the displayed state.",
+      "continue_message": "Challenge complete. Keep experimenting.",
+      "phases": [
+        {
+          "title": "Reach the correct result",
+          "instruction": "Use the controls to reach the target state.",
+          "target": {
+            "label": "TARGET",
+            "items": [
+              "COMPLETE"
+            ]
+          },
+          "goal": {
+            "type": "state_equals",
+            "expected_state": [
+              "COMPLETE"
+            ]
+          },
+          "success": "✓ Challenge complete",
+          "feedback": "Compare your state with the target."
+        }
+      ]
+    }
+  },
+  "mastery": {
+    "title": "Paging / Virtual Memory Mastery",
+    "mastered_label": "Paging / Virtual Memory Mastered",
+    "current_state_label": "YOUR STATE",
+    "levels": [
+      {
+        "id": "learn",
+        "label": "Learn",
+        "completion": {
+          "type": "course_completion"
+        }
+      },
+      {
+        "id": "practice",
+        "label": "Practice",
+        "prerequisites": [
+          "learn"
+        ],
+        "guidance": {
+          "start_message": "Compare the current state with the objective and choose the next action.",
+          "hints": {
+            "limit": 1,
+            "items": [
+              {
+                "content": "Use the operation that moves the state toward the target."
+              }
+            ]
+          }
+        },
+        "controls": [
+          {
+            "id": "split",
+            "label": "SPLIT ADDRESS",
+            "operation": "split"
+          },
+          {
+            "id": "lookup",
+            "label": "LOOK UP PAGE",
+            "operation": "lookup"
+          },
+          {
+            "id": "translate",
+            "label": "TRANSLATE",
+            "operation": "translate"
+          }
+        ],
+        "scenario": {
+          "initial_state": {
+            "tables": {
+              "PAGE TABLE": [
+                [
+                  "PAGE",
+                  "FRAME"
+                ],
+                [
+                  "0",
+                  "3"
+                ],
+                [
+                  "1",
+                  "0"
+                ],
+                [
+                  "2",
+                  "5"
+                ]
+              ],
+              "ADDRESS": [
+                [
+                  "LOGICAL",
+                  "VALUE"
+                ],
+                [
+                  "page 1, offset 4",
+                  ""
+                ]
+              ]
+            },
+            "result": "ready to translate"
+          },
+          "operations": [
+            {
+              "operation": "split",
+              "instruction": "Split page and offset",
+              "next_state": {
+                "tables": {
+                  "ADDRESS": [
+                    [
+                      "PAGE",
+                      "OFFSET"
+                    ],
+                    [
+                      "1",
+                      "4"
+                    ]
+                  ]
+                },
+                "result": "page 1, offset 4"
+              },
+              "evaluation_state": [
+                "SPLIT"
+              ]
+            }
+          ]
+        },
+        "challenge": {
+          "phases": [
+            {
+              "title": "Practice task",
+              "instruction": "Reach the target state by making the appropriate decisions.",
+              "target": {
+                "label": "TARGET STATE",
+                "items": [
+                  "COMPLETE"
+                ]
+              },
+              "goal": {
+                "type": "state_equals",
+                "expected_state": [
+                  "COMPLETE"
+                ]
+              },
+              "success": "✓ Practice complete",
+              "feedback": "Compare your current state with the target before choosing again."
+            }
+          ]
+        }
+      },
+      {
+        "id": "apply",
+        "label": "Apply",
+        "prerequisites": [
+          "practice"
+        ],
+        "guidance": {
+          "start_message": "Compare the current state with the objective and choose the next action.",
+          "hints": {
+            "limit": 0,
+            "items": []
+          }
+        },
+        "controls": [
+          {
+            "id": "split",
+            "label": "SPLIT ADDRESS",
+            "operation": "split"
+          },
+          {
+            "id": "lookup",
+            "label": "LOOK UP PAGE",
+            "operation": "lookup"
+          },
+          {
+            "id": "translate",
+            "label": "TRANSLATE",
+            "operation": "translate"
+          }
+        ],
+        "scenario": {
+          "initial_state": {
+            "tables": {
+              "PAGE TABLE": [
+                [
+                  "PAGE",
+                  "FRAME"
+                ],
+                [
+                  "0",
+                  "3"
+                ],
+                [
+                  "1",
+                  "0"
+                ],
+                [
+                  "2",
+                  "5"
+                ]
+              ],
+              "ADDRESS": [
+                [
+                  "LOGICAL",
+                  "VALUE"
+                ],
+                [
+                  "page 1, offset 4",
+                  ""
+                ]
+              ]
+            },
+            "result": "ready to translate"
+          },
+          "operations": [
+            {
+              "operation": "split",
+              "instruction": "Split page and offset",
+              "next_state": {
+                "tables": {
+                  "ADDRESS": [
+                    [
+                      "PAGE",
+                      "OFFSET"
+                    ],
+                    [
+                      "1",
+                      "4"
+                    ]
+                  ]
+                },
+                "result": "page 1, offset 4"
+              },
+              "evaluation_state": [
+                "SPLIT"
+              ]
+            },
+            {
+              "operation": "lookup",
+              "instruction": "Look up the page",
+              "next_state": {
+                "tables": {
+                  "PAGE TABLE": [
+                    [
+                      "PAGE",
+                      "FRAME"
+                    ],
+                    [
+                      "1",
+                      "0"
+                    ]
+                  ]
+                },
+                "result": "frame 0"
+              },
+              "evaluation_state": [
+                "LOOKUP"
+              ]
+            }
+          ]
+        },
+        "challenge": {
+          "phases": [
+            {
+              "title": "Apply task",
+              "instruction": "Reach the target state by making the appropriate decisions.",
+              "target": {
+                "label": "TARGET STATE",
+                "items": [
+                  "COMPLETE"
+                ]
+              },
+              "goal": {
+                "type": "state_equals",
+                "expected_state": [
+                  "COMPLETE"
+                ]
+              },
+              "success": "✓ Apply complete",
+              "feedback": "Compare your current state with the target before choosing again."
+            }
+          ]
+        }
+      },
+      {
+        "id": "solve",
+        "label": "Solve",
+        "prerequisites": [
+          "apply"
+        ],
+        "guidance": {
+          "start_message": "Compare the current state with the objective and choose the next action.",
+          "hints": {
+            "limit": 0,
+            "items": []
+          }
+        },
+        "controls": [
+          {
+            "id": "split",
+            "label": "SPLIT ADDRESS",
+            "operation": "split"
+          },
+          {
+            "id": "lookup",
+            "label": "LOOK UP PAGE",
+            "operation": "lookup"
+          },
+          {
+            "id": "translate",
+            "label": "TRANSLATE",
+            "operation": "translate"
+          }
+        ],
+        "scenario": {
+          "initial_state": {
+            "tables": {
+              "PAGE TABLE": [
+                [
+                  "PAGE",
+                  "FRAME"
+                ],
+                [
+                  "0",
+                  "3"
+                ],
+                [
+                  "1",
+                  "0"
+                ],
+                [
+                  "2",
+                  "5"
+                ]
+              ],
+              "ADDRESS": [
+                [
+                  "LOGICAL",
+                  "VALUE"
+                ],
+                [
+                  "page 1, offset 4",
+                  ""
+                ]
+              ]
+            },
+            "result": "ready to translate"
+          },
+          "operations": [
+            {
+              "operation": "split",
+              "instruction": "Split page and offset",
+              "next_state": {
+                "tables": {
+                  "ADDRESS": [
+                    [
+                      "PAGE",
+                      "OFFSET"
+                    ],
+                    [
+                      "1",
+                      "4"
+                    ]
+                  ]
+                },
+                "result": "page 1, offset 4"
+              },
+              "evaluation_state": [
+                "SPLIT"
+              ]
+            },
+            {
+              "operation": "lookup",
+              "instruction": "Look up the page",
+              "next_state": {
+                "tables": {
+                  "PAGE TABLE": [
+                    [
+                      "PAGE",
+                      "FRAME"
+                    ],
+                    [
+                      "1",
+                      "0"
+                    ]
+                  ]
+                },
+                "result": "frame 0"
+              },
+              "evaluation_state": [
+                "LOOKUP"
+              ]
+            },
+            {
+              "operation": "translate",
+              "instruction": "Build the physical address",
+              "next_state": {
+                "tables": {
+                  "PHYSICAL": [
+                    [
+                      "FRAME",
+                      "OFFSET"
+                    ],
+                    [
+                      "0",
+                      "4"
+                    ]
+                  ]
+                },
+                "result": "frame 0, offset 4"
+              },
+              "evaluation_state": [
+                "TRANSLATE"
+              ]
+            }
+          ]
+        },
+        "challenge": {
+          "phases": [
+            {
+              "title": "Solve task",
+              "instruction": "Reach the target state by making the appropriate decisions.",
+              "target": {
+                "label": "TARGET STATE",
+                "items": [
+                  "COMPLETE"
+                ]
+              },
+              "goal": {
+                "type": "state_equals",
+                "expected_state": [
+                  "COMPLETE"
+                ]
+              },
+              "success": "✓ Solve complete",
+              "feedback": "Compare your current state with the target before choosing again."
+            }
+          ]
+        }
+      },
+      {
+        "id": "mastery",
+        "label": "Mastery",
+        "prerequisites": [
+          "solve"
+        ],
+        "guidance": {
+          "start_message": "Compare the current state with the objective and choose the next action.",
+          "hints": {
+            "limit": 0,
+            "items": []
+          }
+        },
+        "controls": [
+          {
+            "id": "split",
+            "label": "SPLIT ADDRESS",
+            "operation": "split"
+          },
+          {
+            "id": "lookup",
+            "label": "LOOK UP PAGE",
+            "operation": "lookup"
+          },
+          {
+            "id": "translate",
+            "label": "TRANSLATE",
+            "operation": "translate"
+          }
+        ],
+        "scenario": {
+          "initial_state": {
+            "tables": {
+              "PAGE TABLE": [
+                [
+                  "PAGE",
+                  "FRAME"
+                ],
+                [
+                  "0",
+                  "3"
+                ],
+                [
+                  "1",
+                  "0"
+                ],
+                [
+                  "2",
+                  "5"
+                ]
+              ],
+              "ADDRESS": [
+                [
+                  "LOGICAL",
+                  "VALUE"
+                ],
+                [
+                  "page 1, offset 4",
+                  ""
+                ]
+              ]
+            },
+            "result": "ready to translate"
+          },
+          "operations": [
+            {
+              "operation": "split",
+              "instruction": "Split page and offset",
+              "next_state": {
+                "tables": {
+                  "ADDRESS": [
+                    [
+                      "PAGE",
+                      "OFFSET"
+                    ],
+                    [
+                      "1",
+                      "4"
+                    ]
+                  ]
+                },
+                "result": "page 1, offset 4"
+              },
+              "evaluation_state": [
+                "SPLIT"
+              ]
+            },
+            {
+              "operation": "lookup",
+              "instruction": "Look up the page",
+              "next_state": {
+                "tables": {
+                  "PAGE TABLE": [
+                    [
+                      "PAGE",
+                      "FRAME"
+                    ],
+                    [
+                      "1",
+                      "0"
+                    ]
+                  ]
+                },
+                "result": "frame 0"
+              },
+              "evaluation_state": [
+                "LOOKUP"
+              ]
+            },
+            {
+              "operation": "translate",
+              "instruction": "Build the physical address",
+              "next_state": {
+                "tables": {
+                  "PHYSICAL": [
+                    [
+                      "FRAME",
+                      "OFFSET"
+                    ],
+                    [
+                      "0",
+                      "4"
+                    ]
+                  ]
+                },
+                "result": "frame 0, offset 4"
+              },
+              "evaluation_state": [
+                "TRANSLATE"
+              ]
+            }
+          ]
+        },
+        "challenge": {
+          "phases": [
+            {
+              "title": "Mastery task",
+              "instruction": "Reach the target state by making the appropriate decisions.",
+              "target": {
+                "label": "TARGET STATE",
+                "items": [
+                  "COMPLETE"
+                ]
+              },
+              "goal": {
+                "type": "state_equals",
+                "expected_state": [
+                  "COMPLETE"
+                ]
+              },
+              "success": "✓ Mastery complete",
+              "feedback": "Compare your current state with the target before choosing again."
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "expert": {
+    "id": "expert",
+    "label": "Expert",
+    "prerequisites": [
+      "mastery"
+    ],
+    "generator": "phase2-expert",
+    "generator_version": 1,
+    "required_capabilities": [
+      "interactive_state",
+      "calculation",
+      "sequence_simulation"
+    ],
+    "thinking": {
+      "title": "Predict the sequence",
+      "objective_label": "Think first",
+      "instruction": "Mentally follow the sequence before acting.",
+      "starting_stack_label": "STARTING STATE",
+      "sequence_label": "ACTIONS TO SIMULATE",
+      "do_not_execute": "Do not act yet. Work through the sequence in order.",
+      "prediction_label": "YOUR PREDICTION",
+      "prediction_fields": [
+        {
+          "id": "finalState",
+          "label": "Final state",
+          "prompt": "What will the final state contain?",
+          "type": "text",
+          "placeholder": "Describe the result"
+        }
+      ],
+      "submit_label": "Check my prediction",
+      "continue_label": "Continue to Expert Challenge →",
+      "actual_label": "RESULT",
+      "your_prediction_label": "Your prediction",
+      "actual_result": "Final state: {{final_state}}.",
+      "feedback": {
+        "all_correct": "You tracked the sequence.",
+        "incorrect": "Recheck each transition."
+      }
+    },
+    "solve": {
+      "title": "Expert Paging / Virtual Memory",
+      "instruction": "Apply the sequence with no hints.",
+      "target_label": "TARGET STATE",
+      "your_label": "YOUR STATE",
+      "metric_label": "Actions",
+      "hints_label": "Hints: none",
+      "operation_rule": "Each action counts once.",
+      "controls": [
+        {
+          "id": "split",
+          "label": "SPLIT ADDRESS",
+          "operation": "split"
+        },
+        {
+          "id": "lookup",
+          "label": "LOOK UP PAGE",
+          "operation": "lookup"
+        },
+        {
+          "id": "translate",
+          "label": "TRANSLATE",
+          "operation": "translate"
+        }
+      ],
+      "perfect_message": "🏆 PERFECT EXPERT",
+      "perfect_result": "You completed the sequence.",
+      "new_challenge_label": "New Expert Challenge"
+    },
+    "scenario_rules": {
+      "initial_state": [
+        "PAGE 1",
+        "OFFSET 4"
+      ],
+      "steps": [
+        {
+          "operation": "split",
+          "label": "SPLIT"
+        },
+        {
+          "operation": "lookup",
+          "label": "LOOK UP"
+        },
+        {
+          "operation": "translate",
+          "label": "TRANSLATE"
+        }
+      ],
+      "final_state": [
+        "FRAME 0",
+        "OFFSET 4"
+      ],
+      "target_state": [
+        "FRAME 0",
+        "OFFSET 4"
+      ]
+    }
+  },
+  "assessment": {
+    "quiz": {
+      "question": "What does a page table provide?",
+      "options": [
+        "A frame for a page",
+        "A CPU speed",
+        "A file name",
+        "A network route"
+      ],
+      "correct": 0
+    },
+    "discovery": {
+      "title": "Paging discovery",
+      "summary": "Address translation turns a logical page number into a physical frame while preserving its offset."
+    },
+    "notes": {
+      "sections": [
+        {
+          "title": "What?",
+          "content": "Virtual memory gives each logical page a frame in physical memory."
+        },
+        {
+          "title": "Example",
+          "content": "Page 1 with offset 4 maps through the table to frame 0, offset 4."
+        },
+        {
+          "title": "Why?",
+          "content": "A page table connects the address a program uses to memory hardware."
+        },
+        {
+          "title": "Remember",
+          "content": "Lookup changes the page number; the offset stays with the byte."
+        }
+      ]
+    },
+    "alternate_explanations": [
+      {
+        "title": "Think of a familiar workflow",
+        "type": "analogy",
+        "content": "Imagine Paging / Virtual Memory as a small real-world process with visible steps."
+      },
+      {
+        "title": "Walk through the example",
+        "type": "example",
+        "content": "You will look up a page number, then keep its offset."
+      }
+    ]
+  },
+  "completion": {
+    "recall": {
+      "title": "Recall",
+      "prompt": "In your own words, why does the offset stay the same during paging translation?",
+      "submit_label": "Submit recall",
+      "empty_message": "Write a short explanation first.",
+      "completion_message": "✓ Recall completed",
+      "model_answer": "Lookup changes the page number; the offset stays with the byte."
+    }
+  }
+}

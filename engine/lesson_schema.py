@@ -58,6 +58,18 @@ KNOWN_PLAYGROUND_TYPES = frozenset({
     "merge-sort",
     "breadth-first-search",
     "depth-first-search",
+    "process-states",
+    "deadlock-graph",
+    "paging-translation",
+    "table-records",
+    "sql-select",
+    "dbms-joins",
+    "normalization",
+    "transactions",
+    "ip-addresses",
+    "dns-lookup",
+    "tcp-udp",
+    "http-request",
 })
 
 

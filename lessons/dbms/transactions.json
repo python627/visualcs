@@ -1,0 +1,778 @@
+{
+  "schema_version": 2,
+  "metadata": {
+    "id": "transactions",
+    "order": 6,
+    "subject_order": 4,
+    "subject": "DBMS",
+    "topic": "Transactions",
+    "title": "Commit or Roll Back",
+    "description": "Follow a transfer as a transaction either commits completely or rolls back after failure.",
+    "difficulty": "Beginner",
+    "estimated_time": "15 min"
+  },
+  "learning_objectives": [
+    "Explain Transactions in simple terms.",
+    "Follow one visible Transactions example.",
+    "Make a correct decision in the playground."
+  ],
+  "capabilities": [
+    "interactive_state",
+    "sequence_simulation",
+    "decision_tree"
+  ],
+  "teaching": {
+    "mission": {
+      "title": "Practise Transactions",
+      "description": "Make each decision and watch the consequence."
+    },
+    "introduction": {
+      "title": "Transactions: start here",
+      "content": "A transaction groups related database changes into one unit.",
+      "points": [
+        "Watch a transfer either commit fully or roll back safely."
+      ],
+      "visual": {
+        "type": "array",
+        "label": "Transactions",
+        "items": [
+          "What?",
+          "Example",
+          "Try it"
+        ]
+      }
+    },
+    "worked_example": {
+      "title": "See one example",
+      "content": "Watch one concrete sequence before you try it.",
+      "steps": [
+        {
+          "action": "DEBIT",
+          "state": {
+            "flow": [
+              "A: 80",
+              "B: 50"
+            ],
+            "status": "first change made"
+          },
+          "explanation": "The sender loses 20."
+        },
+        {
+          "action": "CREDIT",
+          "state": {
+            "flow": [
+              "A: 80",
+              "B: 70"
+            ],
+            "status": "both changes made"
+          },
+          "explanation": "The receiver gains 20."
+        },
+        {
+          "action": "COMMIT",
+          "state": {
+            "flow": [
+              "A: 80",
+              "B: 70"
+            ],
+            "status": "saved"
+          },
+          "explanation": "Commit makes the complete transfer permanent."
+        }
+      ],
+      "conclusion": "The visual state changes because the concept follows a rule.",
+      "next": {
+        "title": "Now you try.",
+        "content": "Choose the next meaningful action."
+      }
+    },
+    "guided_practice": {
+      "action_explanations": {
+        "debit": "The debit action changes the state for a reason.",
+        "credit": "The credit action changes the state for a reason.",
+        "commit": "The commit action changes the state for a reason."
+      }
+    }
+  },
+  "visualization": {
+    "type": "transactions",
+    "view": "flow",
+    "initial_state": {
+      "flow": [
+        "Account A: 100",
+        "Account B: 50"
+      ],
+      "status": "ready to transfer 20"
+    },
+    "guided_steps": [
+      {
+        "operation": "debit",
+        "instruction": "Apply the first transfer change",
+        "next_state": {
+          "flow": [
+            "A: 80",
+            "B: 50"
+          ],
+          "status": "debit applied"
+        },
+        "evaluation_state": [
+          "DEBIT"
+        ]
+      },
+      {
+        "operation": "credit",
+        "instruction": "Apply the matching change",
+        "next_state": {
+          "flow": [
+            "A: 80",
+            "B: 70"
+          ],
+          "status": "credit applied"
+        },
+        "evaluation_state": [
+          "CREDIT"
+        ]
+      },
+      {
+        "operation": "commit",
+        "instruction": "Choose COMMIT when both changes are ready",
+        "next_state": {
+          "flow": [
+            "A: 80",
+            "B: 70"
+          ],
+          "status": "committed"
+        },
+        "evaluation_state": [
+          "COMMIT"
+        ]
+      }
+    ],
+    "controls": [
+      {
+        "id": "debit",
+        "label": "DEBIT 20",
+        "operation": "debit"
+      },
+      {
+        "id": "credit",
+        "label": "CREDIT 20",
+        "operation": "credit"
+      },
+      {
+        "id": "commit",
+        "label": "COMMIT",
+        "operation": "commit"
+      },
+      {
+        "id": "rollback",
+        "label": "ROLLBACK",
+        "operation": "rollback"
+      }
+    ],
+    "actions": [
+      {
+        "label": "Apply the debit",
+        "operation": "debit",
+        "task": "Apply the debit"
+      },
+      {
+        "label": "Apply the credit",
+        "operation": "credit",
+        "task": "Apply the credit"
+      },
+      {
+        "label": "Commit the complete transfer",
+        "operation": "commit",
+        "task": "Commit the complete transfer"
+      }
+    ],
+    "instruction": "Choose the next meaningful action.",
+    "wrong_action_message": "Compare the active task with the current state before choosing."
+  },
+  "practice": {
+    "challenge": {
+      "title": "Transactions challenge",
+      "start_message": "Apply the concept to the displayed state.",
+      "continue_message": "Challenge complete. Keep experimenting.",
+      "phases": [
+        {
+          "title": "Reach the correct result",
+          "instruction": "Use the controls to reach the target state.",
+          "target": {
+            "label": "TARGET",
+            "items": [
+              "COMPLETE"
+            ]
+          },
+          "goal": {
+            "type": "state_equals",
+            "expected_state": [
+              "COMPLETE"
+            ]
+          },
+          "success": "✓ Challenge complete",
+          "feedback": "Compare your state with the target."
+        }
+      ]
+    }
+  },
+  "mastery": {
+    "title": "Transactions Mastery",
+    "mastered_label": "Transactions Mastered",
+    "current_state_label": "YOUR STATE",
+    "levels": [
+      {
+        "id": "learn",
+        "label": "Learn",
+        "completion": {
+          "type": "course_completion"
+        }
+      },
+      {
+        "id": "practice",
+        "label": "Practice",
+        "prerequisites": [
+          "learn"
+        ],
+        "guidance": {
+          "start_message": "Compare the current state with the objective and choose the next action.",
+          "hints": {
+            "limit": 1,
+            "items": [
+              {
+                "content": "Use the operation that moves the state toward the target."
+              }
+            ]
+          }
+        },
+        "controls": [
+          {
+            "id": "debit",
+            "label": "DEBIT 20",
+            "operation": "debit"
+          },
+          {
+            "id": "credit",
+            "label": "CREDIT 20",
+            "operation": "credit"
+          },
+          {
+            "id": "commit",
+            "label": "COMMIT",
+            "operation": "commit"
+          }
+        ],
+        "scenario": {
+          "initial_state": {
+            "flow": [
+              "Account A: 100",
+              "Account B: 50"
+            ],
+            "status": "ready to transfer 20"
+          },
+          "operations": [
+            {
+              "operation": "debit",
+              "instruction": "Apply the first transfer change",
+              "next_state": {
+                "flow": [
+                  "A: 80",
+                  "B: 50"
+                ],
+                "status": "debit applied"
+              },
+              "evaluation_state": [
+                "DEBIT"
+              ]
+            }
+          ]
+        },
+        "challenge": {
+          "phases": [
+            {
+              "title": "Practice task",
+              "instruction": "Reach the target state by making the appropriate decisions.",
+              "target": {
+                "label": "TARGET STATE",
+                "items": [
+                  "COMPLETE"
+                ]
+              },
+              "goal": {
+                "type": "state_equals",
+                "expected_state": [
+                  "COMPLETE"
+                ]
+              },
+              "success": "✓ Practice complete",
+              "feedback": "Compare your current state with the target before choosing again."
+            }
+          ]
+        }
+      },
+      {
+        "id": "apply",
+        "label": "Apply",
+        "prerequisites": [
+          "practice"
+        ],
+        "guidance": {
+          "start_message": "Compare the current state with the objective and choose the next action.",
+          "hints": {
+            "limit": 0,
+            "items": []
+          }
+        },
+        "controls": [
+          {
+            "id": "debit",
+            "label": "DEBIT 20",
+            "operation": "debit"
+          },
+          {
+            "id": "credit",
+            "label": "CREDIT 20",
+            "operation": "credit"
+          },
+          {
+            "id": "commit",
+            "label": "COMMIT",
+            "operation": "commit"
+          }
+        ],
+        "scenario": {
+          "initial_state": {
+            "flow": [
+              "Account A: 100",
+              "Account B: 50"
+            ],
+            "status": "ready to transfer 20"
+          },
+          "operations": [
+            {
+              "operation": "debit",
+              "instruction": "Apply the first transfer change",
+              "next_state": {
+                "flow": [
+                  "A: 80",
+                  "B: 50"
+                ],
+                "status": "debit applied"
+              },
+              "evaluation_state": [
+                "DEBIT"
+              ]
+            },
+            {
+              "operation": "credit",
+              "instruction": "Apply the matching change",
+              "next_state": {
+                "flow": [
+                  "A: 80",
+                  "B: 70"
+                ],
+                "status": "credit applied"
+              },
+              "evaluation_state": [
+                "CREDIT"
+              ]
+            }
+          ]
+        },
+        "challenge": {
+          "phases": [
+            {
+              "title": "Apply task",
+              "instruction": "Reach the target state by making the appropriate decisions.",
+              "target": {
+                "label": "TARGET STATE",
+                "items": [
+                  "COMPLETE"
+                ]
+              },
+              "goal": {
+                "type": "state_equals",
+                "expected_state": [
+                  "COMPLETE"
+                ]
+              },
+              "success": "✓ Apply complete",
+              "feedback": "Compare your current state with the target before choosing again."
+            }
+          ]
+        }
+      },
+      {
+        "id": "solve",
+        "label": "Solve",
+        "prerequisites": [
+          "apply"
+        ],
+        "guidance": {
+          "start_message": "Compare the current state with the objective and choose the next action.",
+          "hints": {
+            "limit": 0,
+            "items": []
+          }
+        },
+        "controls": [
+          {
+            "id": "debit",
+            "label": "DEBIT 20",
+            "operation": "debit"
+          },
+          {
+            "id": "credit",
+            "label": "CREDIT 20",
+            "operation": "credit"
+          },
+          {
+            "id": "commit",
+            "label": "COMMIT",
+            "operation": "commit"
+          }
+        ],
+        "scenario": {
+          "initial_state": {
+            "flow": [
+              "Account A: 100",
+              "Account B: 50"
+            ],
+            "status": "ready to transfer 20"
+          },
+          "operations": [
+            {
+              "operation": "debit",
+              "instruction": "Apply the first transfer change",
+              "next_state": {
+                "flow": [
+                  "A: 80",
+                  "B: 50"
+                ],
+                "status": "debit applied"
+              },
+              "evaluation_state": [
+                "DEBIT"
+              ]
+            },
+            {
+              "operation": "credit",
+              "instruction": "Apply the matching change",
+              "next_state": {
+                "flow": [
+                  "A: 80",
+                  "B: 70"
+                ],
+                "status": "credit applied"
+              },
+              "evaluation_state": [
+                "CREDIT"
+              ]
+            },
+            {
+              "operation": "commit",
+              "instruction": "Choose COMMIT when both changes are ready",
+              "next_state": {
+                "flow": [
+                  "A: 80",
+                  "B: 70"
+                ],
+                "status": "committed"
+              },
+              "evaluation_state": [
+                "COMMIT"
+              ]
+            }
+          ]
+        },
+        "challenge": {
+          "phases": [
+            {
+              "title": "Solve task",
+              "instruction": "Reach the target state by making the appropriate decisions.",
+              "target": {
+                "label": "TARGET STATE",
+                "items": [
+                  "COMPLETE"
+                ]
+              },
+              "goal": {
+                "type": "state_equals",
+                "expected_state": [
+                  "COMPLETE"
+                ]
+              },
+              "success": "✓ Solve complete",
+              "feedback": "Compare your current state with the target before choosing again."
+            }
+          ]
+        }
+      },
+      {
+        "id": "mastery",
+        "label": "Mastery",
+        "prerequisites": [
+          "solve"
+        ],
+        "guidance": {
+          "start_message": "Compare the current state with the objective and choose the next action.",
+          "hints": {
+            "limit": 0,
+            "items": []
+          }
+        },
+        "controls": [
+          {
+            "id": "debit",
+            "label": "DEBIT 20",
+            "operation": "debit"
+          },
+          {
+            "id": "credit",
+            "label": "CREDIT 20",
+            "operation": "credit"
+          },
+          {
+            "id": "commit",
+            "label": "COMMIT",
+            "operation": "commit"
+          }
+        ],
+        "scenario": {
+          "initial_state": {
+            "flow": [
+              "Account A: 100",
+              "Account B: 50"
+            ],
+            "status": "ready to transfer 20"
+          },
+          "operations": [
+            {
+              "operation": "debit",
+              "instruction": "Apply the first transfer change",
+              "next_state": {
+                "flow": [
+                  "A: 80",
+                  "B: 50"
+                ],
+                "status": "debit applied"
+              },
+              "evaluation_state": [
+                "DEBIT"
+              ]
+            },
+            {
+              "operation": "credit",
+              "instruction": "Apply the matching change",
+              "next_state": {
+                "flow": [
+                  "A: 80",
+                  "B: 70"
+                ],
+                "status": "credit applied"
+              },
+              "evaluation_state": [
+                "CREDIT"
+              ]
+            },
+            {
+              "operation": "commit",
+              "instruction": "Choose COMMIT when both changes are ready",
+              "next_state": {
+                "flow": [
+                  "A: 80",
+                  "B: 70"
+                ],
+                "status": "committed"
+              },
+              "evaluation_state": [
+                "COMMIT"
+              ]
+            }
+          ]
+        },
+        "challenge": {
+          "phases": [
+            {
+              "title": "Mastery task",
+              "instruction": "Reach the target state by making the appropriate decisions.",
+              "target": {
+                "label": "TARGET STATE",
+                "items": [
+                  "COMPLETE"
+                ]
+              },
+              "goal": {
+                "type": "state_equals",
+                "expected_state": [
+                  "COMPLETE"
+                ]
+              },
+              "success": "✓ Mastery complete",
+              "feedback": "Compare your current state with the target before choosing again."
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "expert": {
+    "id": "expert",
+    "label": "Expert",
+    "prerequisites": [
+      "mastery"
+    ],
+    "generator": "phase2-expert",
+    "generator_version": 1,
+    "required_capabilities": [
+      "interactive_state",
+      "sequence_simulation",
+      "decision_tree"
+    ],
+    "thinking": {
+      "title": "Predict the sequence",
+      "objective_label": "Think first",
+      "instruction": "Mentally follow the sequence before acting.",
+      "starting_stack_label": "STARTING STATE",
+      "sequence_label": "ACTIONS TO SIMULATE",
+      "do_not_execute": "Do not act yet. Work through the sequence in order.",
+      "prediction_label": "YOUR PREDICTION",
+      "prediction_fields": [
+        {
+          "id": "finalState",
+          "label": "Final state",
+          "prompt": "What will the final state contain?",
+          "type": "text",
+          "placeholder": "Describe the result"
+        }
+      ],
+      "submit_label": "Check my prediction",
+      "continue_label": "Continue to Expert Challenge →",
+      "actual_label": "RESULT",
+      "your_prediction_label": "Your prediction",
+      "actual_result": "Final state: {{final_state}}.",
+      "feedback": {
+        "all_correct": "You tracked the sequence.",
+        "incorrect": "Recheck each transition."
+      }
+    },
+    "solve": {
+      "title": "Expert Transactions",
+      "instruction": "Apply the sequence with no hints.",
+      "target_label": "TARGET STATE",
+      "your_label": "YOUR STATE",
+      "metric_label": "Actions",
+      "hints_label": "Hints: none",
+      "operation_rule": "Each action counts once.",
+      "controls": [
+        {
+          "id": "debit",
+          "label": "DEBIT 20",
+          "operation": "debit"
+        },
+        {
+          "id": "credit",
+          "label": "CREDIT 20",
+          "operation": "credit"
+        },
+        {
+          "id": "commit",
+          "label": "COMMIT",
+          "operation": "commit"
+        }
+      ],
+      "perfect_message": "🏆 PERFECT EXPERT",
+      "perfect_result": "You completed the sequence.",
+      "new_challenge_label": "New Expert Challenge"
+    },
+    "scenario_rules": {
+      "initial_state": [
+        "A:100",
+        "B:50"
+      ],
+      "steps": [
+        {
+          "operation": "debit",
+          "label": "DEBIT 20"
+        },
+        {
+          "operation": "credit",
+          "label": "CREDIT 20"
+        },
+        {
+          "operation": "commit",
+          "label": "COMMIT"
+        }
+      ],
+      "final_state": [
+        "A:80",
+        "B:70",
+        "COMMITTED"
+      ],
+      "target_state": [
+        "A:80",
+        "B:70",
+        "COMMITTED"
+      ]
+    }
+  },
+  "assessment": {
+    "quiz": {
+      "question": "What does ROLLBACK do after a failed transfer?",
+      "options": [
+        "Undo its changes",
+        "Add another debit",
+        "Delete the database",
+        "Commit half"
+      ],
+      "correct": 0
+    },
+    "discovery": {
+      "title": "Transaction discovery",
+      "summary": "Transactions protect consistency by committing a complete unit or rolling it back."
+    },
+    "notes": {
+      "sections": [
+        {
+          "title": "What?",
+          "content": "A transaction is a group of changes treated as one unit."
+        },
+        {
+          "title": "Example",
+          "content": "Debit 20 from A, credit 20 to B, then COMMIT."
+        },
+        {
+          "title": "Why?",
+          "content": "ROLLBACK prevents a half-finished transfer from being saved."
+        },
+        {
+          "title": "Remember",
+          "content": "All changes commit together or are undone together."
+        }
+      ]
+    },
+    "alternate_explanations": [
+      {
+        "title": "Think of a familiar workflow",
+        "type": "analogy",
+        "content": "Imagine Transactions as a small real-world process with visible steps."
+      },
+      {
+        "title": "Walk through the example",
+        "type": "example",
+        "content": "Watch a transfer either commit fully or roll back safely."
+      }
+    ]
+  },
+  "completion": {
+    "recall": {
+      "title": "Recall",
+      "prompt": "In your own words, why is rollback safer than saving only half of a transfer?",
+      "submit_label": "Submit recall",
+      "empty_message": "Write a short explanation first.",
+      "completion_message": "✓ Recall completed",
+      "model_answer": "All changes commit together or are undone together."
+    }
+  }
+}

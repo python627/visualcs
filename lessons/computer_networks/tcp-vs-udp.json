@@ -1,0 +1,844 @@
+{
+  "schema_version": 2,
+  "metadata": {
+    "id": "tcp-vs-udp",
+    "order": 4,
+    "subject_order": 5,
+    "subject": "Computer Networks",
+    "topic": "TCP vs UDP",
+    "title": "Choose TCP or UDP",
+    "description": "Select a transport protocol by reasoning about delivery, order, and retransmission.",
+    "difficulty": "Beginner",
+    "estimated_time": "15 min"
+  },
+  "learning_objectives": [
+    "Explain TCP vs UDP in simple terms.",
+    "Follow one visible TCP vs UDP example.",
+    "Make a correct decision in the playground."
+  ],
+  "capabilities": [
+    "interactive_state",
+    "decision_tree",
+    "sequence_simulation"
+  ],
+  "teaching": {
+    "mission": {
+      "title": "Practise TCP vs UDP",
+      "description": "Make each decision and watch the consequence."
+    },
+    "introduction": {
+      "title": "TCP vs UDP: start here",
+      "content": "TCP and UDP move data with different guarantees.",
+      "points": [
+        "Choose based on whether the application needs ordered, acknowledged delivery."
+      ],
+      "visual": {
+        "type": "array",
+        "label": "TCP vs UDP",
+        "items": [
+          "What?",
+          "Example",
+          "Try it"
+        ]
+      }
+    },
+    "worked_example": {
+      "title": "See one example",
+      "content": "Watch one concrete sequence before you try it.",
+      "steps": [
+        {
+          "action": "CHOOSE TCP",
+          "state": {
+            "zones": {
+              "SCENARIO": [
+                "File download"
+              ],
+              "PROTOCOL": [
+                "TCP"
+              ]
+            }
+          },
+          "explanation": "A file needs complete ordered data, so TCP fits."
+        },
+        {
+          "action": "ACKNOWLEDGE",
+          "state": {
+            "zones": {
+              "TCP": [
+                "packet 1 ✓",
+                "packet 2 ✓"
+              ]
+            }
+          },
+          "explanation": "TCP acknowledges received data."
+        },
+        {
+          "action": "RETRANSMIT",
+          "state": {
+            "zones": {
+              "TCP": [
+                "packet 2 lost → sent again"
+              ]
+            }
+          },
+          "explanation": "TCP can retransmit a missing packet."
+        }
+      ],
+      "conclusion": "The visual state changes because the concept follows a rule.",
+      "next": {
+        "title": "Now you try.",
+        "content": "Choose the next meaningful action."
+      }
+    },
+    "guided_practice": {
+      "action_explanations": {
+        "scenario": "The scenario action changes the state for a reason.",
+        "choose-udp": "The choose-udp action changes the state for a reason.",
+        "explain": "The explain action changes the state for a reason."
+      }
+    }
+  },
+  "visualization": {
+    "type": "tcp-udp",
+    "view": "zones",
+    "initial_state": {
+      "zones": {
+        "SCENARIO": [
+          "File download"
+        ],
+        "CHOICES": [
+          "TCP",
+          "UDP"
+        ],
+        "RESULT": [
+          "choose"
+        ]
+      }
+    },
+    "guided_steps": [
+      {
+        "operation": "scenario",
+        "instruction": "Read the application need",
+        "next_state": {
+          "zones": {
+            "SCENARIO": [
+              "Video call"
+            ],
+            "CHOICES": [
+              "TCP",
+              "UDP"
+            ]
+          }
+        },
+        "evaluation_state": [
+          "SCENARIO"
+        ]
+      },
+      {
+        "operation": "choose-udp",
+        "instruction": "Choose the suitable protocol",
+        "next_state": {
+          "zones": {
+            "SCENARIO": [
+              "Video call"
+            ],
+            "PROTOCOL": [
+              "UDP"
+            ]
+          }
+        },
+        "evaluation_state": [
+          "CHOOSE-UDP"
+        ]
+      },
+      {
+        "operation": "explain",
+        "instruction": "Explain the tradeoff",
+        "next_state": {
+          "zones": {
+            "RESULT": [
+              "timely delivery; occasional loss acceptable"
+            ]
+          }
+        },
+        "evaluation_state": [
+          "EXPLAIN"
+        ]
+      }
+    ],
+    "controls": [
+      {
+        "id": "scenario",
+        "label": "READ SCENARIO",
+        "operation": "scenario"
+      },
+      {
+        "id": "choose-udp",
+        "label": "CHOOSE UDP",
+        "operation": "choose-udp"
+      },
+      {
+        "id": "choose-tcp",
+        "label": "CHOOSE TCP",
+        "operation": "choose-tcp"
+      },
+      {
+        "id": "explain",
+        "label": "EXPLAIN TRADEOFF",
+        "operation": "explain"
+      }
+    ],
+    "actions": [
+      {
+        "label": "Read the scenario",
+        "operation": "scenario",
+        "task": "Read the scenario"
+      },
+      {
+        "label": "Choose a protocol",
+        "operation": "choose-udp",
+        "task": "Choose a protocol"
+      },
+      {
+        "label": "Explain its tradeoff",
+        "operation": "explain",
+        "task": "Explain its tradeoff"
+      }
+    ],
+    "instruction": "Choose the next meaningful action.",
+    "wrong_action_message": "Compare the active task with the current state before choosing."
+  },
+  "practice": {
+    "challenge": {
+      "title": "TCP vs UDP challenge",
+      "start_message": "Apply the concept to the displayed state.",
+      "continue_message": "Challenge complete. Keep experimenting.",
+      "phases": [
+        {
+          "title": "Reach the correct result",
+          "instruction": "Use the controls to reach the target state.",
+          "target": {
+            "label": "TARGET",
+            "items": [
+              "COMPLETE"
+            ]
+          },
+          "goal": {
+            "type": "state_equals",
+            "expected_state": [
+              "COMPLETE"
+            ]
+          },
+          "success": "✓ Challenge complete",
+          "feedback": "Compare your state with the target."
+        }
+      ]
+    }
+  },
+  "mastery": {
+    "title": "TCP vs UDP Mastery",
+    "mastered_label": "TCP vs UDP Mastered",
+    "current_state_label": "YOUR STATE",
+    "levels": [
+      {
+        "id": "learn",
+        "label": "Learn",
+        "completion": {
+          "type": "course_completion"
+        }
+      },
+      {
+        "id": "practice",
+        "label": "Practice",
+        "prerequisites": [
+          "learn"
+        ],
+        "guidance": {
+          "start_message": "Compare the current state with the objective and choose the next action.",
+          "hints": {
+            "limit": 1,
+            "items": [
+              {
+                "content": "Use the operation that moves the state toward the target."
+              }
+            ]
+          }
+        },
+        "controls": [
+          {
+            "id": "scenario",
+            "label": "READ SCENARIO",
+            "operation": "scenario"
+          },
+          {
+            "id": "choose-udp",
+            "label": "CHOOSE UDP",
+            "operation": "choose-udp"
+          },
+          {
+            "id": "choose-tcp",
+            "label": "CHOOSE TCP",
+            "operation": "choose-tcp"
+          }
+        ],
+        "scenario": {
+          "initial_state": {
+            "zones": {
+              "SCENARIO": [
+                "File download"
+              ],
+              "CHOICES": [
+                "TCP",
+                "UDP"
+              ],
+              "RESULT": [
+                "choose"
+              ]
+            }
+          },
+          "operations": [
+            {
+              "operation": "scenario",
+              "instruction": "Read the application need",
+              "next_state": {
+                "zones": {
+                  "SCENARIO": [
+                    "Video call"
+                  ],
+                  "CHOICES": [
+                    "TCP",
+                    "UDP"
+                  ]
+                }
+              },
+              "evaluation_state": [
+                "SCENARIO"
+              ]
+            }
+          ]
+        },
+        "challenge": {
+          "phases": [
+            {
+              "title": "Practice task",
+              "instruction": "Reach the target state by making the appropriate decisions.",
+              "target": {
+                "label": "TARGET STATE",
+                "items": [
+                  "COMPLETE"
+                ]
+              },
+              "goal": {
+                "type": "state_equals",
+                "expected_state": [
+                  "COMPLETE"
+                ]
+              },
+              "success": "✓ Practice complete",
+              "feedback": "Compare your current state with the target before choosing again."
+            }
+          ]
+        }
+      },
+      {
+        "id": "apply",
+        "label": "Apply",
+        "prerequisites": [
+          "practice"
+        ],
+        "guidance": {
+          "start_message": "Compare the current state with the objective and choose the next action.",
+          "hints": {
+            "limit": 0,
+            "items": []
+          }
+        },
+        "controls": [
+          {
+            "id": "scenario",
+            "label": "READ SCENARIO",
+            "operation": "scenario"
+          },
+          {
+            "id": "choose-udp",
+            "label": "CHOOSE UDP",
+            "operation": "choose-udp"
+          },
+          {
+            "id": "choose-tcp",
+            "label": "CHOOSE TCP",
+            "operation": "choose-tcp"
+          }
+        ],
+        "scenario": {
+          "initial_state": {
+            "zones": {
+              "SCENARIO": [
+                "File download"
+              ],
+              "CHOICES": [
+                "TCP",
+                "UDP"
+              ],
+              "RESULT": [
+                "choose"
+              ]
+            }
+          },
+          "operations": [
+            {
+              "operation": "scenario",
+              "instruction": "Read the application need",
+              "next_state": {
+                "zones": {
+                  "SCENARIO": [
+                    "Video call"
+                  ],
+                  "CHOICES": [
+                    "TCP",
+                    "UDP"
+                  ]
+                }
+              },
+              "evaluation_state": [
+                "SCENARIO"
+              ]
+            },
+            {
+              "operation": "choose-udp",
+              "instruction": "Choose the suitable protocol",
+              "next_state": {
+                "zones": {
+                  "SCENARIO": [
+                    "Video call"
+                  ],
+                  "PROTOCOL": [
+                    "UDP"
+                  ]
+                }
+              },
+              "evaluation_state": [
+                "CHOOSE-UDP"
+              ]
+            }
+          ]
+        },
+        "challenge": {
+          "phases": [
+            {
+              "title": "Apply task",
+              "instruction": "Reach the target state by making the appropriate decisions.",
+              "target": {
+                "label": "TARGET STATE",
+                "items": [
+                  "COMPLETE"
+                ]
+              },
+              "goal": {
+                "type": "state_equals",
+                "expected_state": [
+                  "COMPLETE"
+                ]
+              },
+              "success": "✓ Apply complete",
+              "feedback": "Compare your current state with the target before choosing again."
+            }
+          ]
+        }
+      },
+      {
+        "id": "solve",
+        "label": "Solve",
+        "prerequisites": [
+          "apply"
+        ],
+        "guidance": {
+          "start_message": "Compare the current state with the objective and choose the next action.",
+          "hints": {
+            "limit": 0,
+            "items": []
+          }
+        },
+        "controls": [
+          {
+            "id": "scenario",
+            "label": "READ SCENARIO",
+            "operation": "scenario"
+          },
+          {
+            "id": "choose-udp",
+            "label": "CHOOSE UDP",
+            "operation": "choose-udp"
+          },
+          {
+            "id": "choose-tcp",
+            "label": "CHOOSE TCP",
+            "operation": "choose-tcp"
+          }
+        ],
+        "scenario": {
+          "initial_state": {
+            "zones": {
+              "SCENARIO": [
+                "File download"
+              ],
+              "CHOICES": [
+                "TCP",
+                "UDP"
+              ],
+              "RESULT": [
+                "choose"
+              ]
+            }
+          },
+          "operations": [
+            {
+              "operation": "scenario",
+              "instruction": "Read the application need",
+              "next_state": {
+                "zones": {
+                  "SCENARIO": [
+                    "Video call"
+                  ],
+                  "CHOICES": [
+                    "TCP",
+                    "UDP"
+                  ]
+                }
+              },
+              "evaluation_state": [
+                "SCENARIO"
+              ]
+            },
+            {
+              "operation": "choose-udp",
+              "instruction": "Choose the suitable protocol",
+              "next_state": {
+                "zones": {
+                  "SCENARIO": [
+                    "Video call"
+                  ],
+                  "PROTOCOL": [
+                    "UDP"
+                  ]
+                }
+              },
+              "evaluation_state": [
+                "CHOOSE-UDP"
+              ]
+            },
+            {
+              "operation": "explain",
+              "instruction": "Explain the tradeoff",
+              "next_state": {
+                "zones": {
+                  "RESULT": [
+                    "timely delivery; occasional loss acceptable"
+                  ]
+                }
+              },
+              "evaluation_state": [
+                "EXPLAIN"
+              ]
+            }
+          ]
+        },
+        "challenge": {
+          "phases": [
+            {
+              "title": "Solve task",
+              "instruction": "Reach the target state by making the appropriate decisions.",
+              "target": {
+                "label": "TARGET STATE",
+                "items": [
+                  "COMPLETE"
+                ]
+              },
+              "goal": {
+                "type": "state_equals",
+                "expected_state": [
+                  "COMPLETE"
+                ]
+              },
+              "success": "✓ Solve complete",
+              "feedback": "Compare your current state with the target before choosing again."
+            }
+          ]
+        }
+      },
+      {
+        "id": "mastery",
+        "label": "Mastery",
+        "prerequisites": [
+          "solve"
+        ],
+        "guidance": {
+          "start_message": "Compare the current state with the objective and choose the next action.",
+          "hints": {
+            "limit": 0,
+            "items": []
+          }
+        },
+        "controls": [
+          {
+            "id": "scenario",
+            "label": "READ SCENARIO",
+            "operation": "scenario"
+          },
+          {
+            "id": "choose-udp",
+            "label": "CHOOSE UDP",
+            "operation": "choose-udp"
+          },
+          {
+            "id": "choose-tcp",
+            "label": "CHOOSE TCP",
+            "operation": "choose-tcp"
+          }
+        ],
+        "scenario": {
+          "initial_state": {
+            "zones": {
+              "SCENARIO": [
+                "File download"
+              ],
+              "CHOICES": [
+                "TCP",
+                "UDP"
+              ],
+              "RESULT": [
+                "choose"
+              ]
+            }
+          },
+          "operations": [
+            {
+              "operation": "scenario",
+              "instruction": "Read the application need",
+              "next_state": {
+                "zones": {
+                  "SCENARIO": [
+                    "Video call"
+                  ],
+                  "CHOICES": [
+                    "TCP",
+                    "UDP"
+                  ]
+                }
+              },
+              "evaluation_state": [
+                "SCENARIO"
+              ]
+            },
+            {
+              "operation": "choose-udp",
+              "instruction": "Choose the suitable protocol",
+              "next_state": {
+                "zones": {
+                  "SCENARIO": [
+                    "Video call"
+                  ],
+                  "PROTOCOL": [
+                    "UDP"
+                  ]
+                }
+              },
+              "evaluation_state": [
+                "CHOOSE-UDP"
+              ]
+            },
+            {
+              "operation": "explain",
+              "instruction": "Explain the tradeoff",
+              "next_state": {
+                "zones": {
+                  "RESULT": [
+                    "timely delivery; occasional loss acceptable"
+                  ]
+                }
+              },
+              "evaluation_state": [
+                "EXPLAIN"
+              ]
+            }
+          ]
+        },
+        "challenge": {
+          "phases": [
+            {
+              "title": "Mastery task",
+              "instruction": "Reach the target state by making the appropriate decisions.",
+              "target": {
+                "label": "TARGET STATE",
+                "items": [
+                  "COMPLETE"
+                ]
+              },
+              "goal": {
+                "type": "state_equals",
+                "expected_state": [
+                  "COMPLETE"
+                ]
+              },
+              "success": "✓ Mastery complete",
+              "feedback": "Compare your current state with the target before choosing again."
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "expert": {
+    "id": "expert",
+    "label": "Expert",
+    "prerequisites": [
+      "mastery"
+    ],
+    "generator": "phase2-expert",
+    "generator_version": 1,
+    "required_capabilities": [
+      "interactive_state",
+      "decision_tree",
+      "sequence_simulation"
+    ],
+    "thinking": {
+      "title": "Predict the sequence",
+      "objective_label": "Think first",
+      "instruction": "Mentally follow the sequence before acting.",
+      "starting_stack_label": "STARTING STATE",
+      "sequence_label": "ACTIONS TO SIMULATE",
+      "do_not_execute": "Do not act yet. Work through the sequence in order.",
+      "prediction_label": "YOUR PREDICTION",
+      "prediction_fields": [
+        {
+          "id": "finalState",
+          "label": "Final state",
+          "prompt": "What will the final state contain?",
+          "type": "text",
+          "placeholder": "Describe the result"
+        }
+      ],
+      "submit_label": "Check my prediction",
+      "continue_label": "Continue to Expert Challenge →",
+      "actual_label": "RESULT",
+      "your_prediction_label": "Your prediction",
+      "actual_result": "Final state: {{final_state}}.",
+      "feedback": {
+        "all_correct": "You tracked the sequence.",
+        "incorrect": "Recheck each transition."
+      }
+    },
+    "solve": {
+      "title": "Expert TCP vs UDP",
+      "instruction": "Apply the sequence with no hints.",
+      "target_label": "TARGET STATE",
+      "your_label": "YOUR STATE",
+      "metric_label": "Actions",
+      "hints_label": "Hints: none",
+      "operation_rule": "Each action counts once.",
+      "controls": [
+        {
+          "id": "scenario",
+          "label": "READ SCENARIO",
+          "operation": "scenario"
+        },
+        {
+          "id": "choose-udp",
+          "label": "CHOOSE UDP",
+          "operation": "choose-udp"
+        },
+        {
+          "id": "choose-tcp",
+          "label": "CHOOSE TCP",
+          "operation": "choose-tcp"
+        }
+      ],
+      "perfect_message": "🏆 PERFECT EXPERT",
+      "perfect_result": "You completed the sequence.",
+      "new_challenge_label": "New Expert Challenge"
+    },
+    "scenario_rules": {
+      "initial_state": [
+        "FILE DOWNLOAD"
+      ],
+      "steps": [
+        {
+          "operation": "scenario",
+          "label": "READ SCENARIO"
+        },
+        {
+          "operation": "choose-tcp",
+          "label": "CHOOSE TCP"
+        },
+        {
+          "operation": "explain",
+          "label": "EXPLAIN"
+        }
+      ],
+      "final_state": [
+        "TCP"
+      ],
+      "target_state": [
+        "TCP"
+      ]
+    }
+  },
+  "assessment": {
+    "quiz": {
+      "question": "Which protocol retransmits missing data?",
+      "options": [
+        "TCP",
+        "UDP",
+        "DNS",
+        "HTTP"
+      ],
+      "correct": 0
+    },
+    "discovery": {
+      "title": "TCP/UDP discovery",
+      "summary": "Transport choices trade delivery guarantees against the overhead of providing them."
+    },
+    "notes": {
+      "sections": [
+        {
+          "title": "What?",
+          "content": "TCP emphasizes ordered, acknowledged delivery; UDP sends with fewer guarantees."
+        },
+        {
+          "title": "Example",
+          "content": "A file download usually chooses TCP; a live video call may choose UDP."
+        },
+        {
+          "title": "Why?",
+          "content": "The right choice depends on whether missing data can be tolerated."
+        },
+        {
+          "title": "Remember",
+          "content": "Do not reduce the choice to simply fast versus slow."
+        }
+      ]
+    },
+    "alternate_explanations": [
+      {
+        "title": "Think of a familiar workflow",
+        "type": "analogy",
+        "content": "Imagine TCP vs UDP as a small real-world process with visible steps."
+      },
+      {
+        "title": "Walk through the example",
+        "type": "example",
+        "content": "Choose based on whether the application needs ordered, acknowledged delivery."
+      }
+    ]
+  },
+  "completion": {
+    "recall": {
+      "title": "Recall",
+      "prompt": "In your own words, why might a live video call tolerate UDP loss?",
+      "submit_label": "Submit recall",
+      "empty_message": "Write a short explanation first.",
+      "completion_message": "✓ Recall completed",
+      "model_answer": "Do not reduce the choice to simply fast versus slow."
+    }
+  }
+}

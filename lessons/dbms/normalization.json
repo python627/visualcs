@@ -1,0 +1,1094 @@
+{
+  "schema_version": 2,
+  "metadata": {
+    "id": "normalization",
+    "order": 5,
+    "subject_order": 4,
+    "subject": "DBMS",
+    "topic": "Normalization",
+    "title": "Reduce Repeated Data",
+    "description": "Spot duplicated information and split it into cleaner related tables.",
+    "difficulty": "Beginner",
+    "estimated_time": "15 min"
+  },
+  "learning_objectives": [
+    "Explain Normalization in simple terms.",
+    "Follow one visible Normalization example.",
+    "Make a correct decision in the playground."
+  ],
+  "capabilities": [
+    "interactive_state",
+    "target_transformation",
+    "relationship_reasoning"
+  ],
+  "teaching": {
+    "mission": {
+      "title": "Practise Normalization",
+      "description": "Make each decision and watch the consequence."
+    },
+    "introduction": {
+      "title": "Normalization: start here",
+      "content": "Normalization organizes data so one fact is not copied in many rows.",
+      "points": [
+        "Compare a repeated table with a cleaner split design."
+      ],
+      "visual": {
+        "type": "array",
+        "label": "Normalization",
+        "items": [
+          "What?",
+          "Example",
+          "Try it"
+        ]
+      }
+    },
+    "worked_example": {
+      "title": "See one example",
+      "content": "Watch one concrete sequence before you try it.",
+      "steps": [
+        {
+          "action": "SPOT DUPLICATE",
+          "state": {
+            "tables": {
+              "BEFORE": [
+                [
+                  "ORDER",
+                  "CUSTOMER",
+                  "PHONE"
+                ],
+                [
+                  "1",
+                  "Ana",
+                  "555"
+                ],
+                [
+                  "2",
+                  "Ana",
+                  "555"
+                ]
+              ]
+            },
+            "result": "Ana/555 repeats"
+          },
+          "explanation": "The same customer fact appears twice."
+        },
+        {
+          "action": "SPLIT",
+          "state": {
+            "tables": {
+              "ORDERS": [
+                [
+                  "ORDER",
+                  "CUSTOMER_ID"
+                ],
+                [
+                  "1",
+                  "A1"
+                ],
+                [
+                  "2",
+                  "A1"
+                ]
+              ],
+              "CUSTOMERS": [
+                [
+                  "CUSTOMER_ID",
+                  "NAME",
+                  "PHONE"
+                ],
+                [
+                  "A1",
+                  "Ana",
+                  "555"
+                ]
+              ]
+            },
+            "result": "separate tables"
+          },
+          "explanation": "Store the customer once and reference it."
+        },
+        {
+          "action": "VERIFY",
+          "state": {
+            "tables": {
+              "ORDERS": [
+                [
+                  "ORDER",
+                  "CUSTOMER_ID"
+                ],
+                [
+                  "1",
+                  "A1"
+                ],
+                [
+                  "2",
+                  "A1"
+                ]
+              ],
+              "CUSTOMERS": [
+                [
+                  "CUSTOMER_ID",
+                  "NAME",
+                  "PHONE"
+                ],
+                [
+                  "A1",
+                  "Ana",
+                  "555"
+                ]
+              ]
+            },
+            "result": "less duplication"
+          },
+          "explanation": "Updating Ana's phone now happens in one place."
+        }
+      ],
+      "conclusion": "The visual state changes because the concept follows a rule.",
+      "next": {
+        "title": "Now you try.",
+        "content": "Choose the next meaningful action."
+      }
+    },
+    "guided_practice": {
+      "action_explanations": {
+        "spot": "duplicate",
+        "split": "split",
+        "verify": "normalized"
+      }
+    }
+  },
+  "visualization": {
+    "type": "normalization",
+    "view": "table",
+    "initial_state": {
+      "tables": {
+        "BEFORE": [
+          [
+            "ORDER",
+            "CUSTOMER",
+            "PHONE"
+          ],
+          [
+            "1",
+            "Ana",
+            "555"
+          ],
+          [
+            "2",
+            "Ana",
+            "555"
+          ]
+        ]
+      },
+      "result": "customer data repeats"
+    },
+    "guided_steps": [
+      {
+        "operation": "spot",
+        "instruction": "Find repeated information",
+        "next_state": {
+          "tables": {
+            "BEFORE": [
+              [
+                "CUSTOMER",
+                "PHONE"
+              ],
+              [
+                "Ana",
+                "555"
+              ],
+              [
+                "Ana",
+                "555"
+              ]
+            ]
+          },
+          "result": "duplicate"
+        },
+        "evaluation_state": [
+          "SPOT"
+        ]
+      },
+      {
+        "operation": "split",
+        "instruction": "Choose a cleaner split",
+        "next_state": {
+          "tables": {
+            "CUSTOMERS": [
+              [
+                "ID",
+                "NAME",
+                "PHONE"
+              ],
+              [
+                "A1",
+                "Ana",
+                "555"
+              ]
+            ],
+            "ORDERS": [
+              [
+                "ORDER",
+                "CUSTOMER_ID"
+              ],
+              [
+                "1",
+                "A1"
+              ],
+              [
+                "2",
+                "A1"
+              ]
+            ]
+          },
+          "result": "split"
+        },
+        "evaluation_state": [
+          "SPLIT"
+        ]
+      },
+      {
+        "operation": "verify",
+        "instruction": "Check the repaired design",
+        "next_state": {
+          "tables": {
+            "CUSTOMERS": [
+              [
+                "ID",
+                "NAME",
+                "PHONE"
+              ],
+              [
+                "A1",
+                "Ana",
+                "555"
+              ]
+            ]
+          },
+          "result": "normalized"
+        },
+        "evaluation_state": [
+          "VERIFY"
+        ]
+      }
+    ],
+    "controls": [
+      {
+        "id": "spot",
+        "label": "FIND DUPLICATE",
+        "operation": "spot"
+      },
+      {
+        "id": "split",
+        "label": "SPLIT TABLES",
+        "operation": "split"
+      },
+      {
+        "id": "verify",
+        "label": "VERIFY DESIGN",
+        "operation": "verify"
+      }
+    ],
+    "actions": [
+      {
+        "label": "Spot a repeated fact",
+        "operation": "spot",
+        "task": "Spot a repeated fact"
+      },
+      {
+        "label": "Separate related entities",
+        "operation": "split",
+        "task": "Separate related entities"
+      },
+      {
+        "label": "Verify the cleaner schema",
+        "operation": "verify",
+        "task": "Verify the cleaner schema"
+      }
+    ],
+    "instruction": "Choose the next meaningful action.",
+    "wrong_action_message": "Compare the active task with the current state before choosing."
+  },
+  "practice": {
+    "challenge": {
+      "title": "Normalization challenge",
+      "start_message": "Apply the concept to the displayed state.",
+      "continue_message": "Challenge complete. Keep experimenting.",
+      "phases": [
+        {
+          "title": "Reach the correct result",
+          "instruction": "Use the controls to reach the target state.",
+          "target": {
+            "label": "TARGET",
+            "items": [
+              "COMPLETE"
+            ]
+          },
+          "goal": {
+            "type": "state_equals",
+            "expected_state": [
+              "COMPLETE"
+            ]
+          },
+          "success": "✓ Challenge complete",
+          "feedback": "Compare your state with the target."
+        }
+      ]
+    }
+  },
+  "mastery": {
+    "title": "Normalization Mastery",
+    "mastered_label": "Normalization Mastered",
+    "current_state_label": "YOUR STATE",
+    "levels": [
+      {
+        "id": "learn",
+        "label": "Learn",
+        "completion": {
+          "type": "course_completion"
+        }
+      },
+      {
+        "id": "practice",
+        "label": "Practice",
+        "prerequisites": [
+          "learn"
+        ],
+        "guidance": {
+          "start_message": "Compare the current state with the objective and choose the next action.",
+          "hints": {
+            "limit": 1,
+            "items": [
+              {
+                "content": "Use the operation that moves the state toward the target."
+              }
+            ]
+          }
+        },
+        "controls": [
+          {
+            "id": "spot",
+            "label": "FIND DUPLICATE",
+            "operation": "spot"
+          },
+          {
+            "id": "split",
+            "label": "SPLIT TABLES",
+            "operation": "split"
+          },
+          {
+            "id": "verify",
+            "label": "VERIFY DESIGN",
+            "operation": "verify"
+          }
+        ],
+        "scenario": {
+          "initial_state": {
+            "tables": {
+              "BEFORE": [
+                [
+                  "ORDER",
+                  "CUSTOMER",
+                  "PHONE"
+                ],
+                [
+                  "1",
+                  "Ana",
+                  "555"
+                ],
+                [
+                  "2",
+                  "Ana",
+                  "555"
+                ]
+              ]
+            },
+            "result": "customer data repeats"
+          },
+          "operations": [
+            {
+              "operation": "spot",
+              "instruction": "Find repeated information",
+              "next_state": {
+                "tables": {
+                  "BEFORE": [
+                    [
+                      "CUSTOMER",
+                      "PHONE"
+                    ],
+                    [
+                      "Ana",
+                      "555"
+                    ],
+                    [
+                      "Ana",
+                      "555"
+                    ]
+                  ]
+                },
+                "result": "duplicate"
+              },
+              "evaluation_state": [
+                "SPOT"
+              ]
+            }
+          ]
+        },
+        "challenge": {
+          "phases": [
+            {
+              "title": "Practice task",
+              "instruction": "Reach the target state by making the appropriate decisions.",
+              "target": {
+                "label": "TARGET STATE",
+                "items": [
+                  "COMPLETE"
+                ]
+              },
+              "goal": {
+                "type": "state_equals",
+                "expected_state": [
+                  "COMPLETE"
+                ]
+              },
+              "success": "✓ Practice complete",
+              "feedback": "Compare your current state with the target before choosing again."
+            }
+          ]
+        }
+      },
+      {
+        "id": "apply",
+        "label": "Apply",
+        "prerequisites": [
+          "practice"
+        ],
+        "guidance": {
+          "start_message": "Compare the current state with the objective and choose the next action.",
+          "hints": {
+            "limit": 0,
+            "items": []
+          }
+        },
+        "controls": [
+          {
+            "id": "spot",
+            "label": "FIND DUPLICATE",
+            "operation": "spot"
+          },
+          {
+            "id": "split",
+            "label": "SPLIT TABLES",
+            "operation": "split"
+          },
+          {
+            "id": "verify",
+            "label": "VERIFY DESIGN",
+            "operation": "verify"
+          }
+        ],
+        "scenario": {
+          "initial_state": {
+            "tables": {
+              "BEFORE": [
+                [
+                  "ORDER",
+                  "CUSTOMER",
+                  "PHONE"
+                ],
+                [
+                  "1",
+                  "Ana",
+                  "555"
+                ],
+                [
+                  "2",
+                  "Ana",
+                  "555"
+                ]
+              ]
+            },
+            "result": "customer data repeats"
+          },
+          "operations": [
+            {
+              "operation": "spot",
+              "instruction": "Find repeated information",
+              "next_state": {
+                "tables": {
+                  "BEFORE": [
+                    [
+                      "CUSTOMER",
+                      "PHONE"
+                    ],
+                    [
+                      "Ana",
+                      "555"
+                    ],
+                    [
+                      "Ana",
+                      "555"
+                    ]
+                  ]
+                },
+                "result": "duplicate"
+              },
+              "evaluation_state": [
+                "SPOT"
+              ]
+            },
+            {
+              "operation": "split",
+              "instruction": "Choose a cleaner split",
+              "next_state": {
+                "tables": {
+                  "CUSTOMERS": [
+                    [
+                      "ID",
+                      "NAME",
+                      "PHONE"
+                    ],
+                    [
+                      "A1",
+                      "Ana",
+                      "555"
+                    ]
+                  ],
+                  "ORDERS": [
+                    [
+                      "ORDER",
+                      "CUSTOMER_ID"
+                    ],
+                    [
+                      "1",
+                      "A1"
+                    ],
+                    [
+                      "2",
+                      "A1"
+                    ]
+                  ]
+                },
+                "result": "split"
+              },
+              "evaluation_state": [
+                "SPLIT"
+              ]
+            }
+          ]
+        },
+        "challenge": {
+          "phases": [
+            {
+              "title": "Apply task",
+              "instruction": "Reach the target state by making the appropriate decisions.",
+              "target": {
+                "label": "TARGET STATE",
+                "items": [
+                  "COMPLETE"
+                ]
+              },
+              "goal": {
+                "type": "state_equals",
+                "expected_state": [
+                  "COMPLETE"
+                ]
+              },
+              "success": "✓ Apply complete",
+              "feedback": "Compare your current state with the target before choosing again."
+            }
+          ]
+        }
+      },
+      {
+        "id": "solve",
+        "label": "Solve",
+        "prerequisites": [
+          "apply"
+        ],
+        "guidance": {
+          "start_message": "Compare the current state with the objective and choose the next action.",
+          "hints": {
+            "limit": 0,
+            "items": []
+          }
+        },
+        "controls": [
+          {
+            "id": "spot",
+            "label": "FIND DUPLICATE",
+            "operation": "spot"
+          },
+          {
+            "id": "split",
+            "label": "SPLIT TABLES",
+            "operation": "split"
+          },
+          {
+            "id": "verify",
+            "label": "VERIFY DESIGN",
+            "operation": "verify"
+          }
+        ],
+        "scenario": {
+          "initial_state": {
+            "tables": {
+              "BEFORE": [
+                [
+                  "ORDER",
+                  "CUSTOMER",
+                  "PHONE"
+                ],
+                [
+                  "1",
+                  "Ana",
+                  "555"
+                ],
+                [
+                  "2",
+                  "Ana",
+                  "555"
+                ]
+              ]
+            },
+            "result": "customer data repeats"
+          },
+          "operations": [
+            {
+              "operation": "spot",
+              "instruction": "Find repeated information",
+              "next_state": {
+                "tables": {
+                  "BEFORE": [
+                    [
+                      "CUSTOMER",
+                      "PHONE"
+                    ],
+                    [
+                      "Ana",
+                      "555"
+                    ],
+                    [
+                      "Ana",
+                      "555"
+                    ]
+                  ]
+                },
+                "result": "duplicate"
+              },
+              "evaluation_state": [
+                "SPOT"
+              ]
+            },
+            {
+              "operation": "split",
+              "instruction": "Choose a cleaner split",
+              "next_state": {
+                "tables": {
+                  "CUSTOMERS": [
+                    [
+                      "ID",
+                      "NAME",
+                      "PHONE"
+                    ],
+                    [
+                      "A1",
+                      "Ana",
+                      "555"
+                    ]
+                  ],
+                  "ORDERS": [
+                    [
+                      "ORDER",
+                      "CUSTOMER_ID"
+                    ],
+                    [
+                      "1",
+                      "A1"
+                    ],
+                    [
+                      "2",
+                      "A1"
+                    ]
+                  ]
+                },
+                "result": "split"
+              },
+              "evaluation_state": [
+                "SPLIT"
+              ]
+            },
+            {
+              "operation": "verify",
+              "instruction": "Check the repaired design",
+              "next_state": {
+                "tables": {
+                  "CUSTOMERS": [
+                    [
+                      "ID",
+                      "NAME",
+                      "PHONE"
+                    ],
+                    [
+                      "A1",
+                      "Ana",
+                      "555"
+                    ]
+                  ]
+                },
+                "result": "normalized"
+              },
+              "evaluation_state": [
+                "VERIFY"
+              ]
+            }
+          ]
+        },
+        "challenge": {
+          "phases": [
+            {
+              "title": "Solve task",
+              "instruction": "Reach the target state by making the appropriate decisions.",
+              "target": {
+                "label": "TARGET STATE",
+                "items": [
+                  "COMPLETE"
+                ]
+              },
+              "goal": {
+                "type": "state_equals",
+                "expected_state": [
+                  "COMPLETE"
+                ]
+              },
+              "success": "✓ Solve complete",
+              "feedback": "Compare your current state with the target before choosing again."
+            }
+          ]
+        }
+      },
+      {
+        "id": "mastery",
+        "label": "Mastery",
+        "prerequisites": [
+          "solve"
+        ],
+        "guidance": {
+          "start_message": "Compare the current state with the objective and choose the next action.",
+          "hints": {
+            "limit": 0,
+            "items": []
+          }
+        },
+        "controls": [
+          {
+            "id": "spot",
+            "label": "FIND DUPLICATE",
+            "operation": "spot"
+          },
+          {
+            "id": "split",
+            "label": "SPLIT TABLES",
+            "operation": "split"
+          },
+          {
+            "id": "verify",
+            "label": "VERIFY DESIGN",
+            "operation": "verify"
+          }
+        ],
+        "scenario": {
+          "initial_state": {
+            "tables": {
+              "BEFORE": [
+                [
+                  "ORDER",
+                  "CUSTOMER",
+                  "PHONE"
+                ],
+                [
+                  "1",
+                  "Ana",
+                  "555"
+                ],
+                [
+                  "2",
+                  "Ana",
+                  "555"
+                ]
+              ]
+            },
+            "result": "customer data repeats"
+          },
+          "operations": [
+            {
+              "operation": "spot",
+              "instruction": "Find repeated information",
+              "next_state": {
+                "tables": {
+                  "BEFORE": [
+                    [
+                      "CUSTOMER",
+                      "PHONE"
+                    ],
+                    [
+                      "Ana",
+                      "555"
+                    ],
+                    [
+                      "Ana",
+                      "555"
+                    ]
+                  ]
+                },
+                "result": "duplicate"
+              },
+              "evaluation_state": [
+                "SPOT"
+              ]
+            },
+            {
+              "operation": "split",
+              "instruction": "Choose a cleaner split",
+              "next_state": {
+                "tables": {
+                  "CUSTOMERS": [
+                    [
+                      "ID",
+                      "NAME",
+                      "PHONE"
+                    ],
+                    [
+                      "A1",
+                      "Ana",
+                      "555"
+                    ]
+                  ],
+                  "ORDERS": [
+                    [
+                      "ORDER",
+                      "CUSTOMER_ID"
+                    ],
+                    [
+                      "1",
+                      "A1"
+                    ],
+                    [
+                      "2",
+                      "A1"
+                    ]
+                  ]
+                },
+                "result": "split"
+              },
+              "evaluation_state": [
+                "SPLIT"
+              ]
+            },
+            {
+              "operation": "verify",
+              "instruction": "Check the repaired design",
+              "next_state": {
+                "tables": {
+                  "CUSTOMERS": [
+                    [
+                      "ID",
+                      "NAME",
+                      "PHONE"
+                    ],
+                    [
+                      "A1",
+                      "Ana",
+                      "555"
+                    ]
+                  ]
+                },
+                "result": "normalized"
+              },
+              "evaluation_state": [
+                "VERIFY"
+              ]
+            }
+          ]
+        },
+        "challenge": {
+          "phases": [
+            {
+              "title": "Mastery task",
+              "instruction": "Reach the target state by making the appropriate decisions.",
+              "target": {
+                "label": "TARGET STATE",
+                "items": [
+                  "COMPLETE"
+                ]
+              },
+              "goal": {
+                "type": "state_equals",
+                "expected_state": [
+                  "COMPLETE"
+                ]
+              },
+              "success": "✓ Mastery complete",
+              "feedback": "Compare your current state with the target before choosing again."
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "expert": {
+    "id": "expert",
+    "label": "Expert",
+    "prerequisites": [
+      "mastery"
+    ],
+    "generator": "phase2-expert",
+    "generator_version": 1,
+    "required_capabilities": [
+      "interactive_state",
+      "target_transformation",
+      "relationship_reasoning"
+    ],
+    "thinking": {
+      "title": "Predict the sequence",
+      "objective_label": "Think first",
+      "instruction": "Mentally follow the sequence before acting.",
+      "starting_stack_label": "STARTING STATE",
+      "sequence_label": "ACTIONS TO SIMULATE",
+      "do_not_execute": "Do not act yet. Work through the sequence in order.",
+      "prediction_label": "YOUR PREDICTION",
+      "prediction_fields": [
+        {
+          "id": "finalState",
+          "label": "Final state",
+          "prompt": "What will the final state contain?",
+          "type": "text",
+          "placeholder": "Describe the result"
+        }
+      ],
+      "submit_label": "Check my prediction",
+      "continue_label": "Continue to Expert Challenge →",
+      "actual_label": "RESULT",
+      "your_prediction_label": "Your prediction",
+      "actual_result": "Final state: {{final_state}}.",
+      "feedback": {
+        "all_correct": "You tracked the sequence.",
+        "incorrect": "Recheck each transition."
+      }
+    },
+    "solve": {
+      "title": "Expert Normalization",
+      "instruction": "Apply the sequence with no hints.",
+      "target_label": "TARGET STATE",
+      "your_label": "YOUR STATE",
+      "metric_label": "Actions",
+      "hints_label": "Hints: none",
+      "operation_rule": "Each action counts once.",
+      "controls": [
+        {
+          "id": "spot",
+          "label": "FIND DUPLICATE",
+          "operation": "spot"
+        },
+        {
+          "id": "split",
+          "label": "SPLIT TABLES",
+          "operation": "split"
+        },
+        {
+          "id": "verify",
+          "label": "VERIFY DESIGN",
+          "operation": "verify"
+        }
+      ],
+      "perfect_message": "🏆 PERFECT EXPERT",
+      "perfect_result": "You completed the sequence.",
+      "new_challenge_label": "New Expert Challenge"
+    },
+    "scenario_rules": {
+      "initial_state": [
+        "Ana/555 repeated"
+      ],
+      "steps": [
+        {
+          "operation": "spot",
+          "label": "SPOT DUPLICATE"
+        },
+        {
+          "operation": "split",
+          "label": "SPLIT TABLES"
+        },
+        {
+          "operation": "verify",
+          "label": "VERIFY"
+        }
+      ],
+      "final_state": [
+        "CUSTOMER A1 once",
+        "ORDERS reference A1"
+      ],
+      "target_state": [
+        "CUSTOMER A1 once",
+        "ORDERS reference A1"
+      ]
+    }
+  },
+  "assessment": {
+    "quiz": {
+      "question": "Why split repeated customer data?",
+      "options": [
+        "To avoid update anomalies",
+        "To slow queries",
+        "To remove all rows",
+        "To duplicate more"
+      ],
+      "correct": 0
+    },
+    "discovery": {
+      "title": "Normalization discovery",
+      "summary": "Cleaner tables make one fact easier to update consistently."
+    },
+    "notes": {
+      "sections": [
+        {
+          "title": "What?",
+          "content": "Normalization reduces unnecessary repetition by separating related facts."
+        },
+        {
+          "title": "Example",
+          "content": "Store Ana's phone once in Customers and reference her from Orders."
+        },
+        {
+          "title": "Why?",
+          "content": "One update should not require changing many copied rows."
+        },
+        {
+          "title": "Remember",
+          "content": "Find the repeated fact, then store it in one home."
+        }
+      ]
+    },
+    "alternate_explanations": [
+      {
+        "title": "Think of a familiar workflow",
+        "type": "analogy",
+        "content": "Imagine Normalization as a small real-world process with visible steps."
+      },
+      {
+        "title": "Walk through the example",
+        "type": "example",
+        "content": "Compare a repeated table with a cleaner split design."
+      }
+    ]
+  },
+  "completion": {
+    "recall": {
+      "title": "Recall",
+      "prompt": "In your own words, what problem can repeated data cause when a value changes?",
+      "submit_label": "Submit recall",
+      "empty_message": "Write a short explanation first.",
+      "completion_message": "✓ Recall completed",
+      "model_answer": "Find the repeated fact, then store it in one home."
+    }
+  }
+}

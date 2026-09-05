@@ -1,0 +1,779 @@
+{
+  "schema_version": 2,
+  "metadata": {
+    "id": "dns",
+    "order": 3,
+    "subject_order": 5,
+    "subject": "Computer Networks",
+    "topic": "DNS",
+    "title": "Follow a DNS Lookup",
+    "description": "Trace a domain name through DNS to the IP address of its server.",
+    "difficulty": "Beginner",
+    "estimated_time": "15 min"
+  },
+  "learning_objectives": [
+    "Explain DNS in simple terms.",
+    "Follow one visible DNS example.",
+    "Make a correct decision in the playground."
+  ],
+  "capabilities": [
+    "interactive_state",
+    "sequence_simulation",
+    "routing"
+  ],
+  "teaching": {
+    "mission": {
+      "title": "Practise DNS",
+      "description": "Make each decision and watch the consequence."
+    },
+    "introduction": {
+      "title": "DNS: start here",
+      "content": "DNS is the Internet's name lookup service.",
+      "points": [
+        "Follow a friendly domain name until it becomes a server IP address."
+      ],
+      "visual": {
+        "type": "array",
+        "label": "DNS",
+        "items": [
+          "What?",
+          "Example",
+          "Try it"
+        ]
+      }
+    },
+    "worked_example": {
+      "title": "See one example",
+      "content": "Watch one concrete sequence before you try it.",
+      "steps": [
+        {
+          "action": "REQUEST",
+          "state": {
+            "flow": [
+              "Browser",
+              "example.com"
+            ],
+            "status": "ask DNS"
+          },
+          "explanation": "The browser starts with a readable domain."
+        },
+        {
+          "action": "LOOKUP",
+          "state": {
+            "flow": [
+              "Browser",
+              "DNS",
+              "example.com"
+            ],
+            "status": "lookup"
+          },
+          "explanation": "DNS searches for the matching address."
+        },
+        {
+          "action": "RESOLVE",
+          "state": {
+            "flow": [
+              "example.com",
+              "203.0.113.10"
+            ],
+            "status": "IP returned"
+          },
+          "explanation": "DNS returns the server's IP address."
+        }
+      ],
+      "conclusion": "The visual state changes because the concept follows a rule.",
+      "next": {
+        "title": "Now you try.",
+        "content": "Choose the next meaningful action."
+      }
+    },
+    "guided_practice": {
+      "action_explanations": {
+        "request": "The request action changes the state for a reason.",
+        "lookup": "The lookup action changes the state for a reason.",
+        "resolve": "The resolve action changes the state for a reason."
+      }
+    }
+  },
+  "visualization": {
+    "type": "dns-lookup",
+    "view": "flow",
+    "initial_state": {
+      "flow": [
+        "example.com",
+        "DNS lookup",
+        "203.0.113.10",
+        "Web server"
+      ],
+      "status": "start with a domain"
+    },
+    "guided_steps": [
+      {
+        "operation": "request",
+        "instruction": "Start the lookup",
+        "next_state": {
+          "flow": [
+            "Browser",
+            "example.com"
+          ],
+          "status": "request"
+        },
+        "evaluation_state": [
+          "REQUEST"
+        ]
+      },
+      {
+        "operation": "lookup",
+        "instruction": "Ask DNS for the address",
+        "next_state": {
+          "flow": [
+            "Browser",
+            "DNS"
+          ],
+          "status": "query"
+        },
+        "evaluation_state": [
+          "LOOKUP"
+        ]
+      },
+      {
+        "operation": "resolve",
+        "instruction": "Use the returned IP",
+        "next_state": {
+          "flow": [
+            "203.0.113.10",
+            "Server"
+          ],
+          "status": "resolved"
+        },
+        "evaluation_state": [
+          "RESOLVE"
+        ]
+      }
+    ],
+    "controls": [
+      {
+        "id": "request",
+        "label": "REQUEST DNS",
+        "operation": "request"
+      },
+      {
+        "id": "lookup",
+        "label": "LOOK UP",
+        "operation": "lookup"
+      },
+      {
+        "id": "resolve",
+        "label": "RESOLVE IP",
+        "operation": "resolve"
+      }
+    ],
+    "actions": [
+      {
+        "label": "Start with a domain",
+        "operation": "request",
+        "task": "Start with a domain"
+      },
+      {
+        "label": "Trace the DNS lookup",
+        "operation": "lookup",
+        "task": "Trace the DNS lookup"
+      },
+      {
+        "label": "Use the returned IP",
+        "operation": "resolve",
+        "task": "Use the returned IP"
+      }
+    ],
+    "instruction": "Choose the next meaningful action.",
+    "wrong_action_message": "Compare the active task with the current state before choosing."
+  },
+  "practice": {
+    "challenge": {
+      "title": "DNS challenge",
+      "start_message": "Apply the concept to the displayed state.",
+      "continue_message": "Challenge complete. Keep experimenting.",
+      "phases": [
+        {
+          "title": "Reach the correct result",
+          "instruction": "Use the controls to reach the target state.",
+          "target": {
+            "label": "TARGET",
+            "items": [
+              "COMPLETE"
+            ]
+          },
+          "goal": {
+            "type": "state_equals",
+            "expected_state": [
+              "COMPLETE"
+            ]
+          },
+          "success": "✓ Challenge complete",
+          "feedback": "Compare your state with the target."
+        }
+      ]
+    }
+  },
+  "mastery": {
+    "title": "DNS Mastery",
+    "mastered_label": "DNS Mastered",
+    "current_state_label": "YOUR STATE",
+    "levels": [
+      {
+        "id": "learn",
+        "label": "Learn",
+        "completion": {
+          "type": "course_completion"
+        }
+      },
+      {
+        "id": "practice",
+        "label": "Practice",
+        "prerequisites": [
+          "learn"
+        ],
+        "guidance": {
+          "start_message": "Compare the current state with the objective and choose the next action.",
+          "hints": {
+            "limit": 1,
+            "items": [
+              {
+                "content": "Use the operation that moves the state toward the target."
+              }
+            ]
+          }
+        },
+        "controls": [
+          {
+            "id": "request",
+            "label": "REQUEST DNS",
+            "operation": "request"
+          },
+          {
+            "id": "lookup",
+            "label": "LOOK UP",
+            "operation": "lookup"
+          },
+          {
+            "id": "resolve",
+            "label": "RESOLVE IP",
+            "operation": "resolve"
+          }
+        ],
+        "scenario": {
+          "initial_state": {
+            "flow": [
+              "example.com",
+              "DNS lookup",
+              "203.0.113.10",
+              "Web server"
+            ],
+            "status": "start with a domain"
+          },
+          "operations": [
+            {
+              "operation": "request",
+              "instruction": "Start the lookup",
+              "next_state": {
+                "flow": [
+                  "Browser",
+                  "example.com"
+                ],
+                "status": "request"
+              },
+              "evaluation_state": [
+                "REQUEST"
+              ]
+            }
+          ]
+        },
+        "challenge": {
+          "phases": [
+            {
+              "title": "Practice task",
+              "instruction": "Reach the target state by making the appropriate decisions.",
+              "target": {
+                "label": "TARGET STATE",
+                "items": [
+                  "COMPLETE"
+                ]
+              },
+              "goal": {
+                "type": "state_equals",
+                "expected_state": [
+                  "COMPLETE"
+                ]
+              },
+              "success": "✓ Practice complete",
+              "feedback": "Compare your current state with the target before choosing again."
+            }
+          ]
+        }
+      },
+      {
+        "id": "apply",
+        "label": "Apply",
+        "prerequisites": [
+          "practice"
+        ],
+        "guidance": {
+          "start_message": "Compare the current state with the objective and choose the next action.",
+          "hints": {
+            "limit": 0,
+            "items": []
+          }
+        },
+        "controls": [
+          {
+            "id": "request",
+            "label": "REQUEST DNS",
+            "operation": "request"
+          },
+          {
+            "id": "lookup",
+            "label": "LOOK UP",
+            "operation": "lookup"
+          },
+          {
+            "id": "resolve",
+            "label": "RESOLVE IP",
+            "operation": "resolve"
+          }
+        ],
+        "scenario": {
+          "initial_state": {
+            "flow": [
+              "example.com",
+              "DNS lookup",
+              "203.0.113.10",
+              "Web server"
+            ],
+            "status": "start with a domain"
+          },
+          "operations": [
+            {
+              "operation": "request",
+              "instruction": "Start the lookup",
+              "next_state": {
+                "flow": [
+                  "Browser",
+                  "example.com"
+                ],
+                "status": "request"
+              },
+              "evaluation_state": [
+                "REQUEST"
+              ]
+            },
+            {
+              "operation": "lookup",
+              "instruction": "Ask DNS for the address",
+              "next_state": {
+                "flow": [
+                  "Browser",
+                  "DNS"
+                ],
+                "status": "query"
+              },
+              "evaluation_state": [
+                "LOOKUP"
+              ]
+            }
+          ]
+        },
+        "challenge": {
+          "phases": [
+            {
+              "title": "Apply task",
+              "instruction": "Reach the target state by making the appropriate decisions.",
+              "target": {
+                "label": "TARGET STATE",
+                "items": [
+                  "COMPLETE"
+                ]
+              },
+              "goal": {
+                "type": "state_equals",
+                "expected_state": [
+                  "COMPLETE"
+                ]
+              },
+              "success": "✓ Apply complete",
+              "feedback": "Compare your current state with the target before choosing again."
+            }
+          ]
+        }
+      },
+      {
+        "id": "solve",
+        "label": "Solve",
+        "prerequisites": [
+          "apply"
+        ],
+        "guidance": {
+          "start_message": "Compare the current state with the objective and choose the next action.",
+          "hints": {
+            "limit": 0,
+            "items": []
+          }
+        },
+        "controls": [
+          {
+            "id": "request",
+            "label": "REQUEST DNS",
+            "operation": "request"
+          },
+          {
+            "id": "lookup",
+            "label": "LOOK UP",
+            "operation": "lookup"
+          },
+          {
+            "id": "resolve",
+            "label": "RESOLVE IP",
+            "operation": "resolve"
+          }
+        ],
+        "scenario": {
+          "initial_state": {
+            "flow": [
+              "example.com",
+              "DNS lookup",
+              "203.0.113.10",
+              "Web server"
+            ],
+            "status": "start with a domain"
+          },
+          "operations": [
+            {
+              "operation": "request",
+              "instruction": "Start the lookup",
+              "next_state": {
+                "flow": [
+                  "Browser",
+                  "example.com"
+                ],
+                "status": "request"
+              },
+              "evaluation_state": [
+                "REQUEST"
+              ]
+            },
+            {
+              "operation": "lookup",
+              "instruction": "Ask DNS for the address",
+              "next_state": {
+                "flow": [
+                  "Browser",
+                  "DNS"
+                ],
+                "status": "query"
+              },
+              "evaluation_state": [
+                "LOOKUP"
+              ]
+            },
+            {
+              "operation": "resolve",
+              "instruction": "Use the returned IP",
+              "next_state": {
+                "flow": [
+                  "203.0.113.10",
+                  "Server"
+                ],
+                "status": "resolved"
+              },
+              "evaluation_state": [
+                "RESOLVE"
+              ]
+            }
+          ]
+        },
+        "challenge": {
+          "phases": [
+            {
+              "title": "Solve task",
+              "instruction": "Reach the target state by making the appropriate decisions.",
+              "target": {
+                "label": "TARGET STATE",
+                "items": [
+                  "COMPLETE"
+                ]
+              },
+              "goal": {
+                "type": "state_equals",
+                "expected_state": [
+                  "COMPLETE"
+                ]
+              },
+              "success": "✓ Solve complete",
+              "feedback": "Compare your current state with the target before choosing again."
+            }
+          ]
+        }
+      },
+      {
+        "id": "mastery",
+        "label": "Mastery",
+        "prerequisites": [
+          "solve"
+        ],
+        "guidance": {
+          "start_message": "Compare the current state with the objective and choose the next action.",
+          "hints": {
+            "limit": 0,
+            "items": []
+          }
+        },
+        "controls": [
+          {
+            "id": "request",
+            "label": "REQUEST DNS",
+            "operation": "request"
+          },
+          {
+            "id": "lookup",
+            "label": "LOOK UP",
+            "operation": "lookup"
+          },
+          {
+            "id": "resolve",
+            "label": "RESOLVE IP",
+            "operation": "resolve"
+          }
+        ],
+        "scenario": {
+          "initial_state": {
+            "flow": [
+              "example.com",
+              "DNS lookup",
+              "203.0.113.10",
+              "Web server"
+            ],
+            "status": "start with a domain"
+          },
+          "operations": [
+            {
+              "operation": "request",
+              "instruction": "Start the lookup",
+              "next_state": {
+                "flow": [
+                  "Browser",
+                  "example.com"
+                ],
+                "status": "request"
+              },
+              "evaluation_state": [
+                "REQUEST"
+              ]
+            },
+            {
+              "operation": "lookup",
+              "instruction": "Ask DNS for the address",
+              "next_state": {
+                "flow": [
+                  "Browser",
+                  "DNS"
+                ],
+                "status": "query"
+              },
+              "evaluation_state": [
+                "LOOKUP"
+              ]
+            },
+            {
+              "operation": "resolve",
+              "instruction": "Use the returned IP",
+              "next_state": {
+                "flow": [
+                  "203.0.113.10",
+                  "Server"
+                ],
+                "status": "resolved"
+              },
+              "evaluation_state": [
+                "RESOLVE"
+              ]
+            }
+          ]
+        },
+        "challenge": {
+          "phases": [
+            {
+              "title": "Mastery task",
+              "instruction": "Reach the target state by making the appropriate decisions.",
+              "target": {
+                "label": "TARGET STATE",
+                "items": [
+                  "COMPLETE"
+                ]
+              },
+              "goal": {
+                "type": "state_equals",
+                "expected_state": [
+                  "COMPLETE"
+                ]
+              },
+              "success": "✓ Mastery complete",
+              "feedback": "Compare your current state with the target before choosing again."
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "expert": {
+    "id": "expert",
+    "label": "Expert",
+    "prerequisites": [
+      "mastery"
+    ],
+    "generator": "phase2-expert",
+    "generator_version": 1,
+    "required_capabilities": [
+      "interactive_state",
+      "sequence_simulation",
+      "routing"
+    ],
+    "thinking": {
+      "title": "Predict the sequence",
+      "objective_label": "Think first",
+      "instruction": "Mentally follow the sequence before acting.",
+      "starting_stack_label": "STARTING STATE",
+      "sequence_label": "ACTIONS TO SIMULATE",
+      "do_not_execute": "Do not act yet. Work through the sequence in order.",
+      "prediction_label": "YOUR PREDICTION",
+      "prediction_fields": [
+        {
+          "id": "finalState",
+          "label": "Final state",
+          "prompt": "What will the final state contain?",
+          "type": "text",
+          "placeholder": "Describe the result"
+        }
+      ],
+      "submit_label": "Check my prediction",
+      "continue_label": "Continue to Expert Challenge →",
+      "actual_label": "RESULT",
+      "your_prediction_label": "Your prediction",
+      "actual_result": "Final state: {{final_state}}.",
+      "feedback": {
+        "all_correct": "You tracked the sequence.",
+        "incorrect": "Recheck each transition."
+      }
+    },
+    "solve": {
+      "title": "Expert DNS",
+      "instruction": "Apply the sequence with no hints.",
+      "target_label": "TARGET STATE",
+      "your_label": "YOUR STATE",
+      "metric_label": "Actions",
+      "hints_label": "Hints: none",
+      "operation_rule": "Each action counts once.",
+      "controls": [
+        {
+          "id": "request",
+          "label": "REQUEST DNS",
+          "operation": "request"
+        },
+        {
+          "id": "lookup",
+          "label": "LOOK UP",
+          "operation": "lookup"
+        },
+        {
+          "id": "resolve",
+          "label": "RESOLVE IP",
+          "operation": "resolve"
+        }
+      ],
+      "perfect_message": "🏆 PERFECT EXPERT",
+      "perfect_result": "You completed the sequence.",
+      "new_challenge_label": "New Expert Challenge"
+    },
+    "scenario_rules": {
+      "initial_state": [
+        "example.com"
+      ],
+      "steps": [
+        {
+          "operation": "request",
+          "label": "REQUEST"
+        },
+        {
+          "operation": "lookup",
+          "label": "DNS LOOKUP"
+        },
+        {
+          "operation": "resolve",
+          "label": "RETURN IP"
+        }
+      ],
+      "final_state": [
+        "203.0.113.10"
+      ],
+      "target_state": [
+        "203.0.113.10"
+      ]
+    }
+  },
+  "assessment": {
+    "quiz": {
+      "question": "What does DNS return for a domain?",
+      "options": [
+        "An IP address",
+        "A screen image",
+        "A CPU process",
+        "A password"
+      ],
+      "correct": 0
+    },
+    "discovery": {
+      "title": "DNS discovery",
+      "summary": "DNS separates memorable names from the numeric addresses used for routing."
+    },
+    "notes": {
+      "sections": [
+        {
+          "title": "What?",
+          "content": "DNS maps a domain name such as example.com to an IP address."
+        },
+        {
+          "title": "Example",
+          "content": "Browser → DNS → 203.0.113.10 → server."
+        },
+        {
+          "title": "Why?",
+          "content": "People remember names; networks route using addresses."
+        },
+        {
+          "title": "Remember",
+          "content": "DNS finds the address; it does not deliver the web page itself."
+        }
+      ]
+    },
+    "alternate_explanations": [
+      {
+        "title": "Think of a familiar workflow",
+        "type": "analogy",
+        "content": "Imagine DNS as a small real-world process with visible steps."
+      },
+      {
+        "title": "Walk through the example",
+        "type": "example",
+        "content": "Follow a friendly domain name until it becomes a server IP address."
+      }
+    ]
+  },
+  "completion": {
+    "recall": {
+      "title": "Recall",
+      "prompt": "In your own words, what is the difference between DNS lookup and the HTTP request?",
+      "submit_label": "Submit recall",
+      "empty_message": "Write a short explanation first.",
+      "completion_message": "✓ Recall completed",
+      "model_answer": "DNS finds the address; it does not deliver the web page itself."
+    }
+  }
+}
