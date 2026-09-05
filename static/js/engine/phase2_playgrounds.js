@@ -197,7 +197,7 @@
         }
 
         return {
-            mount() { bindControls(); reset(); },
+            mount() { bindControls(); this.reset(); },
             reset() { masteryMode = false; scenario = null; guidedIndex = 0; state = clone(original); message = config.instruction || "Choose the next meaningful action."; render(); bindControls(); },
             resetForChallenge() { this.reset(); },
             configureMasteryScenario(data) { masteryMode = true; scenario = clone(data || {}); guidedIndex = 0; state = clone(scenario.initial_state ?? scenario.state ?? original); message = scenario.instruction || "Use the target to decide your next action."; render(); bindControls(); },
