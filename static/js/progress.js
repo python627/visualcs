@@ -70,7 +70,10 @@ function normalizeExpertProgress(expert) {
                     ? result.optimalOperations
                     : null,
                 prediction: result.prediction && typeof result.prediction === "object"
-                    ? {
+                    ? result.prediction.fields ? {
+                        allCorrect: Boolean(result.prediction.allCorrect),
+                        fields: result.prediction.fields
+                    } : {
                         correctFinalState: Boolean(result.prediction.correctFinalState),
                         correctNextPop: Boolean(result.prediction.correctNextPop)
                     }
@@ -372,7 +375,11 @@ function finishExpertAttempt(lessonId, levelId, result) {
             seed: result.scenario?.seed ?? null,
             operations,
             optimalOperations: result.optimalOperations ?? null,
-            prediction: {
+            prediction: prediction.fields ? {
+                allCorrect: Boolean(prediction.allCorrect),
+                fields: prediction.fields.map(field => ({ key: field.key, correct: field.correct,
+                    submitted: field.submitted, expected: field.expected }))
+            } : {
                 correctFinalState: Boolean(prediction.correctFinalState),
                 correctNextPop: Boolean(prediction.correctNextPop)
             }

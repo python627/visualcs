@@ -65,6 +65,11 @@ class TeachingEngine {
         this.playground = playground;
     }
 
+    interactionStarted() {
+        if (currentLessonStage === "learn") setLessonStage("mission");
+        markLessonInProgress(this.lesson.id, currentLessonStage);
+    }
+
 
     format(template, values = {}) {
         return Object.entries(values).reduce(
@@ -112,7 +117,8 @@ class TeachingEngine {
                 label: "ACTIVE TASK · CHALLENGE",
                 title: phase.title,
                 instruction: phase.instruction,
-                meta: ["Use the playground to decide the next move"]
+                meta: ["Use the playground to decide the next move"],
+                ...this.playground?.getActiveTask?.()
             });
             return;
         }
@@ -137,7 +143,8 @@ class TeachingEngine {
             step: this.missionStepIndex + 1,
             total: actions.length,
             title: action.label,
-            instruction: action.task || guided.active_task || action.label
+            instruction: action.task || guided.active_task || action.label,
+            ...this.playground?.getActiveTask?.()
         });
     }
 
@@ -408,6 +415,16 @@ class TeachingEngine {
                 return;
             }
 
+            const challenge = this.getChallenge();
+            if (challenge?.start_on_request) {
+                const button = document.createElement("button");
+                button.textContent = challenge.start_label || "Start challenge";
+                button.dataset.startChallenge = "";
+                button.onclick = () => this.startChallenge();
+                message.appendChild(button);
+                return;
+            }
+
             if (!this.startChallenge()) {
                 this.showQuiz();
             }
@@ -512,6 +529,13 @@ class TeachingEngine {
         if (!target) {
             return;
         }
+
+        if (phase.targetVisibility === "hidden" || this.getChallenge()?.targetVisibility === "hidden") {
+            target.hidden = true;
+            target.replaceChildren();
+            return;
+        }
+        target.hidden = false;
 
         if (this.playground?.renderChallengeTarget) {
             this.playground.renderChallengeTarget(phase.target, target);

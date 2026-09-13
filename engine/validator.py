@@ -140,6 +140,21 @@ class LessonValidator:
 
         self._validate_controls(playground.get("controls"), "playground.controls", errors)
         self._validate_actions(playground.get("actions"), "playground.actions", errors)
+        if playground_type == "paging-translation":
+            for name in ("problem", "challenge_problem"):
+                problem = playground.get(name)
+                if not isinstance(problem, dict):
+                    errors.append(f"playground.{name} must contain paging inputs")
+                    continue
+                for key in ("pageSize", "logicalAddress", "logicalAddressSpace"):
+                    if type(problem.get(key)) is not int:
+                        errors.append(f"playground.{name}.{key} must be an integer")
+                if not isinstance(problem.get("pageTable"), list):
+                    errors.append(f"playground.{name}.pageTable must be a list")
+                if any(key in problem for key in ("physicalAddress", "oracle", "target_state", "pageNumber", "offset")):
+                    errors.append(f"playground.{name} must contain inputs only, not derived answers")
+            if "guided_steps" in playground or "target_state" in playground:
+                errors.append("paging uses the executable model, not scripted answer states")
 
     def _validate_controls(self, controls, path, errors, require_id=True):
         if not isinstance(controls, list) or not controls:
@@ -358,6 +373,8 @@ class LessonValidator:
         for field in ("title", "instruction", "success", "feedback"):
             if not self._is_text(phase.get(field)):
                 errors.append(f"{path}.{field} must be a non-empty string")
+        if phase.get("targetVisibility", "visible") not in ("visible", "hidden"):
+            errors.append(f"{path}.targetVisibility must be visible or hidden")
         target = phase.get("target")
         if not isinstance(target, dict) or not self._is_text(target.get("label")):
             errors.append(f"{path}.target.label must be a non-empty string")
@@ -422,6 +439,8 @@ class LessonValidator:
                 errors.append(f"{path} must be an object")
                 continue
             level_ids.append(level.get("id"))
+            if level.get("targetVisibility", "visible") not in ("visible", "hidden"):
+                errors.append(f"{path}.targetVisibility must be visible or hidden")
             for field in ("id", "label"):
                 if not self._is_text(level.get(field)):
                     errors.append(f"{path}.{field} must be a non-empty string")
@@ -512,6 +531,10 @@ class LessonValidator:
             return
         if not self._is_text(expert.get("generator")):
             errors.append(f"{path}.expert.generator must be a non-empty string")
+        if expert.get("targetVisibility", "visible") not in ("visible", "hidden"):
+            errors.append(f"{path}.expert.targetVisibility must be visible or hidden")
+        if expert.get("assessment_mode", "execution") not in ("execution", "prediction"):
+            errors.append(f"{path}.expert.assessment_mode must be execution or prediction")
         if not isinstance(expert.get("generator_version"), int) or expert["generator_version"] < 1:
             errors.append(f"{path}.expert.generator_version must be a positive integer")
         for section in ("thinking", "solve"):

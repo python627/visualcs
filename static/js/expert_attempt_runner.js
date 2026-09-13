@@ -161,6 +161,14 @@ class ExpertAttemptRunner {
         };
         this.stage = "review";
 
+        // Calculation/diagnosis lessons may finish on a structured prediction.
+        // Legacy prediction-then-execution lessons retain their existing path.
+        if (this.definition.assessment_mode === "prediction" && assessment.allCorrect === true) {
+            this.result = { status: "expert_perfect", solved: true, perfect: true,
+                ...this.getMetrics(), optimalOperations: null, assessment };
+            return this.result;
+        }
+
         return {
             status: "prediction_submitted",
             assessment

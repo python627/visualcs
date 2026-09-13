@@ -7,289 +7,253 @@
     "subject": "Operating Systems",
     "topic": "Paging / Virtual Memory",
     "title": "Translate Virtual Addresses",
-    "description": "Use a page table to translate a logical address into a physical frame and offset.",
+    "description": "Calculate address translations and recognize nonresident pages.",
     "difficulty": "Beginner",
     "estimated_time": "15 min"
   },
   "learning_objectives": [
-    "Explain Paging / Virtual Memory in simple terms.",
-    "Follow one visible Paging / Virtual Memory example.",
-    "Make a correct decision in the playground."
+    "Split an address into page and offset.",
+    "Read a page table and presence bit.",
+    "Calculate a physical byte address.",
+    "Distinguish page faults from invalid addresses."
   ],
   "capabilities": [
     "interactive_state",
     "calculation",
+    "prediction",
     "sequence_simulation"
   ],
   "teaching": {
     "mission": {
-      "title": "Practise Paging / Virtual Memory",
-      "description": "Make each decision and watch the consequence."
+      "title": "Translate an address yourself",
+      "description": "Calculate each part and follow the mapping to physical memory."
     },
     "introduction": {
-      "title": "Paging / Virtual Memory: start here",
-      "content": "Paging splits memory into pages and maps each page to a physical frame.",
+      "title": "A program's address is not a RAM location",
+      "content": "Programs use logical addresses. Paging divides them into fixed-size pages. A page table tells us which physical RAM frame holds each page.",
       "points": [
-        "You will look up a page number, then keep its offset."
+        "The page number identifies a page; the offset identifies a byte inside it.",
+        "A frame holds a whole page of the same size.",
+        "Later, NOT PRESENT will mean the allocated page is not in RAM: a page fault."
       ],
       "visual": {
-        "type": "array",
-        "label": "Paging / Virtual Memory",
+        "type": "sequence",
+        "label": "ADDRESS TRANSLATION",
         "items": [
-          "What?",
-          "Example",
-          "Try it"
+          "Logical address",
+          "Page + offset",
+          "Table",
+          "Frame + same offset"
         ]
       }
     },
     "worked_example": {
-      "title": "See one example",
-      "content": "Watch one concrete sequence before you try it.",
+      "title": "One translation, worked through",
+      "content": "Page size 100 bytes; address 207. Page 2 maps to frame 4.",
+      "visual_type": "sequence",
       "steps": [
         {
-          "action": "SPLIT ADDRESS",
-          "state": {
-            "tables": {
-              "ADDRESS": [
-                [
-                  "PAGE",
-                  "OFFSET"
-                ],
-                [
-                  "1",
-                  "4"
-                ]
-              ]
-            },
-            "result": "page 1, offset 4"
-          },
-          "explanation": "Separate the logical address into page number and offset."
+          "action": "Split the address",
+          "items": [
+            "207",
+            "Page 2",
+            "Offset 7"
+          ],
+          "explanation": "Two complete 100-byte pages fit before 207; 7 bytes remain."
         },
         {
-          "action": "LOOK UP PAGE",
-          "state": {
-            "tables": {
-              "PAGE TABLE": [
-                [
-                  "PAGE",
-                  "FRAME"
-                ],
-                [
-                  "1",
-                  "0"
-                ]
-              ]
-            },
-            "result": "page 1 maps to frame 0"
-          },
-          "explanation": "The page table supplies the physical frame."
+          "action": "Look up the page",
+          "items": [
+            "Page 2",
+            "Frame 4"
+          ],
+          "explanation": "The page table maps logical page 2 to physical frame 4."
         },
         {
-          "action": "BUILD ADDRESS",
-          "state": {
-            "tables": {
-              "PHYSICAL": [
-                [
-                  "FRAME",
-                  "OFFSET"
-                ],
-                [
-                  "0",
-                  "4"
-                ]
-              ]
-            },
-            "result": "frame 0, offset 4"
-          },
-          "explanation": "The offset stays the same after translation."
+          "action": "Keep the offset",
+          "items": [
+            "4 × 100 + 7",
+            "407"
+          ],
+          "explanation": "Frame 4 begins at byte 400. Move 7 bytes into it."
         }
       ],
-      "conclusion": "The visual state changes because the concept follows a rule.",
+      "conclusion": "The location changes, but the byte keeps its offset.",
       "next": {
-        "title": "Now you try.",
-        "content": "Choose the next meaningful action."
+        "title": "Now calculate a new address.",
+        "content": "Answers stay hidden until you submit each calculation."
       }
     },
     "guided_practice": {
       "action_explanations": {
-        "split": "page 1, offset 4",
-        "lookup": "frame 0",
-        "translate": "frame 0, offset 4"
+        "page": "The page identifies the fixed-size region containing the address.",
+        "offset": "The offset is the byte position within that page.",
+        "frame": "The matching table entry determines residency and the frame.",
+        "physicalAddress": "Combine the mapped frame and unchanged offset; see the calculation evidence beside your result."
       }
     }
   },
   "visualization": {
     "type": "paging-translation",
-    "view": "table",
-    "initial_state": {
-      "tables": {
-        "PAGE TABLE": [
-          [
-            "PAGE",
-            "FRAME"
-          ],
-          [
-            "0",
-            "3"
-          ],
-          [
-            "1",
-            "0"
-          ],
-          [
-            "2",
-            "5"
-          ]
-        ],
-        "ADDRESS": [
-          [
-            "LOGICAL",
-            "VALUE"
-          ],
-          [
-            "page 1, offset 4",
-            ""
-          ]
-        ]
-      },
-      "result": "ready to translate"
+    "problem": {
+      "pageSize": 1024,
+      "logicalAddress": 2053,
+      "logicalAddressSpace": 4096,
+      "pageTable": [
+        {
+          "page": 0,
+          "frame": 3,
+          "present": true
+        },
+        {
+          "page": 1,
+          "frame": 0,
+          "present": true
+        },
+        {
+          "page": 2,
+          "frame": 5,
+          "present": true
+        },
+        {
+          "page": 3,
+          "frame": 7,
+          "present": true
+        }
+      ]
     },
-    "guided_steps": [
-      {
-        "operation": "split",
-        "instruction": "Split page and offset",
-        "next_state": {
-          "tables": {
-            "ADDRESS": [
-              [
-                "PAGE",
-                "OFFSET"
-              ],
-              [
-                "1",
-                "4"
-              ]
-            ]
-          },
-          "result": "page 1, offset 4"
+    "challenge_problem": {
+      "pageSize": 256,
+      "logicalAddress": 781,
+      "logicalAddressSpace": 1024,
+      "pageTable": [
+        {
+          "page": 0,
+          "frame": 6,
+          "present": true
         },
-        "evaluation_state": [
-          "SPLIT"
-        ]
-      },
-      {
-        "operation": "lookup",
-        "instruction": "Look up the page",
-        "next_state": {
-          "tables": {
-            "PAGE TABLE": [
-              [
-                "PAGE",
-                "FRAME"
-              ],
-              [
-                "1",
-                "0"
-              ]
-            ]
-          },
-          "result": "frame 0"
+        {
+          "page": 1,
+          "frame": 2,
+          "present": true
         },
-        "evaluation_state": [
-          "LOOKUP"
-        ]
-      },
-      {
-        "operation": "translate",
-        "instruction": "Build the physical address",
-        "next_state": {
-          "tables": {
-            "PHYSICAL": [
-              [
-                "FRAME",
-                "OFFSET"
-              ],
-              [
-                "0",
-                "4"
-              ]
-            ]
-          },
-          "result": "frame 0, offset 4"
+        {
+          "page": 2,
+          "frame": 4,
+          "present": true
         },
-        "evaluation_state": [
-          "TRANSLATE"
-        ]
+        {
+          "page": 3,
+          "frame": 1,
+          "present": true
+        }
+      ]
+    },
+    "free_play": {
+      "generator": "paging",
+      "generator_version": 1,
+      "scenario_rules": {
+        "pageSizes": [
+          64,
+          256,
+          1024
+        ],
+        "pageCount": 4,
+        "faultRate": 0.3
       }
-    ],
+    },
+    "check_label": "Check answer",
+    "order_message": "Complete the current calculation before moving to the next field.",
+    "tasks": {
+      "page": {
+        "title": "Calculate the page number",
+        "instruction": "How many complete {pageSize}-byte pages fit before address {logicalAddress}?",
+        "placeholder": "Page number",
+        "retry": "Try again. Determine how many complete {pageSize}-byte pages fit before address {logicalAddress}; discard the fractional part.",
+        "accepted": "Page {answer} contains the logical address."
+      },
+      "offset": {
+        "title": "Calculate the offset",
+        "instruction": "How many bytes remain after those complete pages?",
+        "placeholder": "Offset in bytes",
+        "retry": "Subtract the bytes in all complete pages from the logical address. The remainder must be smaller than the page size.",
+        "accepted": "Offset {answer} is the position inside the page."
+      },
+      "frame": {
+        "title": "Find the frame or page fault",
+        "instruction": "Use your page number to find its row. Enter the frame, or PAGE_FAULT if NOT PRESENT.",
+        "placeholder": "Frame number or PAGE_FAULT",
+        "retry": "Use the row for your logical page, not the offset. NOT PRESENT means PAGE_FAULT; otherwise read its frame.",
+        "accepted": "Lookup result: {answer}. The presence bit tells you whether RAM holds the page."
+      },
+      "physicalAddress": {
+        "title": "Calculate the physical address",
+        "instruction": "Combine the frame and unchanged offset. If the page is not resident, enter PAGE_FAULT.",
+        "placeholder": "Physical address or PAGE_FAULT",
+        "retry": "Start at frame × page size, then add the offset. A nonresident page has no physical address: enter PAGE_FAULT.",
+        "accepted": "Translation checked."
+      }
+    },
     "controls": [
       {
-        "id": "split",
-        "label": "SPLIT ADDRESS",
-        "operation": "split"
-      },
-      {
-        "id": "lookup",
-        "label": "LOOK UP PAGE",
-        "operation": "lookup"
-      },
-      {
-        "id": "translate",
-        "label": "TRANSLATE",
-        "operation": "translate"
+        "id": "check-answer",
+        "label": "CHECK ANSWER",
+        "operation": "check-answer"
       }
     ],
     "actions": [
       {
-        "label": "Identify the page and offset",
-        "operation": "split",
-        "task": "Identify the page and offset"
+        "operation": "page",
+        "label": "Calculate the page number",
+        "task": "How many complete {pageSize}-byte pages fit before address {logicalAddress}?"
       },
       {
-        "label": "Look up the matching frame",
-        "operation": "lookup",
-        "task": "Look up the matching frame"
+        "operation": "offset",
+        "label": "Calculate the offset",
+        "task": "How many bytes remain after those complete pages?"
       },
       {
-        "label": "Combine frame and offset",
-        "operation": "translate",
-        "task": "Combine frame and offset"
+        "operation": "frame",
+        "label": "Find the frame or page fault",
+        "task": "Use your page number to find its row. Enter the frame, or PAGE_FAULT if NOT PRESENT."
+      },
+      {
+        "operation": "physicalAddress",
+        "label": "Calculate the physical address",
+        "task": "Combine the frame and unchanged offset. If the page is not resident, enter PAGE_FAULT."
       }
-    ],
-    "instruction": "Choose the next meaningful action.",
-    "wrong_action_message": "Compare the active task with the current state before choosing."
+    ]
   },
   "practice": {
     "challenge": {
-      "title": "Paging / Virtual Memory challenge",
-      "start_message": "Apply the concept to the displayed state.",
-      "continue_message": "Challenge complete. Keep experimenting.",
+      "title": "Independent translation",
+      "start_on_request": true,
+      "start_label": "Start independent challenge",
+      "targetVisibility": "hidden",
+      "start_message": "Translate this new address yourself. The result is hidden.",
+      "continue_message": "You calculated the translation. Continue to the quiz or keep exploring.",
       "phases": [
         {
-          "title": "Reach the correct result",
-          "instruction": "Use the controls to reach the target state.",
+          "title": "Translation challenge",
+          "instruction": "Calculate page, offset, frame, and physical address. If NOT PRESENT, report PAGE_FAULT.",
+          "targetVisibility": "hidden",
           "target": {
-            "label": "TARGET",
-            "items": [
-              "COMPLETE"
-            ]
+            "label": "Hidden calculation result"
           },
           "goal": {
-            "type": "state_equals",
-            "expected_state": [
-              "COMPLETE"
-            ]
+            "type": "outcome_equals",
+            "expected_outcome": "solved"
           },
-          "success": "✓ Challenge complete",
-          "feedback": "Compare your state with the target."
+          "success": "✓ Translation challenge complete",
+          "feedback": "Use the current field's feedback to revise your calculation."
         }
       ]
     }
   },
   "mastery": {
-    "title": "Paging / Virtual Memory Mastery",
-    "mastered_label": "Paging / Virtual Memory Mastered",
-    "current_state_label": "YOUR STATE",
+    "title": "Paging Mastery",
+    "mastered_label": "Paging Mastered",
+    "current_state_label": "YOUR TRANSLATION",
     "levels": [
       {
         "id": "learn",
@@ -304,112 +268,51 @@
         "prerequisites": [
           "learn"
         ],
+        "targetVisibility": "hidden",
+        "retry_same_scenario": true,
+        "new_problem": true,
+        "operation_rule": "Each submitted answer is an attempt. There is no operation limit.",
+        "metrics": {
+          "operation_label": "Answers checked"
+        },
         "guidance": {
-          "start_message": "Compare the current state with the objective and choose the next action.",
+          "start_message": "Translate the displayed address. Each accepted field reveals the next part.",
           "hints": {
             "limit": 1,
             "items": [
               {
-                "content": "Use the operation that moves the state toward the target."
+                "content": "Page = complete pages; offset = remainder; frame = table lookup; physical = frame × size + offset."
               }
             ]
           }
         },
-        "controls": [
-          {
-            "id": "split",
-            "label": "SPLIT ADDRESS",
-            "operation": "split"
-          },
-          {
-            "id": "lookup",
-            "label": "LOOK UP PAGE",
-            "operation": "lookup"
-          },
-          {
-            "id": "translate",
-            "label": "TRANSLATE",
-            "operation": "translate"
-          }
-        ],
         "scenario": {
-          "initial_state": {
-            "tables": {
-              "PAGE TABLE": [
-                [
-                  "PAGE",
-                  "FRAME"
-                ],
-                [
-                  "0",
-                  "3"
-                ],
-                [
-                  "1",
-                  "0"
-                ],
-                [
-                  "2",
-                  "5"
-                ]
-              ],
-              "ADDRESS": [
-                [
-                  "LOGICAL",
-                  "VALUE"
-                ],
-                [
-                  "page 1, offset 4",
-                  ""
-                ]
-              ]
-            },
-            "result": "ready to translate"
-          },
-          "operations": [
-            {
-              "operation": "split",
-              "instruction": "Split page and offset",
-              "next_state": {
-                "tables": {
-                  "ADDRESS": [
-                    [
-                      "PAGE",
-                      "OFFSET"
-                    ],
-                    [
-                      "1",
-                      "4"
-                    ]
-                  ]
-                },
-                "result": "page 1, offset 4"
-              },
-              "evaluation_state": [
-                "SPLIT"
-              ]
-            }
-          ]
+          "generator": "paging",
+          "generator_version": 1,
+          "scenario_rules": {
+            "pageSizes": [
+              16,
+              32
+            ],
+            "pageCount": 3,
+            "faultRate": 0
+          }
         },
         "challenge": {
           "phases": [
             {
-              "title": "Practice task",
-              "instruction": "Reach the target state by making the appropriate decisions.",
+              "title": "Practice",
+              "instruction": "Calculate page, offset, frame, and physical address. If NOT PRESENT, report PAGE_FAULT.",
+              "targetVisibility": "hidden",
               "target": {
-                "label": "TARGET STATE",
-                "items": [
-                  "COMPLETE"
-                ]
+                "label": "Hidden calculation result"
               },
               "goal": {
-                "type": "state_equals",
-                "expected_state": [
-                  "COMPLETE"
-                ]
+                "type": "outcome_equals",
+                "expected_outcome": "solved"
               },
               "success": "✓ Practice complete",
-              "feedback": "Compare your current state with the target before choosing again."
+              "feedback": "Use the current field's feedback to revise your calculation."
             }
           ]
         }
@@ -420,130 +323,47 @@
         "prerequisites": [
           "practice"
         ],
+        "targetVisibility": "hidden",
+        "retry_same_scenario": true,
+        "new_problem": true,
+        "operation_rule": "Each submitted answer is an attempt. There is no operation limit.",
+        "metrics": {
+          "operation_label": "Answers checked"
+        },
         "guidance": {
-          "start_message": "Compare the current state with the objective and choose the next action.",
+          "start_message": "Translate the displayed address. Each accepted field reveals the next part.",
           "hints": {
             "limit": 0,
             "items": []
           }
         },
-        "controls": [
-          {
-            "id": "split",
-            "label": "SPLIT ADDRESS",
-            "operation": "split"
-          },
-          {
-            "id": "lookup",
-            "label": "LOOK UP PAGE",
-            "operation": "lookup"
-          },
-          {
-            "id": "translate",
-            "label": "TRANSLATE",
-            "operation": "translate"
-          }
-        ],
         "scenario": {
-          "initial_state": {
-            "tables": {
-              "PAGE TABLE": [
-                [
-                  "PAGE",
-                  "FRAME"
-                ],
-                [
-                  "0",
-                  "3"
-                ],
-                [
-                  "1",
-                  "0"
-                ],
-                [
-                  "2",
-                  "5"
-                ]
-              ],
-              "ADDRESS": [
-                [
-                  "LOGICAL",
-                  "VALUE"
-                ],
-                [
-                  "page 1, offset 4",
-                  ""
-                ]
-              ]
-            },
-            "result": "ready to translate"
-          },
-          "operations": [
-            {
-              "operation": "split",
-              "instruction": "Split page and offset",
-              "next_state": {
-                "tables": {
-                  "ADDRESS": [
-                    [
-                      "PAGE",
-                      "OFFSET"
-                    ],
-                    [
-                      "1",
-                      "4"
-                    ]
-                  ]
-                },
-                "result": "page 1, offset 4"
-              },
-              "evaluation_state": [
-                "SPLIT"
-              ]
-            },
-            {
-              "operation": "lookup",
-              "instruction": "Look up the page",
-              "next_state": {
-                "tables": {
-                  "PAGE TABLE": [
-                    [
-                      "PAGE",
-                      "FRAME"
-                    ],
-                    [
-                      "1",
-                      "0"
-                    ]
-                  ]
-                },
-                "result": "frame 0"
-              },
-              "evaluation_state": [
-                "LOOKUP"
-              ]
-            }
-          ]
+          "generator": "paging",
+          "generator_version": 1,
+          "scenario_rules": {
+            "pageSizes": [
+              64,
+              128
+            ],
+            "pageCount": 4,
+            "faultRate": 0
+          }
         },
         "challenge": {
           "phases": [
             {
-              "title": "Apply task",
-              "instruction": "Reach the target state by making the appropriate decisions.",
+              "title": "Apply",
+              "instruction": "Calculate page, offset, frame, and physical address. If NOT PRESENT, report PAGE_FAULT.",
+              "targetVisibility": "hidden",
               "target": {
-                "label": "TARGET STATE",
-                "items": [
-                  "COMPLETE"
-                ]
+                "label": "Hidden calculation result"
               },
               "goal": {
-                "type": "state_equals",
-                "expected_state": [
-                  "COMPLETE"
-                ]
+                "type": "outcome_equals",
+                "expected_outcome": "solved"
               },
               "success": "✓ Apply complete",
-              "feedback": "Compare your current state with the target before choosing again."
+              "feedback": "Use the current field's feedback to revise your calculation."
             }
           ]
         }
@@ -554,152 +374,47 @@
         "prerequisites": [
           "apply"
         ],
+        "targetVisibility": "hidden",
+        "retry_same_scenario": true,
+        "new_problem": true,
+        "operation_rule": "Each submitted answer is an attempt. There is no operation limit.",
+        "metrics": {
+          "operation_label": "Answers checked"
+        },
         "guidance": {
-          "start_message": "Compare the current state with the objective and choose the next action.",
+          "start_message": "Translate the displayed address. Each accepted field reveals the next part.",
           "hints": {
             "limit": 0,
             "items": []
           }
         },
-        "controls": [
-          {
-            "id": "split",
-            "label": "SPLIT ADDRESS",
-            "operation": "split"
-          },
-          {
-            "id": "lookup",
-            "label": "LOOK UP PAGE",
-            "operation": "lookup"
-          },
-          {
-            "id": "translate",
-            "label": "TRANSLATE",
-            "operation": "translate"
-          }
-        ],
         "scenario": {
-          "initial_state": {
-            "tables": {
-              "PAGE TABLE": [
-                [
-                  "PAGE",
-                  "FRAME"
-                ],
-                [
-                  "0",
-                  "3"
-                ],
-                [
-                  "1",
-                  "0"
-                ],
-                [
-                  "2",
-                  "5"
-                ]
-              ],
-              "ADDRESS": [
-                [
-                  "LOGICAL",
-                  "VALUE"
-                ],
-                [
-                  "page 1, offset 4",
-                  ""
-                ]
-              ]
-            },
-            "result": "ready to translate"
-          },
-          "operations": [
-            {
-              "operation": "split",
-              "instruction": "Split page and offset",
-              "next_state": {
-                "tables": {
-                  "ADDRESS": [
-                    [
-                      "PAGE",
-                      "OFFSET"
-                    ],
-                    [
-                      "1",
-                      "4"
-                    ]
-                  ]
-                },
-                "result": "page 1, offset 4"
-              },
-              "evaluation_state": [
-                "SPLIT"
-              ]
-            },
-            {
-              "operation": "lookup",
-              "instruction": "Look up the page",
-              "next_state": {
-                "tables": {
-                  "PAGE TABLE": [
-                    [
-                      "PAGE",
-                      "FRAME"
-                    ],
-                    [
-                      "1",
-                      "0"
-                    ]
-                  ]
-                },
-                "result": "frame 0"
-              },
-              "evaluation_state": [
-                "LOOKUP"
-              ]
-            },
-            {
-              "operation": "translate",
-              "instruction": "Build the physical address",
-              "next_state": {
-                "tables": {
-                  "PHYSICAL": [
-                    [
-                      "FRAME",
-                      "OFFSET"
-                    ],
-                    [
-                      "0",
-                      "4"
-                    ]
-                  ]
-                },
-                "result": "frame 0, offset 4"
-              },
-              "evaluation_state": [
-                "TRANSLATE"
-              ]
-            }
-          ]
+          "generator": "paging",
+          "generator_version": 1,
+          "scenario_rules": {
+            "pageSizes": [
+              256,
+              1024
+            ],
+            "pageCount": 6,
+            "faultRate": 0
+          }
         },
         "challenge": {
           "phases": [
             {
-              "title": "Solve task",
-              "instruction": "Reach the target state by making the appropriate decisions.",
+              "title": "Solve",
+              "instruction": "Calculate page, offset, frame, and physical address. If NOT PRESENT, report PAGE_FAULT.",
+              "targetVisibility": "hidden",
               "target": {
-                "label": "TARGET STATE",
-                "items": [
-                  "COMPLETE"
-                ]
+                "label": "Hidden calculation result"
               },
               "goal": {
-                "type": "state_equals",
-                "expected_state": [
-                  "COMPLETE"
-                ]
+                "type": "outcome_equals",
+                "expected_outcome": "solved"
               },
               "success": "✓ Solve complete",
-              "feedback": "Compare your current state with the target before choosing again."
+              "feedback": "Use the current field's feedback to revise your calculation."
             }
           ]
         }
@@ -710,152 +425,47 @@
         "prerequisites": [
           "solve"
         ],
+        "targetVisibility": "hidden",
+        "retry_same_scenario": true,
+        "new_problem": true,
+        "operation_rule": "Each submitted answer is an attempt. There is no operation limit.",
+        "metrics": {
+          "operation_label": "Answers checked"
+        },
         "guidance": {
-          "start_message": "Compare the current state with the objective and choose the next action.",
+          "start_message": "NOT PRESENT means an allocated page is not in RAM. Enter PAGE_FAULT for both frame and physical address.",
           "hints": {
             "limit": 0,
             "items": []
           }
         },
-        "controls": [
-          {
-            "id": "split",
-            "label": "SPLIT ADDRESS",
-            "operation": "split"
-          },
-          {
-            "id": "lookup",
-            "label": "LOOK UP PAGE",
-            "operation": "lookup"
-          },
-          {
-            "id": "translate",
-            "label": "TRANSLATE",
-            "operation": "translate"
-          }
-        ],
         "scenario": {
-          "initial_state": {
-            "tables": {
-              "PAGE TABLE": [
-                [
-                  "PAGE",
-                  "FRAME"
-                ],
-                [
-                  "0",
-                  "3"
-                ],
-                [
-                  "1",
-                  "0"
-                ],
-                [
-                  "2",
-                  "5"
-                ]
-              ],
-              "ADDRESS": [
-                [
-                  "LOGICAL",
-                  "VALUE"
-                ],
-                [
-                  "page 1, offset 4",
-                  ""
-                ]
-              ]
-            },
-            "result": "ready to translate"
-          },
-          "operations": [
-            {
-              "operation": "split",
-              "instruction": "Split page and offset",
-              "next_state": {
-                "tables": {
-                  "ADDRESS": [
-                    [
-                      "PAGE",
-                      "OFFSET"
-                    ],
-                    [
-                      "1",
-                      "4"
-                    ]
-                  ]
-                },
-                "result": "page 1, offset 4"
-              },
-              "evaluation_state": [
-                "SPLIT"
-              ]
-            },
-            {
-              "operation": "lookup",
-              "instruction": "Look up the page",
-              "next_state": {
-                "tables": {
-                  "PAGE TABLE": [
-                    [
-                      "PAGE",
-                      "FRAME"
-                    ],
-                    [
-                      "1",
-                      "0"
-                    ]
-                  ]
-                },
-                "result": "frame 0"
-              },
-              "evaluation_state": [
-                "LOOKUP"
-              ]
-            },
-            {
-              "operation": "translate",
-              "instruction": "Build the physical address",
-              "next_state": {
-                "tables": {
-                  "PHYSICAL": [
-                    [
-                      "FRAME",
-                      "OFFSET"
-                    ],
-                    [
-                      "0",
-                      "4"
-                    ]
-                  ]
-                },
-                "result": "frame 0, offset 4"
-              },
-              "evaluation_state": [
-                "TRANSLATE"
-              ]
-            }
-          ]
+          "generator": "paging",
+          "generator_version": 1,
+          "scenario_rules": {
+            "pageSizes": [
+              256,
+              1024
+            ],
+            "pageCount": 8,
+            "faultRate": 0.35
+          }
         },
         "challenge": {
           "phases": [
             {
-              "title": "Mastery task",
-              "instruction": "Reach the target state by making the appropriate decisions.",
+              "title": "Mastery",
+              "instruction": "Calculate page, offset, frame, and physical address. If NOT PRESENT, report PAGE_FAULT.",
+              "targetVisibility": "hidden",
               "target": {
-                "label": "TARGET STATE",
-                "items": [
-                  "COMPLETE"
-                ]
+                "label": "Hidden calculation result"
               },
               "goal": {
-                "type": "state_equals",
-                "expected_state": [
-                  "COMPLETE"
-                ]
+                "type": "outcome_equals",
+                "expected_outcome": "solved"
               },
               "success": "✓ Mastery complete",
-              "feedback": "Compare your current state with the target before choosing again."
+              "feedback": "Use the current field's feedback to revise your calculation."
             }
           ]
         }
@@ -868,96 +478,64 @@
     "prerequisites": [
       "mastery"
     ],
-    "generator": "phase2-expert",
+    "generator": "paging",
     "generator_version": 1,
+    "assessment_mode": "prediction",
+    "targetVisibility": "hidden",
     "required_capabilities": [
-      "interactive_state",
       "calculation",
-      "sequence_simulation"
+      "prediction"
     ],
+    "scenario_rules": {
+      "pageSizes": [
+        64,
+        256,
+        1024
+      ],
+      "pageCount": 8,
+      "faultRate": 0.3
+    },
     "thinking": {
-      "title": "Predict the sequence",
-      "objective_label": "Think first",
-      "instruction": "Mentally follow the sequence before acting.",
-      "starting_stack_label": "STARTING STATE",
-      "sequence_label": "ACTIONS TO SIMULATE",
-      "do_not_execute": "Do not act yet. Work through the sequence in order.",
+      "title": "Mentally translate the address",
+      "instruction": "Predict all four fields before checking. No hints or operation limit. For NOT PRESENT, enter PAGE_FAULT in both frame and physical address.",
+      "starting_stack_label": "PROBLEM INPUTS",
+      "sequence_label": "REASONING TO PERFORM",
+      "do_not_execute": "Use the page size and table. Derived values stay hidden until you check.",
       "prediction_label": "YOUR PREDICTION",
       "prediction_fields": [
         {
-          "id": "finalState",
-          "label": "Final state",
-          "prompt": "What will the final state contain?",
-          "type": "text",
-          "placeholder": "Describe the result"
+          "id": "page",
+          "label": "Page",
+          "type": "number"
+        },
+        {
+          "id": "offset",
+          "label": "Offset",
+          "type": "number"
+        },
+        {
+          "id": "frame",
+          "label": "Frame or PAGE_FAULT",
+          "type": "text"
+        },
+        {
+          "id": "physicalAddress",
+          "label": "Physical address or PAGE_FAULT",
+          "type": "text"
         }
       ],
-      "submit_label": "Check my prediction",
-      "continue_label": "Continue to Expert Challenge →",
-      "actual_label": "RESULT",
-      "your_prediction_label": "Your prediction",
-      "actual_result": "Final state: {{final_state}}.",
+      "submit_label": "Check prediction",
+      "empty_message": "Enter all four fields. Use PAGE_FAULT for frame and physical address if not resident.",
       "feedback": {
-        "all_correct": "You tracked the sequence.",
-        "incorrect": "Recheck each transition."
+        "all_correct": "All fields correct.",
+        "incorrect": "Review the field results."
       }
     },
     "solve": {
-      "title": "Expert Paging / Virtual Memory",
-      "instruction": "Apply the sequence with no hints.",
-      "target_label": "TARGET STATE",
-      "your_label": "YOUR STATE",
-      "metric_label": "Actions",
-      "hints_label": "Hints: none",
-      "operation_rule": "Each action counts once.",
-      "controls": [
-        {
-          "id": "split",
-          "label": "SPLIT ADDRESS",
-          "operation": "split"
-        },
-        {
-          "id": "lookup",
-          "label": "LOOK UP PAGE",
-          "operation": "lookup"
-        },
-        {
-          "id": "translate",
-          "label": "TRANSLATE",
-          "operation": "translate"
-        }
-      ],
-      "perfect_message": "🏆 PERFECT EXPERT",
-      "perfect_result": "You completed the sequence.",
-      "new_challenge_label": "New Expert Challenge"
-    },
-    "scenario_rules": {
-      "initial_state": [
-        "PAGE 1",
-        "OFFSET 4"
-      ],
-      "steps": [
-        {
-          "operation": "split",
-          "label": "SPLIT"
-        },
-        {
-          "operation": "lookup",
-          "label": "LOOK UP"
-        },
-        {
-          "operation": "translate",
-          "label": "TRANSLATE"
-        }
-      ],
-      "final_state": [
-        "FRAME 0",
-        "OFFSET 4"
-      ],
-      "target_state": [
-        "FRAME 0",
-        "OFFSET 4"
-      ]
+      "title": "Paging Expert",
+      "instruction": "Completion requires all four fields to be correct.",
+      "perfect_message": "✓ Paging Expert Complete",
+      "perfect_result": "All predictions match the model."
     }
   },
   "assessment": {
@@ -978,33 +556,37 @@
     "notes": {
       "sections": [
         {
-          "title": "What?",
-          "content": "Virtual memory gives each logical page a frame in physical memory."
+          "title": "What? Logical pages and physical frames",
+          "content": "Logical addresses are divided into fixed-size pages, mapped to equally sized frames in RAM."
         },
         {
-          "title": "Example",
-          "content": "Page 1 with offset 4 maps through the table to frame 0, offset 4."
+          "title": "Example: split, look up, combine",
+          "content": "With size 100, address 207 is page 2, offset 7. If page 2 maps to frame 4, the physical address is 407."
         },
         {
-          "title": "Why?",
-          "content": "A page table connects the address a program uses to memory hardware."
+          "title": "Why preserve the offset?",
+          "content": "A whole page moves to a frame. Its bytes keep their positions inside the block."
+        },
+        {
+          "title": "Page fault versus invalid address",
+          "content": "NOT PRESENT means an allocated page is not in RAM: a page fault. An address outside the configured range, or with no allocated mapping here, is invalid. This lesson does not simulate loading or replacement."
         },
         {
           "title": "Remember",
-          "content": "Lookup changes the page number; the offset stays with the byte."
+          "content": "Page = complete pages. Offset = remainder. Frame = table lookup. Physical = frame × page size + offset."
         }
       ]
     },
     "alternate_explanations": [
       {
-        "title": "Think of a familiar workflow",
+        "title": "Numbered storage boxes",
         "type": "analogy",
-        "content": "Imagine Paging / Virtual Memory as a small real-world process with visible steps."
+        "content": "The table says which storage box holds a page. A byte keeps its place inside the box even when the box has a different number."
       },
       {
-        "title": "Walk through the example",
+        "title": "Try a smaller address",
         "type": "example",
-        "content": "You will look up a page number, then keep its offset."
+        "content": "With size 10, address 23 is page 2, offset 3. If page 2 lives in frame 6, find byte 63."
       }
     ]
   },
@@ -1015,7 +597,7 @@
       "submit_label": "Submit recall",
       "empty_message": "Write a short explanation first.",
       "completion_message": "✓ Recall completed",
-      "model_answer": "Lookup changes the page number; the offset stays with the byte."
+      "model_answer": "The page table changes the page's location to a frame. Since pages and frames have the same size, a byte keeps its offset."
     }
   }
 }

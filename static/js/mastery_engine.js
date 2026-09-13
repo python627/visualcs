@@ -301,7 +301,7 @@ class MasteryEngine {
     }
 
 
-    startLevel(levelId) {
+    startLevel(levelId, retainedScenario = null) {
         const level = this.getLevel(levelId);
 
         if (
@@ -326,9 +326,9 @@ class MasteryEngine {
         this.expertRunner = null;
         this.expertScenario = null;
         try {
-            this.masteryScenario = level.scenario?.generator
+            this.masteryScenario = retainedScenario || (level.scenario?.generator
                 ? ScenarioFactory.createNew(level.scenario)
-                : { data: level.scenario || {} };
+                : { data: level.scenario || {} });
         }
         catch (error) {
             console.error("Invalid mastery scenario:", error);
@@ -361,7 +361,8 @@ class MasteryEngine {
         }
 
         if (this.activeLevelId) {
-            this.startLevel(this.activeLevelId);
+            const retained = this.getCurrentLevel()?.retry_same_scenario ? this.masteryScenario : null;
+            this.startLevel(this.activeLevelId, retained);
         }
     }
 
@@ -604,7 +605,7 @@ class MasteryEngine {
 
         let template = thinking.feedback?.incorrect;
 
-        if (assessment.correctFinalState && assessment.correctNextPop) {
+        if (assessment.allCorrect === true || (assessment.correctFinalState && assessment.correctNextPop)) {
             template = thinking.feedback?.all_correct;
         }
         else if (assessment.correctFinalState) {
@@ -615,7 +616,7 @@ class MasteryEngine {
         }
 
         return this.formatExpertText(template, {
-            final_state: assessment.actualFinalState.join(", "),
+            final_state: assessment.actualFinalState?.join(", ") || "",
             next_pop: assessment.actualNextPop
         });
     }
@@ -763,6 +764,17 @@ class MasteryEngine {
         }
 
         const result = this.expertRunner.submitPrediction(prediction);
+        if (this.getExpertDefinition()?.assessment_mode === "prediction") {
+            this.expertReplayComplete = true;
+            if (result.status === "expert_perfect") this.handleExpertAttemptResult(result);
+            else {
+                this.lastResult = result;
+                this.renderAttempt();
+                this.bindControls();
+                setByteMessage(this.getExpertPredictionMessage(result.assessment));
+            }
+            return;
+        }
         this.lastResult = result;
         this.expertReplayComplete = false;
         this.renderAttempt();
@@ -909,6 +921,15 @@ class MasteryEngine {
 
 
     renderMasteryStates(level, phase, container) {
+        const hidden = phase.targetVisibility === "hidden" || level.targetVisibility === "hidden"
+            || level.expert?.targetVisibility === "hidden";
+        container.closest("#mastery-challenge-panel").dataset.targetVisibility = hidden ? "hidden" : "visible";
+        if (hidden) {
+            container.hidden = true;
+            container.replaceChildren();
+            return;
+        }
+        container.hidden = false;
         const states = this.isExpertLevel(level)
             ? {
                 scenario: this.expertScenario?.data || {},
@@ -998,7 +1019,8 @@ class MasteryEngine {
             label: `ACTIVE TASK · ${level.label}`,
             title: phase.title,
             instruction: phase.instruction,
-            meta: [operations, this.getHintsText(level, metrics)]
+            meta: [operations, this.getHintsText(level, metrics)],
+            ...this.playground?.getActiveTask?.()
         });
 
         panel.hidden = false;
@@ -1046,6 +1068,8 @@ class MasteryEngine {
                     ${this.attemptActive || outcome === "failed"
                         ? `<button type="button" data-mastery-retry>Retry ${level.label}</button>`
                         : ""}
+                    ${level.new_problem && this.attemptActive
+                        ? '<button type="button" data-mastery-new>New problem</button>' : ""}
                     ${outcome === "challenge_completed" && nextLevel
                         ? `<button type="button" data-mastery-start="${nextLevel.id}">Continue to ${nextLevel.label} →</button>`
                         : ""}
@@ -1105,6 +1129,7 @@ class MasteryEngine {
             presentationClass,
             `expert-stage-${stage}`
         ].join(" ");
+        panel.dataset.targetVisibility = definition.targetVisibility || "visible";
 
         if (stage === "think" || stage === "review") {
             this.renderExpertThinking(panel, levelNumber, definition, scenario, stage);
@@ -1154,7 +1179,7 @@ class MasteryEngine {
             : "";
 
         this.setYourStackLabel(
-            submitted,
+            submitted && definition.assessment_mode !== "prediction",
             thinking.replay_stack_label || "SIMULATION REPLAY"
         );
         panel.innerHTML = `
@@ -1179,7 +1204,11 @@ class MasteryEngine {
                         this.renderExpertPredictionControl(field, prediction, submitted)
                     )).join("")}
                 </div>
-                ${submitted
+                ${submitted && assessment?.fields
+                    ? `<div class="expert-actual-result"><strong>Field results</strong><ul>${assessment.fields.map(field =>
+                        `<li>${this.escapeAssessmentText(field.label)}: ${field.correct ? "✓ Correct" : "Incorrect"}. Your answer: ${this.escapeAssessmentText(field.submitted)}; result: ${this.escapeAssessmentText(field.expected)}</li>`
+                    ).join("")}</ul><p>${this.escapeAssessmentText(assessment.feedback)}</p></div>`
+                    : submitted
                     ? `<div class="expert-actual-result"><strong>${thinking.actual_label || "Result"}</strong><p>${thinking.your_prediction_label || "Your prediction"}: ${predictionSummary}.</p><p>${actualResult}</p><p class="expert-result-explanation">${resultExplanation}</p></div>`
                     : ""}
                 <div class="mastery-outcome" aria-live="polite">
@@ -1194,7 +1223,12 @@ class MasteryEngine {
                     ${!submitted
                         ? `<button type="button" data-expert-prediction-submit>${thinking.submit_label || "Check my prediction"}</button>`
                         : ""}
-                    ${submitted && this.expertReplayComplete
+                    ${submitted && definition.assessment_mode === "prediction"
+                        ? `<p>${assessment.allCorrect ? "✓ Expert Complete" : "Review the field results, then retry or try a new problem."}</p>
+                           <button type="button" data-expert-retry>Retry same problem</button>
+                           <button type="button" data-expert-new>New challenge</button>
+                           <button type="button" data-mastery-free-play>Continue experimenting</button>` : ""}
+                    ${submitted && this.expertReplayComplete && definition.assessment_mode !== "prediction"
                         ? `<button type="button" data-expert-begin>${thinking.continue_label || "Continue to Expert Challenge →"}</button>`
                         : ""}
                 </div>
@@ -1307,6 +1341,9 @@ class MasteryEngine {
 
 
     bindControls() {
+        document.querySelectorAll("[data-mastery-new]").forEach(button => {
+            button.onclick = () => this.startLevel(this.activeLevelId);
+        });
         document.querySelectorAll("[data-mastery-start]").forEach(button => {
             button.onclick = () => this.startLevel(button.dataset.masteryStart);
         });
@@ -1367,6 +1404,10 @@ class MasteryEngine {
         });
     }
 
+    escapeAssessmentText(value) {
+        return String(value ?? "").replaceAll("&", "&amp;").replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;").replaceAll('"', "&quot;");
+    }
 }
 
 
