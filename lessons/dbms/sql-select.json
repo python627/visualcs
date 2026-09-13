@@ -7,1032 +7,201 @@
     "subject": "DBMS",
     "topic": "SQL SELECT",
     "title": "Filter with SQL SELECT",
-    "description": "Predict which columns and rows a simple SELECT and WHERE query returns.",
+    "description": "Build a structured SELECT query, predict its matching rows, and inspect the computed result.",
     "difficulty": "Beginner",
     "estimated_time": "15 min"
   },
   "learning_objectives": [
-    "Explain SQL SELECT in simple terms.",
-    "Follow one visible SQL SELECT example.",
-    "Make a correct decision in the playground."
+    "Choose a source table with FROM.",
+    "Use WHERE to decide which rows survive.",
+    "Use SELECT to decide which columns appear.",
+    "Predict and explain the result of a bounded query."
   ],
-  "capabilities": [
-    "interactive_state",
-    "calculation",
-    "decision_tree",
-    "relationship_reasoning"
-  ],
+  "capabilities": ["interactive_state", "prediction", "calculation", "decision_tree", "relationship_reasoning"],
   "teaching": {
     "mission": {
-      "title": "Practise SQL SELECT",
-      "description": "Make each decision and watch the consequence."
+      "title": "Build and test a SELECT query",
+      "description": "Choose FROM, SELECT, and WHERE, predict the matching rows, then run the real evaluator."
     },
     "introduction": {
-      "title": "SQL SELECT: start here",
-      "content": "SELECT asks a table for data; WHERE keeps only rows that match a condition.",
-      "points": [
-        "Choose the result before the query is shown."
-      ],
-      "visual": {
-        "type": "array",
-        "label": "SQL SELECT",
-        "items": [
-          "What?",
-          "Example",
-          "Try it"
-        ]
-      }
+      "title": "Ask a table for only the data you need",
+      "content": "A table can contain many rows and columns. FROM chooses the table, WHERE keeps matching rows, and SELECT chooses the columns shown in the result.",
+      "points": ["A valid query can return many rows, one row, or no rows.", "In this lesson, result order is not part of the question."],
+      "visual": {"type": "sequence", "label": "SELECT FLOW", "items": ["SOURCE TABLE", "WHERE FILTER", "SELECT COLUMNS", "RESULT"]}
     },
     "worked_example": {
-      "title": "See one example",
-      "content": "Watch one concrete sequence before you try it.",
+      "title": "Show names for ages 20 and above",
+      "content": "Start with a Students table containing Ana (19), Ben (22), and Cara (20).",
+      "visual_type": "sequence",
       "steps": [
-        {
-          "action": "SELECT",
-          "state": {
-            "tables": {
-              "STUDENTS": [
-                [
-                  "ID",
-                  "NAME",
-                  "AGE"
-                ],
-                [
-                  "1",
-                  "Ana",
-                  "19"
-                ],
-                [
-                  "2",
-                  "Ben",
-                  "21"
-                ],
-                [
-                  "3",
-                  "Cara",
-                  "20"
-                ]
-              ]
-            },
-            "result": "column = NAME"
-          },
-          "explanation": "SELECT Name asks for one column."
-        },
-        {
-          "action": "WHERE",
-          "state": {
-            "tables": {
-              "STUDENTS": [
-                [
-                  "NAME",
-                  "AGE"
-                ],
-                [
-                  "Ben",
-                  "21"
-                ],
-                [
-                  "Cara",
-                  "20"
-                ]
-              ]
-            },
-            "result": "Age >= 20"
-          },
-          "explanation": "WHERE filters out rows below 20."
-        },
-        {
-          "action": "RESULT",
-          "state": {
-            "tables": {
-              "RESULT": [
-                [
-                  "NAME"
-                ],
-                [
-                  "Ben"
-                ],
-                [
-                  "Cara"
-                ]
-              ]
-            },
-            "result": "two rows"
-          },
-          "explanation": "The result contains only matching names."
-        }
+        {"action": "FROM", "items": ["students"], "explanation": "FROM students chooses the source table."},
+        {"action": "WHERE", "items": ["age", ">=", "20"], "explanation": "WHERE checks every source row against the condition."},
+        {"action": "SELECT", "items": ["name"], "explanation": "SELECT keeps only the requested column after filtering."}
       ],
-      "conclusion": "The visual state changes because the concept follows a rule.",
-      "next": {
-        "title": "Now you try.",
-        "content": "Choose the next meaningful action."
-      }
+      "conclusion": "The evaluator—not a memorized answer—calculates which rows and columns appear.",
+      "next": {"title": "Now build it yourself.", "content": "Predict the matching rows before you run the query."}
     },
     "guided_practice": {
       "action_explanations": {
-        "select": "NAME",
-        "where": "Age >= 20",
-        "result": "complete"
+        "choose-source": "FROM now identifies the table your query will read.",
+        "choose-columns": "SELECT now identifies the columns the result will display.",
+        "build-where": "WHERE will test this condition against every source row.",
+        "predict": "Your prediction is saved. Run the query to compare it with the evaluator.",
+        "run-query": "WHERE filtered the rows first; SELECT then projected the requested columns."
       }
     }
   },
   "visualization": {
     "type": "sql-select",
-    "view": "query",
-    "initial_state": {
-      "tables": {
-        "STUDENTS": [
-          [
-            "ID",
-            "NAME",
-            "AGE"
-          ],
-          [
-            "1",
-            "Ana",
-            "19"
-          ],
-          [
-            "2",
-            "Ben",
-            "21"
-          ],
-          [
-            "3",
-            "Cara",
-            "20"
-          ]
+    "problem": {
+      "database": {
+        "tables": [
+          {
+            "name": "students",
+            "columns": [{"name": "id", "type": "number"}, {"name": "name", "type": "string"}, {"name": "age", "type": "number"}, {"name": "course", "type": "string"}],
+            "rows": [
+              {"id": "student-1", "values": {"id": 1, "name": "Ana", "age": 19, "course": "CS"}},
+              {"id": "student-2", "values": {"id": 2, "name": "Ben", "age": 22, "course": "IT"}},
+              {"id": "student-3", "values": {"id": 3, "name": "Cara", "age": 20, "course": "CS"}},
+              {"id": "student-4", "values": {"id": 4, "name": "Dev", "age": 18, "course": "Design"}}
+            ]
+          },
+          {
+            "name": "courses",
+            "columns": [{"name": "code", "type": "string"}, {"name": "title", "type": "string"}],
+            "rows": [{"id": "course-1", "values": {"code": "CS", "title": "Computer Science"}}, {"id": "course-2", "values": {"code": "IT", "title": "Information Technology"}}]
+          }
         ]
       },
-      "result": "SELECT Name WHERE Age >= 20"
+      "goal": {"instruction": "Show the names of students aged 20 or older.", "query": {"from": "students", "select": ["name"], "where": {"field": "age", "operator": ">=", "value": 20}}},
+      "allowed": {"tables": ["students", "courses"], "selectColumns": ["id", "name", "age", "course", "code", "title"], "whereFields": ["id", "name", "age", "course", "code", "title"], "operators": ["=", "!=", ">", ">=", "<", "<="]},
+      "prediction": {"rowLabelColumn": "name"}
     },
-    "guided_steps": [
-      {
-        "operation": "select",
-        "instruction": "Choose the selected column",
-        "next_state": {
-          "tables": {
-            "STUDENTS": [
-              [
-                "NAME"
-              ],
-              [
-                "Ana"
-              ],
-              [
-                "Ben"
-              ],
-              [
-                "Cara"
-              ]
+    "challenge_problem": {
+      "database": {
+        "tables": [
+          {
+            "name": "students",
+            "columns": [{"name": "id", "type": "number"}, {"name": "name", "type": "string"}, {"name": "age", "type": "number"}, {"name": "course", "type": "string"}],
+            "rows": [
+              {"id": "student-1", "values": {"id": 1, "name": "Mia", "age": 21, "course": "CS"}},
+              {"id": "student-2", "values": {"id": 2, "name": "Noah", "age": 19, "course": "IT"}},
+              {"id": "student-3", "values": {"id": 3, "name": "Omar", "age": 23, "course": "CS"}},
+              {"id": "student-4", "values": {"id": 4, "name": "Pia", "age": 20, "course": "Design"}}
             ]
-          },
-          "result": "NAME"
-        },
-        "evaluation_state": [
-          "SELECT"
+          }
         ]
       },
-      {
-        "operation": "where",
-        "instruction": "Apply the WHERE condition",
-        "next_state": {
-          "tables": {
-            "RESULT": [
-              [
-                "NAME"
-              ],
-              [
-                "Ben"
-              ],
-              [
-                "Cara"
-              ]
-            ]
-          },
-          "result": "Age >= 20"
-        },
-        "evaluation_state": [
-          "WHERE"
-        ]
-      },
-      {
-        "operation": "result",
-        "instruction": "Confirm the result set",
-        "next_state": {
-          "tables": {
-            "RESULT": [
-              [
-                "NAME"
-              ],
-              [
-                "Ben"
-              ],
-              [
-                "Cara"
-              ]
-            ]
-          },
-          "result": "complete"
-        },
-        "evaluation_state": [
-          "RESULT"
-        ]
-      }
-    ],
-    "controls": [
-      {
-        "id": "select",
-        "label": "SELECT COLUMN",
-        "operation": "select"
-      },
-      {
-        "id": "where",
-        "label": "FILTER ROWS",
-        "operation": "where"
-      },
-      {
-        "id": "result",
-        "label": "SHOW RESULT",
-        "operation": "result"
-      }
-    ],
+      "goal": {"instruction": "Show name and course for students whose course is CS.", "query": {"from": "students", "select": ["name", "course"], "where": {"field": "course", "operator": "=", "value": "CS"}}},
+      "allowed": {"tables": ["students"], "selectColumns": ["name", "age", "course"], "whereFields": ["name", "age", "course"], "operators": ["=", "!=", ">", ">=", "<", "<="]},
+      "prediction": {"rowLabelColumn": "name"}
+    },
+    "tasks": {
+      "source": {"title": "Choose the source table", "instruction": "Which table contains the rows described by the goal?"},
+      "columns": {"title": "Choose the output columns", "instruction": "Select only the columns the result should display."},
+      "where": {"title": "Build the WHERE condition", "instruction": "Choose a field, operator, and value that keep the requested rows."},
+      "prediction": {"title": "Predict the matching rows", "instruction": "Do not run yet. Select the source-row IDs you expect WHERE to keep."},
+      "run": {"title": "Run and inspect the query", "instruction": "Execute your structured query and compare its real result with your prediction."}
+    },
+    "messages": {
+      "missing_source": "Choose a FROM table before running the query.",
+      "missing_columns": "Choose at least one SELECT column before running the query.",
+      "missing_where": "Complete the WHERE field, operator, and value before running the query.",
+      "missing_prediction": "Make an explicit prediction, including ‘No rows’, before running the query.",
+      "success": "Your query and prediction match the goal.",
+      "prediction_mismatch": "The query matches the goal, but the predicted rows differ from its computed result.",
+      "valid_difference": "That is a valid query and this is its real result, but it does not match the requested query goal."
+    },
+    "prediction_instruction": "Choose row IDs, or explicitly choose ‘No rows will match’.",
+    "run_label": "RUN QUERY",
+    "controls": [{"id": "run-query", "label": "RUN QUERY", "operation": "run-query"}],
     "actions": [
-      {
-        "label": "Read the SELECT column",
-        "operation": "select",
-        "task": "Read the SELECT column"
-      },
-      {
-        "label": "Apply the WHERE predicate",
-        "operation": "where",
-        "task": "Apply the WHERE predicate"
-      },
-      {
-        "label": "Confirm matching rows",
-        "operation": "result",
-        "task": "Confirm matching rows"
-      }
-    ],
-    "instruction": "Choose the next meaningful action.",
-    "wrong_action_message": "Compare the active task with the current state before choosing."
+      {"label": "Choose the source table", "operation": "choose-source", "task": "Choose the table named by the goal."},
+      {"label": "Choose result columns", "operation": "choose-columns", "task": "Choose which columns SELECT should display."},
+      {"label": "Build the filter", "operation": "build-where", "task": "Construct the WHERE condition."},
+      {"label": "Predict matching rows", "operation": "predict", "task": "Predict before revealing the result."},
+      {"label": "Run the query", "operation": "run-query", "task": "Run the evaluator and inspect the consequence."}
+    ]
   },
   "practice": {
     "challenge": {
-      "title": "SQL SELECT challenge",
-      "start_message": "Apply the concept to the displayed state.",
-      "continue_message": "Challenge complete. Keep experimenting.",
+      "title": "Independent SELECT challenge",
+      "start_message": "Build a second query without step-by-step button instructions.",
+      "continue_message": "Challenge complete. Keep experimenting with valid queries.",
+      "start_on_request": true,
+      "start_label": "Start independent SQL challenge",
       "phases": [
-        {
-          "title": "Reach the correct result",
-          "instruction": "Use the controls to reach the target state.",
-          "target": {
-            "label": "TARGET",
-            "items": [
-              "COMPLETE"
-            ]
-          },
-          "goal": {
-            "type": "state_equals",
-            "expected_state": [
-              "COMPLETE"
-            ]
-          },
-          "success": "✓ Challenge complete",
-          "feedback": "Compare your state with the target."
-        }
+        {"title": "Build, predict, and run", "instruction": "Use the goal and schema to construct the query, then predict its matching rows.", "targetVisibility": "hidden", "target": {"label": "HIDDEN QUERY RESULT", "description": "The evaluator computes the result after RUN QUERY."}, "goal": {"type": "outcome_equals", "expected_outcome": "solved"}, "success": "✓ Independent SELECT challenge complete", "feedback": "Inspect which query field or predicted row differs from the goal."}
       ]
     }
   },
   "mastery": {
     "title": "SQL SELECT Mastery",
     "mastered_label": "SQL SELECT Mastered",
-    "current_state_label": "YOUR STATE",
+    "current_state_label": "YOUR QUERY",
     "levels": [
+      {"id": "learn", "label": "Learn", "completion": {"type": "course_completion"}},
       {
-        "id": "learn",
-        "label": "Learn",
-        "completion": {
-          "type": "course_completion"
-        }
+        "id": "practice", "label": "Practice", "prerequisites": ["learn"], "targetVisibility": "hidden", "retry_same_scenario": true, "new_problem": true,
+        "guidance": {"start_message": "Use the goal to build a small equality query and predict its rows.", "hints": {"limit": 1, "items": [{"content": "Read the goal in FROM → WHERE → SELECT order, then predict source-row IDs."}]}},
+        "scenario": {"generator": "sql-select", "generator_version": 1, "scenario_rules": {"rowCount": 4, "selectCounts": [1], "operators": ["="], "emptyResultRate": 0}},
+        "challenge": {"phases": [{"title": "Practice SELECT", "instruction": "Build the requested equality query and predict the result.", "targetVisibility": "hidden", "target": {"label": "HIDDEN RESULT"}, "goal": {"type": "outcome_equals", "expected_outcome": "solved"}, "success": "✓ Practice complete", "feedback": "Run a valid query and compare each field with the goal."}]}
       },
       {
-        "id": "practice",
-        "label": "Practice",
-        "prerequisites": [
-          "learn"
-        ],
-        "guidance": {
-          "start_message": "Compare the current state with the objective and choose the next action.",
-          "hints": {
-            "limit": 1,
-            "items": [
-              {
-                "content": "Use the operation that moves the state toward the target."
-              }
-            ]
-          }
-        },
-        "controls": [
-          {
-            "id": "select",
-            "label": "SELECT COLUMN",
-            "operation": "select"
-          },
-          {
-            "id": "where",
-            "label": "FILTER ROWS",
-            "operation": "where"
-          },
-          {
-            "id": "result",
-            "label": "SHOW RESULT",
-            "operation": "result"
-          }
-        ],
-        "scenario": {
-          "initial_state": {
-            "tables": {
-              "STUDENTS": [
-                [
-                  "ID",
-                  "NAME",
-                  "AGE"
-                ],
-                [
-                  "1",
-                  "Ana",
-                  "19"
-                ],
-                [
-                  "2",
-                  "Ben",
-                  "21"
-                ],
-                [
-                  "3",
-                  "Cara",
-                  "20"
-                ]
-              ]
-            },
-            "result": "SELECT Name WHERE Age >= 20"
-          },
-          "operations": [
-            {
-              "operation": "select",
-              "instruction": "Choose the selected column",
-              "next_state": {
-                "tables": {
-                  "STUDENTS": [
-                    [
-                      "NAME"
-                    ],
-                    [
-                      "Ana"
-                    ],
-                    [
-                      "Ben"
-                    ],
-                    [
-                      "Cara"
-                    ]
-                  ]
-                },
-                "result": "NAME"
-              },
-              "evaluation_state": [
-                "SELECT"
-              ]
-            }
-          ]
-        },
-        "challenge": {
-          "phases": [
-            {
-              "title": "Practice task",
-              "instruction": "Reach the target state by making the appropriate decisions.",
-              "target": {
-                "label": "TARGET STATE",
-                "items": [
-                  "COMPLETE"
-                ]
-              },
-              "goal": {
-                "type": "state_equals",
-                "expected_state": [
-                  "COMPLETE"
-                ]
-              },
-              "success": "✓ Practice complete",
-              "feedback": "Compare your current state with the target before choosing again."
-            }
-          ]
-        }
+        "id": "apply", "label": "Apply", "prerequisites": ["practice"], "targetVisibility": "hidden", "retry_same_scenario": true, "new_problem": true,
+        "guidance": {"start_message": "Apply a comparison operator with less guidance.", "hints": {"limit": 0, "items": []}},
+        "scenario": {"generator": "sql-select", "generator_version": 1, "scenario_rules": {"rowCount": 5, "selectCounts": [1], "operators": [">", ">=", "<", "<="], "emptyResultRate": 0}},
+        "challenge": {"phases": [{"title": "Apply comparisons", "instruction": "Construct and predict a comparison query.", "targetVisibility": "hidden", "target": {"label": "HIDDEN RESULT"}, "goal": {"type": "outcome_equals", "expected_outcome": "solved"}, "success": "✓ Apply complete", "feedback": "Check the boundary: > and >=, or < and <=, do not mean the same thing."}]}
       },
       {
-        "id": "apply",
-        "label": "Apply",
-        "prerequisites": [
-          "practice"
-        ],
-        "guidance": {
-          "start_message": "Compare the current state with the objective and choose the next action.",
-          "hints": {
-            "limit": 0,
-            "items": []
-          }
-        },
-        "controls": [
-          {
-            "id": "select",
-            "label": "SELECT COLUMN",
-            "operation": "select"
-          },
-          {
-            "id": "where",
-            "label": "FILTER ROWS",
-            "operation": "where"
-          },
-          {
-            "id": "result",
-            "label": "SHOW RESULT",
-            "operation": "result"
-          }
-        ],
-        "scenario": {
-          "initial_state": {
-            "tables": {
-              "STUDENTS": [
-                [
-                  "ID",
-                  "NAME",
-                  "AGE"
-                ],
-                [
-                  "1",
-                  "Ana",
-                  "19"
-                ],
-                [
-                  "2",
-                  "Ben",
-                  "21"
-                ],
-                [
-                  "3",
-                  "Cara",
-                  "20"
-                ]
-              ]
-            },
-            "result": "SELECT Name WHERE Age >= 20"
-          },
-          "operations": [
-            {
-              "operation": "select",
-              "instruction": "Choose the selected column",
-              "next_state": {
-                "tables": {
-                  "STUDENTS": [
-                    [
-                      "NAME"
-                    ],
-                    [
-                      "Ana"
-                    ],
-                    [
-                      "Ben"
-                    ],
-                    [
-                      "Cara"
-                    ]
-                  ]
-                },
-                "result": "NAME"
-              },
-              "evaluation_state": [
-                "SELECT"
-              ]
-            },
-            {
-              "operation": "where",
-              "instruction": "Apply the WHERE condition",
-              "next_state": {
-                "tables": {
-                  "RESULT": [
-                    [
-                      "NAME"
-                    ],
-                    [
-                      "Ben"
-                    ],
-                    [
-                      "Cara"
-                    ]
-                  ]
-                },
-                "result": "Age >= 20"
-              },
-              "evaluation_state": [
-                "WHERE"
-              ]
-            }
-          ]
-        },
-        "challenge": {
-          "phases": [
-            {
-              "title": "Apply task",
-              "instruction": "Reach the target state by making the appropriate decisions.",
-              "target": {
-                "label": "TARGET STATE",
-                "items": [
-                  "COMPLETE"
-                ]
-              },
-              "goal": {
-                "type": "state_equals",
-                "expected_state": [
-                  "COMPLETE"
-                ]
-              },
-              "success": "✓ Apply complete",
-              "feedback": "Compare your current state with the target before choosing again."
-            }
-          ]
-        }
+        "id": "solve", "label": "Solve", "prerequisites": ["apply"], "targetVisibility": "hidden", "retry_same_scenario": true, "new_problem": true,
+        "guidance": {"start_message": "Independently choose among multiple fields, operators, and output columns.", "hints": {"limit": 0, "items": []}},
+        "scenario": {"generator": "sql-select", "generator_version": 1, "scenario_rules": {"rowCount": 6, "selectCounts": [1, 2], "operators": ["=", "!=", ">", ">=", "<", "<="], "emptyResultRate": 0.1}},
+        "challenge": {"phases": [{"title": "Solve the query", "instruction": "Build the complete structured query and predict its result without hints.", "targetVisibility": "hidden", "target": {"label": "HIDDEN RESULT"}, "goal": {"type": "outcome_equals", "expected_outcome": "solved"}, "success": "✓ Solve complete", "feedback": "Your valid query shows a real consequence; revise only the fields that differ from the goal."}]}
       },
       {
-        "id": "solve",
-        "label": "Solve",
-        "prerequisites": [
-          "apply"
-        ],
-        "guidance": {
-          "start_message": "Compare the current state with the objective and choose the next action.",
-          "hints": {
-            "limit": 0,
-            "items": []
-          }
-        },
-        "controls": [
-          {
-            "id": "select",
-            "label": "SELECT COLUMN",
-            "operation": "select"
-          },
-          {
-            "id": "where",
-            "label": "FILTER ROWS",
-            "operation": "where"
-          },
-          {
-            "id": "result",
-            "label": "SHOW RESULT",
-            "operation": "result"
-          }
-        ],
-        "scenario": {
-          "initial_state": {
-            "tables": {
-              "STUDENTS": [
-                [
-                  "ID",
-                  "NAME",
-                  "AGE"
-                ],
-                [
-                  "1",
-                  "Ana",
-                  "19"
-                ],
-                [
-                  "2",
-                  "Ben",
-                  "21"
-                ],
-                [
-                  "3",
-                  "Cara",
-                  "20"
-                ]
-              ]
-            },
-            "result": "SELECT Name WHERE Age >= 20"
-          },
-          "operations": [
-            {
-              "operation": "select",
-              "instruction": "Choose the selected column",
-              "next_state": {
-                "tables": {
-                  "STUDENTS": [
-                    [
-                      "NAME"
-                    ],
-                    [
-                      "Ana"
-                    ],
-                    [
-                      "Ben"
-                    ],
-                    [
-                      "Cara"
-                    ]
-                  ]
-                },
-                "result": "NAME"
-              },
-              "evaluation_state": [
-                "SELECT"
-              ]
-            },
-            {
-              "operation": "where",
-              "instruction": "Apply the WHERE condition",
-              "next_state": {
-                "tables": {
-                  "RESULT": [
-                    [
-                      "NAME"
-                    ],
-                    [
-                      "Ben"
-                    ],
-                    [
-                      "Cara"
-                    ]
-                  ]
-                },
-                "result": "Age >= 20"
-              },
-              "evaluation_state": [
-                "WHERE"
-              ]
-            },
-            {
-              "operation": "result",
-              "instruction": "Confirm the result set",
-              "next_state": {
-                "tables": {
-                  "RESULT": [
-                    [
-                      "NAME"
-                    ],
-                    [
-                      "Ben"
-                    ],
-                    [
-                      "Cara"
-                    ]
-                  ]
-                },
-                "result": "complete"
-              },
-              "evaluation_state": [
-                "RESULT"
-              ]
-            }
-          ]
-        },
-        "challenge": {
-          "phases": [
-            {
-              "title": "Solve task",
-              "instruction": "Reach the target state by making the appropriate decisions.",
-              "target": {
-                "label": "TARGET STATE",
-                "items": [
-                  "COMPLETE"
-                ]
-              },
-              "goal": {
-                "type": "state_equals",
-                "expected_state": [
-                  "COMPLETE"
-                ]
-              },
-              "success": "✓ Solve complete",
-              "feedback": "Compare your current state with the target before choosing again."
-            }
-          ]
-        }
-      },
-      {
-        "id": "mastery",
-        "label": "Mastery",
-        "prerequisites": [
-          "solve"
-        ],
-        "guidance": {
-          "start_message": "Compare the current state with the objective and choose the next action.",
-          "hints": {
-            "limit": 0,
-            "items": []
-          }
-        },
-        "controls": [
-          {
-            "id": "select",
-            "label": "SELECT COLUMN",
-            "operation": "select"
-          },
-          {
-            "id": "where",
-            "label": "FILTER ROWS",
-            "operation": "where"
-          },
-          {
-            "id": "result",
-            "label": "SHOW RESULT",
-            "operation": "result"
-          }
-        ],
-        "scenario": {
-          "initial_state": {
-            "tables": {
-              "STUDENTS": [
-                [
-                  "ID",
-                  "NAME",
-                  "AGE"
-                ],
-                [
-                  "1",
-                  "Ana",
-                  "19"
-                ],
-                [
-                  "2",
-                  "Ben",
-                  "21"
-                ],
-                [
-                  "3",
-                  "Cara",
-                  "20"
-                ]
-              ]
-            },
-            "result": "SELECT Name WHERE Age >= 20"
-          },
-          "operations": [
-            {
-              "operation": "select",
-              "instruction": "Choose the selected column",
-              "next_state": {
-                "tables": {
-                  "STUDENTS": [
-                    [
-                      "NAME"
-                    ],
-                    [
-                      "Ana"
-                    ],
-                    [
-                      "Ben"
-                    ],
-                    [
-                      "Cara"
-                    ]
-                  ]
-                },
-                "result": "NAME"
-              },
-              "evaluation_state": [
-                "SELECT"
-              ]
-            },
-            {
-              "operation": "where",
-              "instruction": "Apply the WHERE condition",
-              "next_state": {
-                "tables": {
-                  "RESULT": [
-                    [
-                      "NAME"
-                    ],
-                    [
-                      "Ben"
-                    ],
-                    [
-                      "Cara"
-                    ]
-                  ]
-                },
-                "result": "Age >= 20"
-              },
-              "evaluation_state": [
-                "WHERE"
-              ]
-            },
-            {
-              "operation": "result",
-              "instruction": "Confirm the result set",
-              "next_state": {
-                "tables": {
-                  "RESULT": [
-                    [
-                      "NAME"
-                    ],
-                    [
-                      "Ben"
-                    ],
-                    [
-                      "Cara"
-                    ]
-                  ]
-                },
-                "result": "complete"
-              },
-              "evaluation_state": [
-                "RESULT"
-              ]
-            }
-          ]
-        },
-        "challenge": {
-          "phases": [
-            {
-              "title": "Mastery task",
-              "instruction": "Reach the target state by making the appropriate decisions.",
-              "target": {
-                "label": "TARGET STATE",
-                "items": [
-                  "COMPLETE"
-                ]
-              },
-              "goal": {
-                "type": "state_equals",
-                "expected_state": [
-                  "COMPLETE"
-                ]
-              },
-              "success": "✓ Mastery complete",
-              "feedback": "Compare your current state with the target before choosing again."
-            }
-          ]
-        }
+        "id": "mastery", "label": "Mastery", "prerequisites": ["solve"], "targetVisibility": "hidden", "retry_same_scenario": true, "new_problem": true,
+        "guidance": {"start_message": "Handle randomized data, boundary values, and possibly an empty result.", "hints": {"limit": 0, "items": []}},
+        "scenario": {"generator": "sql-select", "generator_version": 1, "scenario_rules": {"rowCount": 7, "selectCounts": [1, 2], "operators": ["=", "!=", ">", ">=", "<", "<="], "emptyResultRate": 0.3}},
+        "challenge": {"phases": [{"title": "Master SELECT", "instruction": "Derive the query and result from unfamiliar data.", "targetVisibility": "hidden", "target": {"label": "HIDDEN RESULT"}, "goal": {"type": "outcome_equals", "expected_outcome": "solved"}, "success": "✓ Mastery complete", "feedback": "Re-evaluate the predicate row by row, including equality at the boundary."}]}
       }
     ]
   },
-  "expert": {
-    "id": "expert",
-    "label": "Expert",
-    "prerequisites": [
-      "mastery"
-    ],
-    "generator": "phase2-expert",
-    "generator_version": 1,
-    "required_capabilities": [
-      "interactive_state",
-      "calculation",
-      "decision_tree",
-      "relationship_reasoning"
-    ],
-    "thinking": {
-      "title": "Predict the sequence",
-      "objective_label": "Think first",
-      "instruction": "Mentally follow the sequence before acting.",
-      "starting_stack_label": "STARTING STATE",
-      "sequence_label": "ACTIONS TO SIMULATE",
-      "do_not_execute": "Do not act yet. Work through the sequence in order.",
-      "prediction_label": "YOUR PREDICTION",
-      "prediction_fields": [
-        {
-          "id": "finalState",
-          "label": "Final state",
-          "prompt": "What will the final state contain?",
-          "type": "text",
-          "placeholder": "Describe the result"
-        }
-      ],
-      "submit_label": "Check my prediction",
-      "continue_label": "Continue to Expert Challenge →",
-      "actual_label": "RESULT",
-      "your_prediction_label": "Your prediction",
-      "actual_result": "Final state: {{final_state}}.",
-      "feedback": {
-        "all_correct": "You tracked the sequence.",
-        "incorrect": "Recheck each transition."
-      }
-    },
-    "solve": {
-      "title": "Expert SQL SELECT",
-      "instruction": "Apply the sequence with no hints.",
-      "target_label": "TARGET STATE",
-      "your_label": "YOUR STATE",
-      "metric_label": "Actions",
-      "hints_label": "Hints: none",
-      "operation_rule": "Each action counts once.",
-      "controls": [
-        {
-          "id": "select",
-          "label": "SELECT COLUMN",
-          "operation": "select"
-        },
-        {
-          "id": "where",
-          "label": "FILTER ROWS",
-          "operation": "where"
-        },
-        {
-          "id": "result",
-          "label": "SHOW RESULT",
-          "operation": "result"
-        }
-      ],
-      "perfect_message": "🏆 PERFECT EXPERT",
-      "perfect_result": "You completed the sequence.",
-      "new_challenge_label": "New Expert Challenge"
-    },
-    "scenario_rules": {
-      "initial_state": [
-        "Ana:19",
-        "Ben:21",
-        "Cara:20"
-      ],
-      "steps": [
-        {
-          "operation": "select",
-          "label": "SELECT NAME"
-        },
-        {
-          "operation": "where",
-          "label": "FILTER AGE >= 20"
-        },
-        {
-          "operation": "result",
-          "label": "READ RESULT"
-        }
-      ],
-      "final_state": [
-        "Ben",
-        "Cara"
-      ],
-      "target_state": [
-        "Ben",
-        "Cara"
-      ]
-    }
-  },
   "assessment": {
-    "quiz": {
-      "question": "Which rows match Age >= 20?",
-      "options": [
-        "Ana only",
-        "Ben and Cara",
-        "All rows",
-        "No rows"
-      ],
-      "correct": 1
-    },
-    "discovery": {
-      "title": "SELECT discovery",
-      "summary": "A query can select a small view of a table by combining columns with row conditions."
-    },
-    "notes": {
-      "sections": [
-        {
-          "title": "What?",
-          "content": "SELECT chooses columns and WHERE filters rows."
-        },
-        {
-          "title": "Example",
-          "content": "SELECT Name FROM Students WHERE Age >= 20 returns Ben and Cara."
-        },
-        {
-          "title": "Why?",
-          "content": "The database applies the condition before returning the result set."
-        },
-        {
-          "title": "Remember",
-          "content": "SELECT = columns; WHERE = rows."
-        }
-      ]
-    },
+    "quiz": {"question": "In SELECT name FROM students WHERE age >= 20, which part decides which rows survive?", "options": ["SELECT name", "FROM students", "WHERE age >= 20", "The original row order"], "correct": 2},
+    "discovery": {"title": "SELECT discovery", "summary": "WHERE filters source rows before SELECT projects the requested output columns."},
+    "notes": {"sections": [
+      {"title": "What?", "content": "FROM chooses a table, WHERE filters rows, and SELECT projects columns."},
+      {"title": "Example", "content": "SELECT name FROM students WHERE age >= 20 asks for names only after testing each age."},
+      {"title": "Why?", "content": "Filtering first means columns not displayed by SELECT can still be used by WHERE."},
+      {"title": "Remember", "content": "FROM source → WHERE rows → SELECT columns."}
+    ]},
     "alternate_explanations": [
-      {
-        "title": "Think of a familiar workflow",
-        "type": "analogy",
-        "content": "Imagine SQL SELECT as a small real-world process with visible steps."
-      },
-      {
-        "title": "Walk through the example",
-        "type": "example",
-        "content": "Choose the result before the query is shown."
-      }
+      {"title": "Think of a spreadsheet filter", "type": "analogy", "content": "WHERE is like filtering rows in a spreadsheet; SELECT is like keeping only certain columns in the exported view."},
+      {"title": "Walk through one row", "type": "example", "content": "For age >= 20, test each age. Keep the row when the test is true, then copy only the selected fields into the result."}
     ]
   },
   "completion": {
-    "recall": {
-      "title": "Recall",
-      "prompt": "In your own words, what job does WHERE do in a SELECT query?",
-      "submit_label": "Submit recall",
-      "empty_message": "Write a short explanation first.",
-      "completion_message": "✓ Recall completed",
-      "model_answer": "SELECT = columns; WHERE = rows."
-    }
+    "recall": {"title": "Recall", "prompt": "In your own words, how are WHERE and SELECT different?", "submit_label": "Submit recall", "empty_message": "Write a short explanation first.", "completion_message": "✓ Recall completed", "model_answer": "WHERE decides which rows remain. SELECT decides which columns appear in the result."}
+  },
+  "expert": {
+    "id": "expert", "label": "Expert", "prerequisites": ["mastery"], "generator": "sql-select", "generator_version": 1, "assessment_mode": "prediction", "targetVisibility": "hidden",
+    "required_capabilities": ["interactive_state", "prediction", "calculation", "decision_tree", "relationship_reasoning"],
+    "thinking": {
+      "title": "Construct and predict the query", "objective_label": "Think first", "instruction": "Use the unfamiliar table and goal. Enter a complete structured query and predict matching row IDs before checking.",
+      "starting_stack_label": "SOURCE TABLE AND GOAL", "sequence_label": "REASONING TO PERFORM", "do_not_execute": "Do not reveal the result yet. Work through the predicate row by row.", "prediction_label": "YOUR STRUCTURED QUERY + PREDICTION",
+      "prediction_fields": [
+        {"id": "from", "label": "FROM table", "type": "text", "placeholder": "students"},
+        {"id": "select", "label": "SELECT columns", "type": "text", "placeholder": "name, course"},
+        {"id": "whereField", "label": "WHERE field", "type": "text", "placeholder": "age"},
+        {"id": "operator", "label": "Operator", "type": "text", "placeholder": ">="},
+        {"id": "value", "label": "Comparison value", "type": "text", "placeholder": "20"},
+        {"id": "matchingRows", "label": "Predicted matching row IDs", "type": "text", "placeholder": "student-2, student-3 or NONE"}
+      ],
+      "empty_message": "Complete every query field and enter matching row IDs or NONE.", "submit_label": "Check prediction",
+      "feedback": {"all_correct": "Your structured query and row prediction are correct.", "incorrect": "Review the field-level differences and recompute the matching rows."}
+    },
+    "solve": {"title": "Expert SQL SELECT", "instruction": "Construct the query and mentally predict its result with no hints.", "new_challenge_label": "New Expert SQL Challenge"},
+    "scenario_rules": {"rowCount": 8, "selectCounts": [1, 2], "operators": ["=", "!=", ">", ">=", "<", "<="], "emptyResultRate": 0.25}
   }
 }

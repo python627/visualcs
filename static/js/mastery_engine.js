@@ -1238,6 +1238,9 @@ class MasteryEngine {
         this.playground?.renderExpertThinkingState?.({
             ...simulation,
             initialState: simulation.initial_state,
+            assessment,
+            prediction,
+            submitted,
             labels: {
                 title: thinking.starting_stack_label || "Starting Stack",
                 target: thinking.target_label || "Target",

@@ -155,6 +155,112 @@ class LessonValidator:
                     errors.append(f"playground.{name} must contain inputs only, not derived answers")
             if "guided_steps" in playground or "target_state" in playground:
                 errors.append("paging uses the executable model, not scripted answer states")
+        if playground_type == "sql-select":
+            for name in ("problem", "challenge_problem"):
+                self._validate_sql_select_problem(
+                    playground.get(name),
+                    f"playground.{name}",
+                    errors,
+                )
+            if any(key in playground for key in ("guided_steps", "target_state", "initial_state")):
+                errors.append("sql-select uses the executable evaluator, not scripted answer states")
+
+    def _validate_sql_select_problem(self, problem, path, errors):
+        if not isinstance(problem, dict):
+            errors.append(f"{path} must contain relational inputs and a query goal")
+            return
+        if any(key in problem for key in ("result", "oracle", "expectedRows", "expected_rows")):
+            errors.append(f"{path} must not contain authored SELECT result rows")
+
+        database = problem.get("database")
+        tables = database.get("tables") if isinstance(database, dict) else None
+        if not isinstance(tables, list) or not tables:
+            errors.append(f"{path}.database.tables must be a non-empty list")
+            return
+
+        table_names = set()
+        table_columns = {}
+        table_types = {}
+        for table_index, table in enumerate(tables):
+            table_path = f"{path}.database.tables[{table_index}]"
+            if not isinstance(table, dict) or not self._is_text(table.get("name")):
+                errors.append(f"{table_path}.name must be a non-empty string")
+                continue
+            name = table["name"]
+            if name in table_names:
+                errors.append(f"{path}.database repeats table '{name}'")
+            table_names.add(name)
+
+            columns = table.get("columns")
+            if not isinstance(columns, list) or not columns:
+                errors.append(f"{table_path}.columns must be a non-empty list")
+                continue
+            column_names = []
+            types = {}
+            for column_index, column in enumerate(columns):
+                column_path = f"{table_path}.columns[{column_index}]"
+                if not isinstance(column, dict) or not self._is_text(column.get("name")):
+                    errors.append(f"{column_path}.name must be a non-empty string")
+                    continue
+                if column.get("type") not in ("string", "number", "boolean"):
+                    errors.append(f"{column_path}.type must be string, number, or boolean")
+                if column["name"] in column_names:
+                    errors.append(f"{table_path} repeats column '{column['name']}'")
+                column_names.append(column["name"])
+                types[column["name"]] = column.get("type")
+            table_columns[name] = set(column_names)
+            table_types[name] = types
+
+            rows = table.get("rows")
+            if not isinstance(rows, list):
+                errors.append(f"{table_path}.rows must be a list")
+                continue
+            row_ids = set()
+            for row_index, row in enumerate(rows):
+                row_path = f"{table_path}.rows[{row_index}]"
+                if not isinstance(row, dict) or not self._is_text(row.get("id")) or not isinstance(row.get("values"), dict):
+                    errors.append(f"{row_path} must contain id and values")
+                    continue
+                if row["id"] in row_ids:
+                    errors.append(f"{table_path} repeats row id '{row['id']}'")
+                row_ids.add(row["id"])
+                if set(row["values"]) != set(column_names):
+                    errors.append(f"{row_path}.values must match the explicit columns")
+                    continue
+                for column_name, column_type in types.items():
+                    value = row["values"].get(column_name)
+                    valid = (
+                        column_type == "string" and isinstance(value, str)
+                        or column_type == "number" and isinstance(value, (int, float)) and not isinstance(value, bool)
+                        or column_type == "boolean" and isinstance(value, bool)
+                    )
+                    if not valid:
+                        errors.append(f"{row_path}.values.{column_name} must be {column_type}")
+
+        goal = problem.get("goal")
+        query = goal.get("query") if isinstance(goal, dict) else None
+        if not isinstance(goal, dict) or not self._is_text(goal.get("instruction")) or not isinstance(query, dict):
+            errors.append(f"{path}.goal must contain instruction and structured query")
+            return
+        source = query.get("from")
+        if source not in table_names:
+            errors.append(f"{path}.goal.query.from references an unknown table")
+            return
+        selected = query.get("select")
+        if not isinstance(selected, list) or not selected or not all(
+            isinstance(field, str) and field in table_columns.get(source, set()) for field in selected
+        ):
+            errors.append(f"{path}.goal.query.select must reference source-table columns")
+        where = query.get("where")
+        if where is not None:
+            if not isinstance(where, dict) or where.get("field") not in table_columns.get(source, set()):
+                errors.append(f"{path}.goal.query.where.field must reference a source-table column")
+                return
+            operator = where.get("operator")
+            if operator not in ("=", "!=", ">", ">=", "<", "<="):
+                errors.append(f"{path}.goal.query.where.operator is unsupported")
+            if table_types.get(source, {}).get(where.get("field")) != "number" and operator not in ("=", "!="):
+                errors.append(f"{path}.goal.query.where uses an ordered operator on a non-number field")
 
     def _validate_controls(self, controls, path, errors, require_id=True):
         if not isinstance(controls, list) or not controls:
@@ -432,6 +538,7 @@ class LessonValidator:
             return
 
         declared_capabilities = set(lesson.get("capabilities", []))
+        executable_sql = lesson.get("playground", {}).get("type") == "sql-select"
         level_ids = []
         for index, level in enumerate(levels):
             path = f"mastery.levels[{index}]"
@@ -461,6 +568,8 @@ class LessonValidator:
                 continue
             if level.get("kind") == "expert":
                 self._validate_expert(level.get("expert"), path, errors, declared_capabilities, declarative)
+                if executable_sql and level.get("expert", {}).get("generator") != "sql-select":
+                    errors.append(f"{path}.expert must use the sql-select evaluator-backed generator")
                 continue
 
             scenario = level.get("scenario")
@@ -473,6 +582,10 @@ class LessonValidator:
                     errors.append(f"{path}.scenario.generator_version must be a positive integer")
                 if "scenario_rules" in scenario and not isinstance(scenario["scenario_rules"], dict):
                     errors.append(f"{path}.scenario.scenario_rules must be an object")
+                if executable_sql and scenario.get("generator") != "sql-select":
+                    errors.append(f"{path}.scenario must use the sql-select evaluator-backed generator")
+            elif executable_sql:
+                errors.append(f"{path}.scenario must use the sql-select evaluator-backed generator")
 
             challenge = level.get("challenge")
             if not isinstance(challenge, dict) or not isinstance(challenge.get("phases"), list) or not challenge["phases"]:
