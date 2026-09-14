@@ -164,6 +164,11 @@ class LessonValidator:
                 )
             if any(key in playground for key in ("guided_steps", "target_state", "initial_state")):
                 errors.append("sql-select uses the executable evaluator, not scripted answer states")
+        if playground_type == "transport-simulation":
+            for name in ("problem", "challenge_problem"):
+                self._validate_transport_problem(playground.get(name), f"playground.{name}", errors)
+            if any(key in playground for key in ("guided_steps", "target_state", "initial_state")):
+                errors.append("transport-simulation uses the executable event model, not scripted states")
 
     def _validate_sql_select_problem(self, problem, path, errors):
         if not isinstance(problem, dict):
@@ -261,6 +266,70 @@ class LessonValidator:
                 errors.append(f"{path}.goal.query.where.operator is unsupported")
             if table_types.get(source, {}).get(where.get("field")) != "number" and operator not in ("=", "!="):
                 errors.append(f"{path}.goal.query.where uses an ordered operator on a non-number field")
+
+    def _validate_transport_problem(self, problem, path, errors):
+        if not isinstance(problem, dict):
+            errors.append(f"{path} must contain transport inputs")
+            return
+        if any(key in problem for key in (
+            "oracle", "result", "events", "final_state", "target_state", "applicationOrder"
+        )):
+            errors.append(f"{path} must contain inputs only, not simulator answers")
+        application = problem.get("application")
+        if not isinstance(application, dict) or not all(
+            self._is_text(application.get(field)) for field in ("title", "need")
+        ):
+            errors.append(f"{path}.application must contain title and need")
+        requirements = problem.get("requirements")
+        if not isinstance(requirements, dict) or any(
+            type(requirements.get(field)) is not bool for field in ("orderedDelivery", "lossRepair")
+        ):
+            errors.append(f"{path}.requirements must contain boolean orderedDelivery and lossRepair")
+        packets = problem.get("packets")
+        if not isinstance(packets, list) or not 2 <= len(packets) <= 8:
+            errors.append(f"{path}.packets must contain 2 to 8 packets")
+            packets = []
+        packet_ids = set()
+        sequences = set()
+        for index, packet in enumerate(packets):
+            packet_path = f"{path}.packets[{index}]"
+            if not isinstance(packet, dict) or not all(
+                self._is_text(packet.get(field)) for field in ("id", "payload", "sender", "receiver")
+            ) or type(packet.get("sequence")) is not int:
+                errors.append(f"{packet_path} must contain id, sequence, payload, sender, and receiver")
+                continue
+            if packet["sequence"] != index + 1:
+                errors.append(f"{packet_path}.sequence must be the next ordered sequence number")
+            if packet["id"] in packet_ids or packet["sequence"] in sequences:
+                errors.append(f"{path}.packets must have unique IDs and sequence numbers")
+            packet_ids.add(packet["id"])
+            sequences.add(packet["sequence"])
+        network = problem.get("network")
+        if not isinstance(network, dict):
+            errors.append(f"{path}.network must be an object")
+            return
+        conditions = network.get("conditions")
+        if not isinstance(conditions, list) or len(conditions) != len(packets):
+            errors.append(f"{path}.network.conditions must describe every packet")
+            conditions = []
+        condition_sequences = set()
+        for index, condition in enumerate(conditions):
+            condition_path = f"{path}.network.conditions[{index}]"
+            if not isinstance(condition, dict) or condition.get("sequence") not in sequences:
+                errors.append(f"{condition_path}.sequence must reference a packet")
+                continue
+            if condition["sequence"] in condition_sequences:
+                errors.append(f"{path}.network.conditions repeats a sequence")
+            condition_sequences.add(condition["sequence"])
+            if condition.get("firstTransmission") not in ("deliver", "loss"):
+                errors.append(f"{condition_path}.firstTransmission must be deliver or loss")
+            if type(condition.get("delay")) is not int or condition["delay"] < 1:
+                errors.append(f"{condition_path}.delay must be a positive integer")
+        for field in ("sendSpacing", "timeout", "retransmissionDelay", "ackDelay"):
+            if type(network.get(field)) is not int or network[field] < 0:
+                errors.append(f"{path}.network.{field} must be a non-negative integer")
+        if problem.get("knownProtocol") not in (None, "TCP", "UDP"):
+            errors.append(f"{path}.knownProtocol must be TCP or UDP when provided")
 
     def _validate_controls(self, controls, path, errors, require_id=True):
         if not isinstance(controls, list) or not controls:
@@ -539,6 +608,7 @@ class LessonValidator:
 
         declared_capabilities = set(lesson.get("capabilities", []))
         executable_sql = lesson.get("playground", {}).get("type") == "sql-select"
+        executable_transport = lesson.get("playground", {}).get("type") == "transport-simulation"
         level_ids = []
         for index, level in enumerate(levels):
             path = f"mastery.levels[{index}]"
@@ -570,6 +640,8 @@ class LessonValidator:
                 self._validate_expert(level.get("expert"), path, errors, declared_capabilities, declarative)
                 if executable_sql and level.get("expert", {}).get("generator") != "sql-select":
                     errors.append(f"{path}.expert must use the sql-select evaluator-backed generator")
+                if executable_transport and level.get("expert", {}).get("generator") != "transport":
+                    errors.append(f"{path}.expert must use the transport simulator-backed generator")
                 continue
 
             scenario = level.get("scenario")
@@ -584,8 +656,11 @@ class LessonValidator:
                     errors.append(f"{path}.scenario.scenario_rules must be an object")
                 if executable_sql and scenario.get("generator") != "sql-select":
                     errors.append(f"{path}.scenario must use the sql-select evaluator-backed generator")
-            elif executable_sql:
-                errors.append(f"{path}.scenario must use the sql-select evaluator-backed generator")
+                if executable_transport and scenario.get("generator") != "transport":
+                    errors.append(f"{path}.scenario must use the transport simulator-backed generator")
+            elif executable_sql or executable_transport:
+                generator_name = "sql-select evaluator" if executable_sql else "transport simulator"
+                errors.append(f"{path}.scenario must use the {generator_name}-backed generator")
 
             challenge = level.get("challenge")
             if not isinstance(challenge, dict) or not isinstance(challenge.get("phases"), list) or not challenge["phases"]:

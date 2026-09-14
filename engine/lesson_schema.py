@@ -69,6 +69,7 @@ KNOWN_PLAYGROUND_TYPES = frozenset({
     "ip-addresses",
     "dns-lookup",
     "tcp-udp",
+    "transport-simulation",
     "http-request",
 })
 

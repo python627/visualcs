@@ -230,7 +230,7 @@
     const types = [
         "process-states", "deadlock-graph", "table-records",
         "dbms-joins", "normalization", "transactions",
-        "ip-addresses", "dns-lookup", "tcp-udp", "http-request"
+        "ip-addresses", "dns-lookup", "http-request"
     ];
     types.forEach(type => registerPlayground(type, createPlayground));
 

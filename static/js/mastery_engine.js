@@ -760,6 +760,7 @@ class MasteryEngine {
                     || "Enter both predictions before continuing."
             };
             this.renderAttempt();
+            this.bindControls();
             return;
         }
 

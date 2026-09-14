@@ -1,844 +1,196 @@
 {
   "schema_version": 2,
   "metadata": {
-    "id": "tcp-vs-udp",
-    "order": 4,
-    "subject_order": 5,
-    "subject": "Computer Networks",
-    "topic": "TCP vs UDP",
-    "title": "Choose TCP or UDP",
-    "description": "Select a transport protocol by reasoning about delivery, order, and retransmission.",
-    "difficulty": "Beginner",
-    "estimated_time": "15 min"
+    "id": "tcp-vs-udp", "order": 4, "subject_order": 5,
+    "subject": "Computer Networks", "topic": "TCP vs UDP", "title": "Choose TCP or UDP",
+    "description": "Predict and inspect how TCP-like and UDP transport react to delay, loss, and reordered arrival.",
+    "difficulty": "Beginner", "estimated_time": "18 min"
   },
   "learning_objectives": [
-    "Explain TCP vs UDP in simple terms.",
-    "Follow one visible TCP vs UDP example.",
-    "Make a correct decision in the playground."
+    "Distinguish network loss from protocol behavior.",
+    "Explain UDP delivery without automatic transport retransmission.",
+    "Trace TCP acknowledgements, timeouts, retransmission, buffering, and ordered application delivery.",
+    "Choose a protocol from an application's delivery requirements."
   ],
-  "capabilities": [
-    "interactive_state",
-    "decision_tree",
-    "sequence_simulation"
-  ],
+  "capabilities": ["interactive_state", "prediction", "sequence_simulation", "decision_tree"],
   "teaching": {
-    "mission": {
-      "title": "Practise TCP vs UDP",
-      "description": "Make each decision and watch the consequence."
-    },
+    "mission": {"title": "Predict a transport outcome", "description": "Choose a protocol, predict its behavior, then replay the simulator events."},
     "introduction": {
-      "title": "TCP vs UDP: start here",
-      "content": "TCP and UDP move data with different guarantees.",
+      "title": "Transport changes what happens after the network acts",
+      "content": "Both TCP and UDP send data through a network that may delay, reorder, or lose packets. Their difference is how the transport layer responds.",
       "points": [
-        "Choose based on whether the application needs ordered, acknowledged delivery."
+        "UDP passes along surviving datagrams without automatically repairing a missing one.",
+        "This TCP-like model uses sequence numbers, ACKs, timeouts, retransmission, and in-order application delivery."
       ],
-      "visual": {
-        "type": "array",
-        "label": "TCP vs UDP",
-        "items": [
-          "What?",
-          "Example",
-          "Try it"
-        ]
-      }
+      "visual": {"type": "sequence", "label": "TRANSPORT FLOW", "items": ["SENDER", "NETWORK", "RECEIVER", "APPLICATION"]}
     },
     "worked_example": {
-      "title": "See one example",
-      "content": "Watch one concrete sequence before you try it.",
+      "title": "One loss, two different consequences",
+      "content": "Imagine packets P1, P2, and P3 are sent, and the simulated network loses P2's first transmission.",
+      "visual_type": "sequence",
       "steps": [
-        {
-          "action": "CHOOSE TCP",
-          "state": {
-            "zones": {
-              "SCENARIO": [
-                "File download"
-              ],
-              "PROTOCOL": [
-                "TCP"
-              ]
-            }
-          },
-          "explanation": "A file needs complete ordered data, so TCP fits."
-        },
-        {
-          "action": "ACKNOWLEDGE",
-          "state": {
-            "zones": {
-              "TCP": [
-                "packet 1 ✓",
-                "packet 2 ✓"
-              ]
-            }
-          },
-          "explanation": "TCP acknowledges received data."
-        },
-        {
-          "action": "RETRANSMIT",
-          "state": {
-            "zones": {
-              "TCP": [
-                "packet 2 lost → sent again"
-              ]
-            }
-          },
-          "explanation": "TCP can retransmit a missing packet."
-        }
+        {"action": "UDP", "items": ["P1", "P3"], "explanation": "Surviving datagrams can reach the application; UDP does not automatically resend P2."},
+        {"action": "TCP", "items": ["P1", "P3 buffered", "timeout", "P2 resent"], "explanation": "TCP notices the missing ACK, retransmits P2, and holds later data until order can be restored."},
+        {"action": "APPLICATION", "items": ["P1", "P2", "P3"], "explanation": "After repair, the TCP application receives the complete sequence in order."}
       ],
-      "conclusion": "The visual state changes because the concept follows a rule.",
-      "next": {
-        "title": "Now you try.",
-        "content": "Choose the next meaningful action."
-      }
+      "conclusion": "The network caused the loss. The chosen transport protocol determined the response.",
+      "next": {"title": "Now predict before replaying.", "content": "Use the displayed first-transmission conditions to reason about the receiver and application."}
     },
-    "guided_practice": {
-      "action_explanations": {
-        "scenario": "The scenario action changes the state for a reason.",
-        "choose-udp": "The choose-udp action changes the state for a reason.",
-        "explain": "The explain action changes the state for a reason."
-      }
-    }
+    "guided_practice": {"action_explanations": {
+      "choose-protocol": "Your choice determines whether missing data is repaired and whether application delivery waits for order.",
+      "predict": "Your prediction is locked before the simulator reveals event consequences.",
+      "run-simulation": "The logical event queue—not animation timing—produced the receiver and application result."
+    }}
   },
   "visualization": {
-    "type": "tcp-udp",
-    "view": "zones",
-    "initial_state": {
-      "zones": {
-        "SCENARIO": [
-          "File download"
+    "type": "transport-simulation",
+    "problem": {
+      "application": {"title": "Live position updates", "need": "Use each fresh update that arrives; do not wait for transport to repair an old missing update."},
+      "requirements": {"orderedDelivery": false, "lossRepair": false},
+      "packets": [
+        {"id": "P1", "sequence": 1, "payload": "position-A", "sender": "Sender", "receiver": "Receiver"},
+        {"id": "P2", "sequence": 2, "payload": "position-B", "sender": "Sender", "receiver": "Receiver"},
+        {"id": "P3", "sequence": 3, "payload": "position-C", "sender": "Sender", "receiver": "Receiver"}
+      ],
+      "network": {
+        "conditions": [
+          {"sequence": 1, "firstTransmission": "deliver", "delay": 1},
+          {"sequence": 2, "firstTransmission": "loss", "delay": 2},
+          {"sequence": 3, "firstTransmission": "deliver", "delay": 1}
         ],
-        "CHOICES": [
-          "TCP",
-          "UDP"
-        ],
-        "RESULT": [
-          "choose"
-        ]
+        "sendSpacing": 0, "timeout": 6, "retransmissionDelay": 2, "ackDelay": 1
       }
     },
-    "guided_steps": [
-      {
-        "operation": "scenario",
-        "instruction": "Read the application need",
-        "next_state": {
-          "zones": {
-            "SCENARIO": [
-              "Video call"
-            ],
-            "CHOICES": [
-              "TCP",
-              "UDP"
-            ]
-          }
-        },
-        "evaluation_state": [
-          "SCENARIO"
-        ]
-      },
-      {
-        "operation": "choose-udp",
-        "instruction": "Choose the suitable protocol",
-        "next_state": {
-          "zones": {
-            "SCENARIO": [
-              "Video call"
-            ],
-            "PROTOCOL": [
-              "UDP"
-            ]
-          }
-        },
-        "evaluation_state": [
-          "CHOOSE-UDP"
-        ]
-      },
-      {
-        "operation": "explain",
-        "instruction": "Explain the tradeoff",
-        "next_state": {
-          "zones": {
-            "RESULT": [
-              "timely delivery; occasional loss acceptable"
-            ]
-          }
-        },
-        "evaluation_state": [
-          "EXPLAIN"
-        ]
+    "challenge_problem": {
+      "application": {"title": "Document download", "need": "Every chunk must reach the application in its original order."},
+      "requirements": {"orderedDelivery": true, "lossRepair": true},
+      "packets": [
+        {"id": "P1", "sequence": 1, "payload": "document-A", "sender": "Sender", "receiver": "Receiver"},
+        {"id": "P2", "sequence": 2, "payload": "document-B", "sender": "Sender", "receiver": "Receiver"},
+        {"id": "P3", "sequence": 3, "payload": "document-C", "sender": "Sender", "receiver": "Receiver"}
+      ],
+      "network": {
+        "conditions": [
+          {"sequence": 1, "firstTransmission": "deliver", "delay": 1},
+          {"sequence": 2, "firstTransmission": "loss", "delay": 2},
+          {"sequence": 3, "firstTransmission": "deliver", "delay": 1}
+        ],
+        "sendSpacing": 0, "timeout": 6, "retransmissionDelay": 2, "ackDelay": 1
       }
-    ],
-    "controls": [
-      {
-        "id": "scenario",
-        "label": "READ SCENARIO",
-        "operation": "scenario"
-      },
-      {
-        "id": "choose-udp",
-        "label": "CHOOSE UDP",
-        "operation": "choose-udp"
-      },
-      {
-        "id": "choose-tcp",
-        "label": "CHOOSE TCP",
-        "operation": "choose-tcp"
-      },
-      {
-        "id": "explain",
-        "label": "EXPLAIN TRADEOFF",
-        "operation": "explain"
-      }
-    ],
+    },
+    "tasks": {
+      "protocol": {"title": "Choose TCP or UDP", "instruction": "Which protocol matches the application's stated delivery requirements?"},
+      "prediction": {"title": "Predict the transport consequence", "instruction": "Predict arrivals, retransmission, repair, and application order before revealing events."},
+      "replay": {"title": "Reveal the next simulator event", "instruction": "Follow the packet or ACK that changes state now."},
+      "review": {"title": "Compare prediction with consequence", "instruction": "Use the field feedback and event sequence to explain the behavior."}
+    },
+    "messages": {
+      "missing_protocol": "Choose TCP or UDP before predicting the outcome.",
+      "missing_prediction": "Complete every prediction. Type NONE when an answer contains no packets.",
+      "prediction_saved": "Prediction saved. Reveal the deterministic event sequence one event at a time.",
+      "success": "Your protocol choice and every prediction match the simulator.",
+      "incorrect": "The simulator produced a different consequence. Review the field feedback and event sequence."
+    },
+    "run_label": "LOCK PREDICTION & RUN", "next_event_label": "NEXT EVENT",
+    "controls": [{"id": "run-transport", "label": "RUN SIMULATION", "operation": "run-simulation"}],
     "actions": [
-      {
-        "label": "Read the scenario",
-        "operation": "scenario",
-        "task": "Read the scenario"
-      },
-      {
-        "label": "Choose a protocol",
-        "operation": "choose-udp",
-        "task": "Choose a protocol"
-      },
-      {
-        "label": "Explain its tradeoff",
-        "operation": "explain",
-        "task": "Explain its tradeoff"
-      }
+      {"label": "Choose a protocol", "operation": "choose-protocol", "task": "Choose the protocol that fits the application need."},
+      {"label": "Predict the outcome", "operation": "predict", "task": "Predict before revealing the simulator result."},
+      {"label": "Replay and explain", "operation": "run-simulation", "task": "Follow the real event sequence and inspect its consequence."}
     ],
-    "instruction": "Choose the next meaningful action.",
-    "wrong_action_message": "Compare the active task with the current state before choosing."
+    "free_play": {"generator": "transport", "generator_version": 1, "scenario_rules": {
+      "protocols": ["TCP", "UDP"], "packetCounts": [3, 4], "lossCounts": [0, 1], "knownProtocol": false, "outOfOrderRate": 0.6
+    }}
   },
-  "practice": {
-    "challenge": {
-      "title": "TCP vs UDP challenge",
-      "start_message": "Apply the concept to the displayed state.",
-      "continue_message": "Challenge complete. Keep experimenting.",
-      "phases": [
-        {
-          "title": "Reach the correct result",
-          "instruction": "Use the controls to reach the target state.",
-          "target": {
-            "label": "TARGET",
-            "items": [
-              "COMPLETE"
-            ]
-          },
-          "goal": {
-            "type": "state_equals",
-            "expected_state": [
-              "COMPLETE"
-            ]
-          },
-          "success": "✓ Challenge complete",
-          "feedback": "Compare your state with the target."
-        }
-      ]
-    }
-  },
+  "practice": {"challenge": {
+    "title": "Independent transport challenge",
+    "start_message": "Use the new application need and network conditions without button-by-button instructions.",
+    "start_label": "Start transport challenge", "start_on_request": true,
+    "continue_message": "Challenge complete. Keep replaying or experimenting.",
+    "phases": [{
+      "title": "Predict and verify",
+      "instruction": "Choose the fitting protocol, predict its consequence, and verify it through the simulator.",
+      "target": {"label": "HIDDEN SIMULATOR RESULT", "description": "The event model calculates the result after your prediction."},
+      "targetVisibility": "hidden",
+      "goal": {"type": "outcome_equals", "expected_outcome": "solved"},
+      "success": "✓ Independent transport challenge complete",
+      "feedback": "Compare each prediction field with the actual event-derived result."
+    }]
+  }},
   "mastery": {
-    "title": "TCP vs UDP Mastery",
-    "mastered_label": "TCP vs UDP Mastered",
-    "current_state_label": "YOUR STATE",
+    "title": "TCP vs UDP Mastery", "mastered_label": "TCP vs UDP Mastered", "current_state_label": "YOUR TRANSPORT SIMULATION",
     "levels": [
+      {"id": "learn", "label": "Learn", "completion": {"type": "course_completion"}},
       {
-        "id": "learn",
-        "label": "Learn",
-        "completion": {
-          "type": "course_completion"
-        }
+        "id": "practice", "label": "Practice", "prerequisites": ["learn"], "retry_same_scenario": true, "new_problem": true,
+        "guidance": {"start_message": "The protocol is given. Predict a small UDP outcome.", "hints": {"limit": 1, "items": [{"content": "UDP does not add transport-level retransmission in this model."}]}},
+        "scenario": {"generator": "transport", "generator_version": 1, "scenario_rules": {"protocols": ["UDP"], "packetCounts": [3], "lossCounts": [1], "knownProtocol": true, "outOfOrderRate": 0}},
+        "challenge": {"phases": [{"title": "Practice UDP", "instruction": "Predict and replay the given UDP scenario.", "target": {"label": "HIDDEN RESULT"}, "targetVisibility": "hidden", "goal": {"type": "outcome_equals", "expected_outcome": "solved"}, "success": "✓ Practice complete", "feedback": "Trace surviving UDP datagrams in network-arrival order."}]}
       },
       {
-        "id": "practice",
-        "label": "Practice",
-        "prerequisites": [
-          "learn"
-        ],
-        "guidance": {
-          "start_message": "Compare the current state with the objective and choose the next action.",
-          "hints": {
-            "limit": 1,
-            "items": [
-              {
-                "content": "Use the operation that moves the state toward the target."
-              }
-            ]
-          }
-        },
-        "controls": [
-          {
-            "id": "scenario",
-            "label": "READ SCENARIO",
-            "operation": "scenario"
-          },
-          {
-            "id": "choose-udp",
-            "label": "CHOOSE UDP",
-            "operation": "choose-udp"
-          },
-          {
-            "id": "choose-tcp",
-            "label": "CHOOSE TCP",
-            "operation": "choose-tcp"
-          }
-        ],
-        "scenario": {
-          "initial_state": {
-            "zones": {
-              "SCENARIO": [
-                "File download"
-              ],
-              "CHOICES": [
-                "TCP",
-                "UDP"
-              ],
-              "RESULT": [
-                "choose"
-              ]
-            }
-          },
-          "operations": [
-            {
-              "operation": "scenario",
-              "instruction": "Read the application need",
-              "next_state": {
-                "zones": {
-                  "SCENARIO": [
-                    "Video call"
-                  ],
-                  "CHOICES": [
-                    "TCP",
-                    "UDP"
-                  ]
-                }
-              },
-              "evaluation_state": [
-                "SCENARIO"
-              ]
-            }
-          ]
-        },
-        "challenge": {
-          "phases": [
-            {
-              "title": "Practice task",
-              "instruction": "Reach the target state by making the appropriate decisions.",
-              "target": {
-                "label": "TARGET STATE",
-                "items": [
-                  "COMPLETE"
-                ]
-              },
-              "goal": {
-                "type": "state_equals",
-                "expected_state": [
-                  "COMPLETE"
-                ]
-              },
-              "success": "✓ Practice complete",
-              "feedback": "Compare your current state with the target before choosing again."
-            }
-          ]
-        }
+        "id": "apply", "label": "Apply", "prerequisites": ["practice"], "retry_same_scenario": true, "new_problem": true,
+        "guidance": {"start_message": "Apply TCP timeout, retransmission, buffering, and ordered delivery.", "hints": {"limit": 0, "items": []}},
+        "scenario": {"generator": "transport", "generator_version": 1, "scenario_rules": {"protocols": ["TCP"], "packetCounts": [3, 4], "lossCounts": [1], "knownProtocol": true, "outOfOrderRate": 1}},
+        "challenge": {"phases": [{"title": "Apply TCP", "instruction": "Predict the event-derived TCP receiver and application outcome.", "target": {"label": "HIDDEN RESULT"}, "targetVisibility": "hidden", "goal": {"type": "outcome_equals", "expected_outcome": "solved"}, "success": "✓ Apply complete", "feedback": "Later TCP segments may wait in the receiver buffer."}]}
       },
       {
-        "id": "apply",
-        "label": "Apply",
-        "prerequisites": [
-          "practice"
-        ],
-        "guidance": {
-          "start_message": "Compare the current state with the objective and choose the next action.",
-          "hints": {
-            "limit": 0,
-            "items": []
-          }
-        },
-        "controls": [
-          {
-            "id": "scenario",
-            "label": "READ SCENARIO",
-            "operation": "scenario"
-          },
-          {
-            "id": "choose-udp",
-            "label": "CHOOSE UDP",
-            "operation": "choose-udp"
-          },
-          {
-            "id": "choose-tcp",
-            "label": "CHOOSE TCP",
-            "operation": "choose-tcp"
-          }
-        ],
-        "scenario": {
-          "initial_state": {
-            "zones": {
-              "SCENARIO": [
-                "File download"
-              ],
-              "CHOICES": [
-                "TCP",
-                "UDP"
-              ],
-              "RESULT": [
-                "choose"
-              ]
-            }
-          },
-          "operations": [
-            {
-              "operation": "scenario",
-              "instruction": "Read the application need",
-              "next_state": {
-                "zones": {
-                  "SCENARIO": [
-                    "Video call"
-                  ],
-                  "CHOICES": [
-                    "TCP",
-                    "UDP"
-                  ]
-                }
-              },
-              "evaluation_state": [
-                "SCENARIO"
-              ]
-            },
-            {
-              "operation": "choose-udp",
-              "instruction": "Choose the suitable protocol",
-              "next_state": {
-                "zones": {
-                  "SCENARIO": [
-                    "Video call"
-                  ],
-                  "PROTOCOL": [
-                    "UDP"
-                  ]
-                }
-              },
-              "evaluation_state": [
-                "CHOOSE-UDP"
-              ]
-            }
-          ]
-        },
-        "challenge": {
-          "phases": [
-            {
-              "title": "Apply task",
-              "instruction": "Reach the target state by making the appropriate decisions.",
-              "target": {
-                "label": "TARGET STATE",
-                "items": [
-                  "COMPLETE"
-                ]
-              },
-              "goal": {
-                "type": "state_equals",
-                "expected_state": [
-                  "COMPLETE"
-                ]
-              },
-              "success": "✓ Apply complete",
-              "feedback": "Compare your current state with the target before choosing again."
-            }
-          ]
-        }
+        "id": "solve", "label": "Solve", "prerequisites": ["apply"], "retry_same_scenario": true, "new_problem": true,
+        "guidance": {"start_message": "Choose the protocol from the application need, then solve independently.", "hints": {"limit": 0, "items": []}},
+        "scenario": {"generator": "transport", "generator_version": 1, "scenario_rules": {"protocols": ["TCP", "UDP"], "packetCounts": [4], "lossCounts": [0, 1], "knownProtocol": false, "outOfOrderRate": 0.7}},
+        "challenge": {"phases": [{"title": "Solve the transport choice", "instruction": "Choose, predict, and replay with no hints.", "target": {"label": "HIDDEN RESULT"}, "targetVisibility": "hidden", "goal": {"type": "outcome_equals", "expected_outcome": "solved"}, "success": "✓ Solve complete", "feedback": "Separate network conditions from the selected protocol's response."}]}
       },
       {
-        "id": "solve",
-        "label": "Solve",
-        "prerequisites": [
-          "apply"
-        ],
-        "guidance": {
-          "start_message": "Compare the current state with the objective and choose the next action.",
-          "hints": {
-            "limit": 0,
-            "items": []
-          }
-        },
-        "controls": [
-          {
-            "id": "scenario",
-            "label": "READ SCENARIO",
-            "operation": "scenario"
-          },
-          {
-            "id": "choose-udp",
-            "label": "CHOOSE UDP",
-            "operation": "choose-udp"
-          },
-          {
-            "id": "choose-tcp",
-            "label": "CHOOSE TCP",
-            "operation": "choose-tcp"
-          }
-        ],
-        "scenario": {
-          "initial_state": {
-            "zones": {
-              "SCENARIO": [
-                "File download"
-              ],
-              "CHOICES": [
-                "TCP",
-                "UDP"
-              ],
-              "RESULT": [
-                "choose"
-              ]
-            }
-          },
-          "operations": [
-            {
-              "operation": "scenario",
-              "instruction": "Read the application need",
-              "next_state": {
-                "zones": {
-                  "SCENARIO": [
-                    "Video call"
-                  ],
-                  "CHOICES": [
-                    "TCP",
-                    "UDP"
-                  ]
-                }
-              },
-              "evaluation_state": [
-                "SCENARIO"
-              ]
-            },
-            {
-              "operation": "choose-udp",
-              "instruction": "Choose the suitable protocol",
-              "next_state": {
-                "zones": {
-                  "SCENARIO": [
-                    "Video call"
-                  ],
-                  "PROTOCOL": [
-                    "UDP"
-                  ]
-                }
-              },
-              "evaluation_state": [
-                "CHOOSE-UDP"
-              ]
-            },
-            {
-              "operation": "explain",
-              "instruction": "Explain the tradeoff",
-              "next_state": {
-                "zones": {
-                  "RESULT": [
-                    "timely delivery; occasional loss acceptable"
-                  ]
-                }
-              },
-              "evaluation_state": [
-                "EXPLAIN"
-              ]
-            }
-          ]
-        },
-        "challenge": {
-          "phases": [
-            {
-              "title": "Solve task",
-              "instruction": "Reach the target state by making the appropriate decisions.",
-              "target": {
-                "label": "TARGET STATE",
-                "items": [
-                  "COMPLETE"
-                ]
-              },
-              "goal": {
-                "type": "state_equals",
-                "expected_state": [
-                  "COMPLETE"
-                ]
-              },
-              "success": "✓ Solve complete",
-              "feedback": "Compare your current state with the target before choosing again."
-            }
-          ]
-        }
-      },
-      {
-        "id": "mastery",
-        "label": "Mastery",
-        "prerequisites": [
-          "solve"
-        ],
-        "guidance": {
-          "start_message": "Compare the current state with the objective and choose the next action.",
-          "hints": {
-            "limit": 0,
-            "items": []
-          }
-        },
-        "controls": [
-          {
-            "id": "scenario",
-            "label": "READ SCENARIO",
-            "operation": "scenario"
-          },
-          {
-            "id": "choose-udp",
-            "label": "CHOOSE UDP",
-            "operation": "choose-udp"
-          },
-          {
-            "id": "choose-tcp",
-            "label": "CHOOSE TCP",
-            "operation": "choose-tcp"
-          }
-        ],
-        "scenario": {
-          "initial_state": {
-            "zones": {
-              "SCENARIO": [
-                "File download"
-              ],
-              "CHOICES": [
-                "TCP",
-                "UDP"
-              ],
-              "RESULT": [
-                "choose"
-              ]
-            }
-          },
-          "operations": [
-            {
-              "operation": "scenario",
-              "instruction": "Read the application need",
-              "next_state": {
-                "zones": {
-                  "SCENARIO": [
-                    "Video call"
-                  ],
-                  "CHOICES": [
-                    "TCP",
-                    "UDP"
-                  ]
-                }
-              },
-              "evaluation_state": [
-                "SCENARIO"
-              ]
-            },
-            {
-              "operation": "choose-udp",
-              "instruction": "Choose the suitable protocol",
-              "next_state": {
-                "zones": {
-                  "SCENARIO": [
-                    "Video call"
-                  ],
-                  "PROTOCOL": [
-                    "UDP"
-                  ]
-                }
-              },
-              "evaluation_state": [
-                "CHOOSE-UDP"
-              ]
-            },
-            {
-              "operation": "explain",
-              "instruction": "Explain the tradeoff",
-              "next_state": {
-                "zones": {
-                  "RESULT": [
-                    "timely delivery; occasional loss acceptable"
-                  ]
-                }
-              },
-              "evaluation_state": [
-                "EXPLAIN"
-              ]
-            }
-          ]
-        },
-        "challenge": {
-          "phases": [
-            {
-              "title": "Mastery task",
-              "instruction": "Reach the target state by making the appropriate decisions.",
-              "target": {
-                "label": "TARGET STATE",
-                "items": [
-                  "COMPLETE"
-                ]
-              },
-              "goal": {
-                "type": "state_equals",
-                "expected_state": [
-                  "COMPLETE"
-                ]
-              },
-              "success": "✓ Mastery complete",
-              "feedback": "Compare your current state with the target before choosing again."
-            }
-          ]
-        }
+        "id": "mastery", "label": "Mastery", "prerequisites": ["solve"], "retry_same_scenario": true, "new_problem": true,
+        "guidance": {"start_message": "Handle more packets, reordered arrivals, and an unfamiliar loss position.", "hints": {"limit": 0, "items": []}},
+        "scenario": {"generator": "transport", "generator_version": 1, "scenario_rules": {"protocols": ["TCP", "UDP"], "packetCounts": [5, 6], "lossCounts": [1], "knownProtocol": false, "outOfOrderRate": 1}},
+        "challenge": {"phases": [{"title": "Master transport behavior", "instruction": "Derive every prediction from the application and deterministic network inputs.", "target": {"label": "HIDDEN RESULT"}, "targetVisibility": "hidden", "goal": {"type": "outcome_equals", "expected_outcome": "solved"}, "success": "✓ Mastery complete", "feedback": "Reconstruct arrivals, repair, and application delivery separately."}]}
       }
     ]
   },
   "expert": {
-    "id": "expert",
-    "label": "Expert",
-    "prerequisites": [
-      "mastery"
-    ],
-    "generator": "phase2-expert",
-    "generator_version": 1,
-    "required_capabilities": [
-      "interactive_state",
-      "decision_tree",
-      "sequence_simulation"
-    ],
+    "id": "expert", "label": "Expert", "prerequisites": ["mastery"],
+    "generator": "transport", "generator_version": 1, "assessment_mode": "prediction",
+    "required_capabilities": ["interactive_state", "prediction", "sequence_simulation", "decision_tree"],
+    "scenario_rules": {"protocols": ["TCP", "UDP"], "packetCounts": [5, 6], "lossCounts": [0, 1], "knownProtocol": true, "outOfOrderRate": 1},
+    "targetVisibility": "hidden",
     "thinking": {
-      "title": "Predict the sequence",
-      "objective_label": "Think first",
-      "instruction": "Mentally follow the sequence before acting.",
-      "starting_stack_label": "STARTING STATE",
-      "sequence_label": "ACTIONS TO SIMULATE",
-      "do_not_execute": "Do not act yet. Work through the sequence in order.",
-      "prediction_label": "YOUR PREDICTION",
+      "title": "Mentally simulate transport events", "objective_label": "Think first",
+      "instruction": "Use the known protocol and first-transmission conditions. Predict the transport and application result before any events are revealed.",
+      "starting_stack_label": "PROTOCOL + NETWORK INPUTS", "sequence_label": "REASONING TO PERFORM",
+      "do_not_execute": "Do not reveal the event sequence yet. Work through loss, arrival, ACK, timeout, buffering, and delivery mentally.",
+      "prediction_label": "YOUR STRUCTURED PREDICTION",
       "prediction_fields": [
-        {
-          "id": "finalState",
-          "label": "Final state",
-          "prompt": "What will the final state contain?",
-          "type": "text",
-          "placeholder": "Describe the result"
-        }
+        {"id": "receiverPackets", "label": "Transport arrival order", "type": "text", "placeholder": "P1, P3, P2 or NONE"},
+        {"id": "applicationOrder", "label": "Application delivery order", "type": "text", "placeholder": "P1, P2, P3 or NONE"},
+        {"id": "retransmittedPackets", "label": "Retransmitted packets", "type": "text", "placeholder": "P2 or NONE"},
+        {"id": "repairsLoss", "label": "Does transport repair the loss?", "type": "text", "placeholder": "YES or NO"}
       ],
-      "submit_label": "Check my prediction",
-      "continue_label": "Continue to Expert Challenge →",
-      "actual_label": "RESULT",
-      "your_prediction_label": "Your prediction",
-      "actual_result": "Final state: {{final_state}}.",
-      "feedback": {
-        "all_correct": "You tracked the sequence.",
-        "incorrect": "Recheck each transition."
-      }
+      "submit_label": "Check prediction", "empty_message": "Complete every prediction field. Use NONE where appropriate.",
+      "feedback": {"all_correct": "Your mental simulation matches every event-derived result.", "incorrect": "Compare each field with the revealed event sequence."}
     },
-    "solve": {
-      "title": "Expert TCP vs UDP",
-      "instruction": "Apply the sequence with no hints.",
-      "target_label": "TARGET STATE",
-      "your_label": "YOUR STATE",
-      "metric_label": "Actions",
-      "hints_label": "Hints: none",
-      "operation_rule": "Each action counts once.",
-      "controls": [
-        {
-          "id": "scenario",
-          "label": "READ SCENARIO",
-          "operation": "scenario"
-        },
-        {
-          "id": "choose-udp",
-          "label": "CHOOSE UDP",
-          "operation": "choose-udp"
-        },
-        {
-          "id": "choose-tcp",
-          "label": "CHOOSE TCP",
-          "operation": "choose-tcp"
-        }
-      ],
-      "perfect_message": "🏆 PERFECT EXPERT",
-      "perfect_result": "You completed the sequence.",
-      "new_challenge_label": "New Expert Challenge"
-    },
-    "scenario_rules": {
-      "initial_state": [
-        "FILE DOWNLOAD"
-      ],
-      "steps": [
-        {
-          "operation": "scenario",
-          "label": "READ SCENARIO"
-        },
-        {
-          "operation": "choose-tcp",
-          "label": "CHOOSE TCP"
-        },
-        {
-          "operation": "explain",
-          "label": "EXPLAIN"
-        }
-      ],
-      "final_state": [
-        "TCP"
-      ],
-      "target_state": [
-        "TCP"
-      ]
-    }
+    "solve": {"title": "Expert TCP vs UDP", "instruction": "Mentally derive the complete transport outcome.", "new_challenge_label": "New Expert Transport Challenge"}
   },
   "assessment": {
     "quiz": {
-      "question": "Which protocol retransmits missing data?",
-      "options": [
-        "TCP",
-        "UDP",
-        "DNS",
-        "HTTP"
-      ],
-      "correct": 0
+      "question": "In this TCP-like model, packet P3 arrives while P2 is missing. What happens before the application receives P3?",
+      "options": ["P3 is delivered immediately out of order", "P3 is discarded forever", "P3 waits in the receiver buffer until P2 is repaired", "The network changes P3 into an ACK"],
+      "correct": 2
     },
-    "discovery": {
-      "title": "TCP/UDP discovery",
-      "summary": "Transport choices trade delivery guarantees against the overhead of providing them."
-    },
-    "notes": {
-      "sections": [
-        {
-          "title": "What?",
-          "content": "TCP emphasizes ordered, acknowledged delivery; UDP sends with fewer guarantees."
-        },
-        {
-          "title": "Example",
-          "content": "A file download usually chooses TCP; a live video call may choose UDP."
-        },
-        {
-          "title": "Why?",
-          "content": "The right choice depends on whether missing data can be tolerated."
-        },
-        {
-          "title": "Remember",
-          "content": "Do not reduce the choice to simply fast versus slow."
-        }
-      ]
-    },
+    "discovery": {"title": "Transport behavior discovery", "summary": "The network may lose or reorder transmissions. UDP passes surviving datagrams onward without automatic repair, while this TCP-like model uses ACKs, timeout, retransmission, and buffering to deliver application data in order."},
+    "notes": {"sections": [
+      {"title": "What?", "content": "TCP and UDP are transport protocols. The network conditions are separate from the protocol's response."},
+      {"title": "UDP example", "content": "If P2 is lost, P1 and P3 may still reach the application. UDP does not automatically resend P2 in this model."},
+      {"title": "TCP example", "content": "A missing ACK leads to timeout and retransmission. Later data can wait in a receiver buffer until order is restored."},
+      {"title": "Remember", "content": "Do not reduce the choice to fast versus slow. Ask whether the application requires repair and ordered delivery."}
+    ]},
     "alternate_explanations": [
-      {
-        "title": "Think of a familiar workflow",
-        "type": "analogy",
-        "content": "Imagine TCP vs UDP as a small real-world process with visible steps."
-      },
-      {
-        "title": "Walk through the example",
-        "type": "example",
-        "content": "Choose based on whether the application needs ordered, acknowledged delivery."
-      }
+      {"title": "Postcards and numbered pages", "type": "analogy", "content": "UDP is like accepting whichever postcards arrive. TCP is like numbered pages: missing pages are requested again, and later pages wait before the book is read."},
+      {"title": "Follow one lost packet", "type": "example", "content": "P2 is lost. UDP leaves the gap. TCP waits for an ACK, times out, resends P2, then releases buffered P3 after P2."}
     ]
   },
-  "completion": {
-    "recall": {
-      "title": "Recall",
-      "prompt": "In your own words, why might a live video call tolerate UDP loss?",
-      "submit_label": "Submit recall",
-      "empty_message": "Write a short explanation first.",
-      "completion_message": "✓ Recall completed",
-      "model_answer": "Do not reduce the choice to simply fast versus slow."
-    }
-  }
+  "completion": {"recall": {
+    "title": "Recall", "prompt": "In your own words, how can the same packet loss produce different application results with UDP and TCP?",
+    "submit_label": "Submit recall", "empty_message": "Write a short explanation first.", "completion_message": "✓ Recall completed",
+    "model_answer": "UDP does not automatically repair the missing datagram, while TCP uses acknowledgement, timeout, retransmission, and ordered delivery to repair the gap."
+  }}
 }
