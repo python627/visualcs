@@ -1,709 +1,114 @@
 {
   "schema_version": 2,
   "metadata": {
-    "id": "deadlocks",
-    "order": 4,
-    "subject_order": 3,
-    "subject": "Operating Systems",
-    "topic": "Deadlocks",
-    "title": "Detect Deadlocks",
-    "description": "Inspect processes and resources to decide whether a circular wait can stop progress.",
-    "difficulty": "Beginner",
-    "estimated_time": "15 min"
+    "id": "deadlocks", "order": 4, "subject_order": 3, "subject": "Operating Systems", "topic": "Deadlocks",
+    "title": "Detect Deadlocks", "description": "Reason about resource requests, blocking, and true circular wait.",
+    "difficulty": "Beginner", "estimated_time": "16 min"
   },
-  "learning_objectives": [
-    "Explain Deadlocks in simple terms.",
-    "Follow one visible Deadlocks example.",
-    "Make a correct decision in the playground."
-  ],
-  "capabilities": [
-    "interactive_state",
-    "decision_tree",
-    "relationship_reasoning"
-  ],
+  "learning_objectives": ["Distinguish allocation edges from request edges.", "Recognize recoverable blocking and true deadlock.", "Explain why a cycle is decisive in the explicit one-instance model."],
+  "capabilities": ["interactive_state", "decision_tree", "relationship_reasoning", "prediction", "sequence_simulation"],
   "teaching": {
-    "mission": {
-      "title": "Practise Deadlocks",
-      "description": "Make each decision and watch the consequence."
-    },
+    "mission": {"title": "Reason about resource requests", "description": "Predict each request's real consequence in a one-instance resource model."},
     "introduction": {
-      "title": "Deadlocks: start here",
-      "content": "A deadlock happens when processes wait forever for resources held by one another.",
-      "points": [
-        "Inspect a small resource graph and decide whether progress is possible."
-      ],
-      "visual": {
-        "type": "array",
-        "label": "Deadlocks",
-        "items": [
-          "What?",
-          "Example",
-          "Try it"
-        ]
-      }
+      "title": "Holding and waiting can stop progress", "content": "A process may hold one resource while requesting another. If every process in a closed chain waits for the next, none can continue.",
+      "points": ["Resource → Process means the resource is allocated.", "Process → Resource means the process is requesting it.", "This lesson explicitly models one instance of every resource."],
+      "visual": {"type": "sequence", "label": "EDGE DIRECTIONS", "items": ["R1 → P1 (holds)", "P1 → R2 (requests)"]}
     },
     "worked_example": {
-      "title": "See one example",
-      "content": "Watch one concrete sequence before you try it.",
+      "title": "A circular wait forms one request at a time", "content": "A blocked process is not automatically deadlocked.",
       "steps": [
-        {
-          "action": "P1 HOLDS R1",
-          "state": {
-            "graph": "P1 → R1",
-            "status": "one resource is held"
-          },
-          "explanation": "Holding a resource while waiting can block another process."
-        },
-        {
-          "action": "P2 HOLDS R2",
-          "state": {
-            "graph": "P1 → R1; P2 → R2",
-            "status": "both resources are held"
-          },
-          "explanation": "Now each process owns a different resource."
-        },
-        {
-          "action": "CYCLE",
-          "state": {
-            "graph": "P1 holds R1 → waits R2; P2 holds R2 → waits R1",
-            "status": "deadlocked"
-          },
-          "explanation": "The circular wait means neither process can continue."
-        }
+        {"action": "P1 REQUESTS R2", "state": ["R1 → P1", "R2 → P2", "P1 → R2"], "explanation": "P1 blocks because P2 holds R2, but P2 can still finish."},
+        {"action": "P2 REQUESTS R1", "state": ["P1 → R2 → P2", "P2 → R1 → P1"], "explanation": "This request closes a circular wait."},
+        {"action": "MODEL RESULT", "state": ["P1 blocked", "P2 blocked", "DEADLOCKED"], "explanation": "With one instance of R1 and R2, neither process in the cycle can progress."}
       ],
-      "conclusion": "The visual state changes because the concept follows a rule.",
-      "next": {
-        "title": "Now you try.",
-        "content": "Choose the next meaningful action."
-      }
+      "conclusion": "A cycle means deadlock here because every resource has exactly one instance; that rule is not universal for multi-instance systems.",
+      "next": {"title": "Now predict it.", "content": "Inspect the allocation before deciding what each request causes."}
     },
-    "guided_practice": {
-      "action_explanations": {
-        "inspect": "The inspect action changes the state for a reason.",
-        "request": "The request action changes the state for a reason.",
-        "detect": "The detect action changes the state for a reason."
-      }
-    }
+    "guided_practice": {"action_explanations": {
+      "predict-granted": "A free resource can be granted immediately.",
+      "predict-blocked": "A held resource blocks the requester, but blocking alone is not deadlock.",
+      "predict-deadlocked": "The request closes a one-instance circular wait, so every process in the cycle is stuck.",
+      "predict-released": "Releasing the resource allows a waiting request to progress."
+    }}
   },
   "visualization": {
     "type": "deadlock-graph",
-    "view": "graph",
-    "initial_state": {
-      "graph": "P1 holds R1; P1 requests R2; P2 holds R2; P2 requests R1",
-      "status": "inspect the graph"
+    "problem": {
+      "assumption": "one-instance-per-resource", "processes": ["P1", "P2"], "resources": ["R1", "R2"],
+      "allocations": [{"resource": "R1", "process": "P1"}, {"resource": "R2", "process": "P2"}],
+      "events": [{"type": "request", "process": "P1", "resource": "R2"}, {"type": "request", "process": "P2", "resource": "R1"}]
     },
-    "guided_steps": [
-      {
-        "operation": "inspect",
-        "instruction": "Inspect who holds each resource",
-        "next_state": {
-          "graph": "P1 holds R1; P2 holds R2",
-          "status": "inspect"
-        },
-        "evaluation_state": [
-          "INSPECT"
-        ]
-      },
-      {
-        "operation": "request",
-        "instruction": "Trace the outstanding requests",
-        "next_state": {
-          "graph": "P1 waits R2; P2 waits R1",
-          "status": "cycle visible"
-        },
-        "evaluation_state": [
-          "REQUEST"
-        ]
-      },
-      {
-        "operation": "detect",
-        "instruction": "Identify the deadlock",
-        "next_state": {
-          "graph": "P1 ↔ P2; R1 ↔ R2",
-          "status": "deadlocked"
-        },
-        "evaluation_state": [
-          "DETECT"
-        ]
-      }
-    ],
-    "controls": [
-      {
-        "id": "inspect",
-        "label": "INSPECT GRAPH",
-        "operation": "inspect"
-      },
-      {
-        "id": "request",
-        "label": "TRACE REQUESTS",
-        "operation": "request"
-      },
-      {
-        "id": "detect",
-        "label": "DETECT DEADLOCK",
-        "operation": "detect"
-      }
-    ],
+    "challenge_problem": {
+      "assumption": "one-instance-per-resource", "processes": ["P1", "P2"], "resources": ["R1", "R2", "R3"],
+      "allocations": [{"resource": "R1", "process": "P1"}, {"resource": "R2", "process": "P2"}],
+      "events": [{"type": "request", "process": "P1", "resource": "R2"}, {"type": "request", "process": "P2", "resource": "R3"}]
+    },
+    "controls": [{"id": "predict-blocked", "label": "BLOCKED", "operation": "predict-blocked"}],
     "actions": [
-      {
-        "label": "Find held resources",
-        "operation": "inspect",
-        "task": "Find held resources"
-      },
-      {
-        "label": "Trace requested resources",
-        "operation": "request",
-        "task": "Trace requested resources"
-      },
-      {
-        "label": "Decide whether a cycle blocks both processes",
-        "operation": "detect",
-        "task": "Decide whether a cycle blocks both processes"
-      }
-    ],
-    "instruction": "Choose the next meaningful action.",
-    "wrong_action_message": "Compare the active task with the current state before choosing."
+      {"label": "Inspect a held resource", "operation": "predict-blocked", "task": "Does P1 block when it requests R2?"},
+      {"label": "Detect the closing request", "operation": "predict-deadlocked", "task": "What happens when P2 also requests R1?"}
+    ]
   },
-  "practice": {
-    "challenge": {
-      "title": "Deadlocks challenge",
-      "start_message": "Apply the concept to the displayed state.",
-      "continue_message": "Challenge complete. Keep experimenting.",
-      "phases": [
-        {
-          "title": "Reach the correct result",
-          "instruction": "Use the controls to reach the target state.",
-          "target": {
-            "label": "TARGET",
-            "items": [
-              "COMPLETE"
-            ]
-          },
-          "goal": {
-            "type": "state_equals",
-            "expected_state": [
-              "COMPLETE"
-            ]
-          },
-          "success": "✓ Challenge complete",
-          "feedback": "Compare your state with the target."
-        }
-      ]
-    }
-  },
+  "practice": {"challenge": {
+    "title": "Blocking without deadlock", "start_message": "Decide whether each request is granted, blocked, or deadlocked.", "continue_message": "Challenge complete. Continue inspecting the graph.",
+    "phases": [{"title": "Separate blocking from deadlock", "instruction": "Apply the one-instance allocation rules to both requests.", "targetVisibility": "hidden", "target": {"label": "MODEL-DERIVED RESULT"}, "goal": {"type": "outcome_equals", "expected_outcome": "solved"}, "success": "✓ Deadlock challenge complete", "feedback": "Trace every request edge to the current holder."}]
+  }},
   "mastery": {
-    "title": "Deadlocks Mastery",
-    "mastered_label": "Deadlocks Mastered",
-    "current_state_label": "YOUR STATE",
+    "title": "Deadlocks Mastery", "mastered_label": "Deadlocks Mastered", "current_state_label": "RESOURCE-ALLOCATION STATE",
     "levels": [
-      {
-        "id": "learn",
-        "label": "Learn",
-        "completion": {
-          "type": "course_completion"
-        }
+      {"id": "learn", "label": "Learn", "completion": {"type": "course_completion"}},
+      {"id": "practice", "label": "Practice", "prerequisites": ["learn"], "retry_same_scenario": true, "new_problem": true,
+        "guidance": {"start_message": "Classify a two-process resource sequence.", "hints": {"limit": 1, "items": [{"content": "A blocked request becomes deadlock only if it closes a wait cycle."}]}},
+        "controls": [{"operation": "predict-granted", "label": "GRANTED"}, {"operation": "predict-blocked", "label": "BLOCKED"}, {"operation": "predict-deadlocked", "label": "DEADLOCKED"}, {"operation": "predict-released", "label": "RELEASED"}],
+        "scenario": {"generator": "deadlock", "generator_version": 1, "scenario_rules": {"processCounts": [2], "outcomes": ["safe", "deadlocked"]}},
+        "challenge": {"phases": [{"title": "Practice resource requests", "instruction": "Predict each model consequence.", "targetVisibility": "hidden", "target": {"label": "MODEL RESULT"}, "goal": {"type": "outcome_equals", "expected_outcome": "solved"}, "success": "✓ Practice complete", "feedback": "Blocking alone is not a cycle."}]}
       },
-      {
-        "id": "practice",
-        "label": "Practice",
-        "prerequisites": [
-          "learn"
-        ],
-        "guidance": {
-          "start_message": "Compare the current state with the objective and choose the next action.",
-          "hints": {
-            "limit": 1,
-            "items": [
-              {
-                "content": "Use the operation that moves the state toward the target."
-              }
-            ]
-          }
-        },
-        "controls": [
-          {
-            "id": "inspect",
-            "label": "INSPECT GRAPH",
-            "operation": "inspect"
-          },
-          {
-            "id": "request",
-            "label": "TRACE REQUESTS",
-            "operation": "request"
-          },
-          {
-            "id": "detect",
-            "label": "DETECT DEADLOCK",
-            "operation": "detect"
-          }
-        ],
-        "scenario": {
-          "initial_state": {
-            "graph": "P1 holds R1; P1 requests R2; P2 holds R2; P2 requests R1",
-            "status": "inspect the graph"
-          },
-          "operations": [
-            {
-              "operation": "inspect",
-              "instruction": "Inspect who holds each resource",
-              "next_state": {
-                "graph": "P1 holds R1; P2 holds R2",
-                "status": "inspect"
-              },
-              "evaluation_state": [
-                "INSPECT"
-              ]
-            }
-          ]
-        },
-        "challenge": {
-          "phases": [
-            {
-              "title": "Practice task",
-              "instruction": "Reach the target state by making the appropriate decisions.",
-              "target": {
-                "label": "TARGET STATE",
-                "items": [
-                  "COMPLETE"
-                ]
-              },
-              "goal": {
-                "type": "state_equals",
-                "expected_state": [
-                  "COMPLETE"
-                ]
-              },
-              "success": "✓ Practice complete",
-              "feedback": "Compare your current state with the target before choosing again."
-            }
-          ]
-        }
+      {"id": "apply", "label": "Apply", "prerequisites": ["practice"], "retry_same_scenario": true, "new_problem": true,
+        "guidance": {"start_message": "Trace a longer allocation chain with no hint.", "hints": {"limit": 0, "items": []}},
+        "controls": [{"operation": "predict-granted", "label": "GRANTED"}, {"operation": "predict-blocked", "label": "BLOCKED"}, {"operation": "predict-deadlocked", "label": "DEADLOCKED"}, {"operation": "predict-released", "label": "RELEASED"}],
+        "scenario": {"generator": "deadlock", "generator_version": 1, "scenario_rules": {"processCounts": [3], "outcomes": ["safe", "deadlocked"]}},
+        "challenge": {"phases": [{"title": "Apply circular-wait reasoning", "instruction": "Track three processes and their directed relationships.", "targetVisibility": "hidden", "target": {"label": "MODEL RESULT"}, "goal": {"type": "outcome_equals", "expected_outcome": "solved"}, "success": "✓ Apply complete", "feedback": "Follow Process → Resource → holder."}]}
       },
-      {
-        "id": "apply",
-        "label": "Apply",
-        "prerequisites": [
-          "practice"
-        ],
-        "guidance": {
-          "start_message": "Compare the current state with the objective and choose the next action.",
-          "hints": {
-            "limit": 0,
-            "items": []
-          }
-        },
-        "controls": [
-          {
-            "id": "inspect",
-            "label": "INSPECT GRAPH",
-            "operation": "inspect"
-          },
-          {
-            "id": "request",
-            "label": "TRACE REQUESTS",
-            "operation": "request"
-          },
-          {
-            "id": "detect",
-            "label": "DETECT DEADLOCK",
-            "operation": "detect"
-          }
-        ],
-        "scenario": {
-          "initial_state": {
-            "graph": "P1 holds R1; P1 requests R2; P2 holds R2; P2 requests R1",
-            "status": "inspect the graph"
-          },
-          "operations": [
-            {
-              "operation": "inspect",
-              "instruction": "Inspect who holds each resource",
-              "next_state": {
-                "graph": "P1 holds R1; P2 holds R2",
-                "status": "inspect"
-              },
-              "evaluation_state": [
-                "INSPECT"
-              ]
-            },
-            {
-              "operation": "request",
-              "instruction": "Trace the outstanding requests",
-              "next_state": {
-                "graph": "P1 waits R2; P2 waits R1",
-                "status": "cycle visible"
-              },
-              "evaluation_state": [
-                "REQUEST"
-              ]
-            }
-          ]
-        },
-        "challenge": {
-          "phases": [
-            {
-              "title": "Apply task",
-              "instruction": "Reach the target state by making the appropriate decisions.",
-              "target": {
-                "label": "TARGET STATE",
-                "items": [
-                  "COMPLETE"
-                ]
-              },
-              "goal": {
-                "type": "state_equals",
-                "expected_state": [
-                  "COMPLETE"
-                ]
-              },
-              "success": "✓ Apply complete",
-              "feedback": "Compare your current state with the target before choosing again."
-            }
-          ]
-        }
+      {"id": "solve", "label": "Solve", "prerequisites": ["apply"], "retry_same_scenario": true, "new_problem": true,
+        "guidance": {"start_message": "Determine exactly which request changes the classification.", "hints": {"limit": 0, "items": []}},
+        "controls": [{"operation": "predict-granted", "label": "GRANTED"}, {"operation": "predict-blocked", "label": "BLOCKED"}, {"operation": "predict-deadlocked", "label": "DEADLOCKED"}, {"operation": "predict-released", "label": "RELEASED"}],
+        "scenario": {"generator": "deadlock", "generator_version": 1, "scenario_rules": {"processCounts": [3, 4], "outcomes": ["safe", "deadlocked"]}},
+        "challenge": {"phases": [{"title": "Solve the allocation sequence", "instruction": "Classify each request without being shown the final graph.", "targetVisibility": "hidden", "target": {"label": "MODEL RESULT"}, "goal": {"type": "outcome_equals", "expected_outcome": "solved"}, "success": "✓ Solve complete", "feedback": "A one-way chain is recoverable; a closed cycle is not."}]}
       },
-      {
-        "id": "solve",
-        "label": "Solve",
-        "prerequisites": [
-          "apply"
-        ],
-        "guidance": {
-          "start_message": "Compare the current state with the objective and choose the next action.",
-          "hints": {
-            "limit": 0,
-            "items": []
-          }
-        },
-        "controls": [
-          {
-            "id": "inspect",
-            "label": "INSPECT GRAPH",
-            "operation": "inspect"
-          },
-          {
-            "id": "request",
-            "label": "TRACE REQUESTS",
-            "operation": "request"
-          },
-          {
-            "id": "detect",
-            "label": "DETECT DEADLOCK",
-            "operation": "detect"
-          }
-        ],
-        "scenario": {
-          "initial_state": {
-            "graph": "P1 holds R1; P1 requests R2; P2 holds R2; P2 requests R1",
-            "status": "inspect the graph"
-          },
-          "operations": [
-            {
-              "operation": "inspect",
-              "instruction": "Inspect who holds each resource",
-              "next_state": {
-                "graph": "P1 holds R1; P2 holds R2",
-                "status": "inspect"
-              },
-              "evaluation_state": [
-                "INSPECT"
-              ]
-            },
-            {
-              "operation": "request",
-              "instruction": "Trace the outstanding requests",
-              "next_state": {
-                "graph": "P1 waits R2; P2 waits R1",
-                "status": "cycle visible"
-              },
-              "evaluation_state": [
-                "REQUEST"
-              ]
-            },
-            {
-              "operation": "detect",
-              "instruction": "Identify the deadlock",
-              "next_state": {
-                "graph": "P1 ↔ P2; R1 ↔ R2",
-                "status": "deadlocked"
-              },
-              "evaluation_state": [
-                "DETECT"
-              ]
-            }
-          ]
-        },
-        "challenge": {
-          "phases": [
-            {
-              "title": "Solve task",
-              "instruction": "Reach the target state by making the appropriate decisions.",
-              "target": {
-                "label": "TARGET STATE",
-                "items": [
-                  "COMPLETE"
-                ]
-              },
-              "goal": {
-                "type": "state_equals",
-                "expected_state": [
-                  "COMPLETE"
-                ]
-              },
-              "success": "✓ Solve complete",
-              "feedback": "Compare your current state with the target before choosing again."
-            }
-          ]
-        }
-      },
-      {
-        "id": "mastery",
-        "label": "Mastery",
-        "prerequisites": [
-          "solve"
-        ],
-        "guidance": {
-          "start_message": "Compare the current state with the objective and choose the next action.",
-          "hints": {
-            "limit": 0,
-            "items": []
-          }
-        },
-        "controls": [
-          {
-            "id": "inspect",
-            "label": "INSPECT GRAPH",
-            "operation": "inspect"
-          },
-          {
-            "id": "request",
-            "label": "TRACE REQUESTS",
-            "operation": "request"
-          },
-          {
-            "id": "detect",
-            "label": "DETECT DEADLOCK",
-            "operation": "detect"
-          }
-        ],
-        "scenario": {
-          "initial_state": {
-            "graph": "P1 holds R1; P1 requests R2; P2 holds R2; P2 requests R1",
-            "status": "inspect the graph"
-          },
-          "operations": [
-            {
-              "operation": "inspect",
-              "instruction": "Inspect who holds each resource",
-              "next_state": {
-                "graph": "P1 holds R1; P2 holds R2",
-                "status": "inspect"
-              },
-              "evaluation_state": [
-                "INSPECT"
-              ]
-            },
-            {
-              "operation": "request",
-              "instruction": "Trace the outstanding requests",
-              "next_state": {
-                "graph": "P1 waits R2; P2 waits R1",
-                "status": "cycle visible"
-              },
-              "evaluation_state": [
-                "REQUEST"
-              ]
-            },
-            {
-              "operation": "detect",
-              "instruction": "Identify the deadlock",
-              "next_state": {
-                "graph": "P1 ↔ P2; R1 ↔ R2",
-                "status": "deadlocked"
-              },
-              "evaluation_state": [
-                "DETECT"
-              ]
-            }
-          ]
-        },
-        "challenge": {
-          "phases": [
-            {
-              "title": "Mastery task",
-              "instruction": "Reach the target state by making the appropriate decisions.",
-              "target": {
-                "label": "TARGET STATE",
-                "items": [
-                  "COMPLETE"
-                ]
-              },
-              "goal": {
-                "type": "state_equals",
-                "expected_state": [
-                  "COMPLETE"
-                ]
-              },
-              "success": "✓ Mastery complete",
-              "feedback": "Compare your current state with the target before choosing again."
-            }
-          ]
-        }
+      {"id": "mastery", "label": "Mastery", "prerequisites": ["solve"], "retry_same_scenario": true, "new_problem": true,
+        "guidance": {"start_message": "Reason about an unfamiliar allocation with no hints.", "hints": {"limit": 0, "items": []}},
+        "controls": [{"operation": "predict-granted", "label": "GRANTED"}, {"operation": "predict-blocked", "label": "BLOCKED"}, {"operation": "predict-deadlocked", "label": "DEADLOCKED"}, {"operation": "predict-released", "label": "RELEASED"}],
+        "scenario": {"generator": "deadlock", "generator_version": 1, "scenario_rules": {"processCounts": [3, 4], "outcomes": ["safe", "deadlocked"]}},
+        "challenge": {"phases": [{"title": "Master deadlock diagnosis", "instruction": "Derive every consequence from the directed graph.", "targetVisibility": "hidden", "target": {"label": "MODEL RESULT"}, "goal": {"type": "outcome_equals", "expected_outcome": "solved"}, "success": "✓ Mastery complete", "feedback": "Use the explicit one-instance assumption."}]}
       }
     ]
   },
   "expert": {
-    "id": "expert",
-    "label": "Expert",
-    "prerequisites": [
-      "mastery"
-    ],
-    "generator": "phase2-expert",
-    "generator_version": 1,
-    "required_capabilities": [
-      "interactive_state",
-      "decision_tree",
-      "relationship_reasoning"
-    ],
-    "thinking": {
-      "title": "Predict the sequence",
-      "objective_label": "Think first",
-      "instruction": "Mentally follow the sequence before acting.",
-      "starting_stack_label": "STARTING STATE",
-      "sequence_label": "ACTIONS TO SIMULATE",
-      "do_not_execute": "Do not act yet. Work through the sequence in order.",
-      "prediction_label": "YOUR PREDICTION",
+    "id": "expert", "label": "Expert", "prerequisites": ["mastery"], "generator": "deadlock", "generator_version": 1, "assessment_mode": "prediction", "targetVisibility": "hidden",
+    "scenario_rules": {"processCounts": [3, 4], "outcomes": ["safe", "deadlocked"]},
+    "required_capabilities": ["interactive_state", "decision_tree", "relationship_reasoning", "prediction", "sequence_simulation"],
+    "thinking": {"title": "Mentally simulate the resource requests", "objective_label": "Think first", "instruction": "Trace the directed allocation and request edges before any final classification is revealed.", "prediction_label": "YOUR DIAGNOSIS", "empty_message": "Complete every diagnosis field. Use NONE when there is no cycle.",
       "prediction_fields": [
-        {
-          "id": "finalState",
-          "label": "Final state",
-          "prompt": "What will the final state contain?",
-          "type": "text",
-          "placeholder": "Describe the result"
-        }
-      ],
-      "submit_label": "Check my prediction",
-      "continue_label": "Continue to Expert Challenge →",
-      "actual_label": "RESULT",
-      "your_prediction_label": "Your prediction",
-      "actual_result": "Final state: {{final_state}}.",
-      "feedback": {
-        "all_correct": "You tracked the sequence.",
-        "incorrect": "Recheck each transition."
-      }
-    },
-    "solve": {
-      "title": "Expert Deadlocks",
-      "instruction": "Apply the sequence with no hints.",
-      "target_label": "TARGET STATE",
-      "your_label": "YOUR STATE",
-      "metric_label": "Actions",
-      "hints_label": "Hints: none",
-      "operation_rule": "Each action counts once.",
-      "controls": [
-        {
-          "id": "inspect",
-          "label": "INSPECT GRAPH",
-          "operation": "inspect"
-        },
-        {
-          "id": "request",
-          "label": "TRACE REQUESTS",
-          "operation": "request"
-        },
-        {
-          "id": "detect",
-          "label": "DETECT DEADLOCK",
-          "operation": "detect"
-        }
-      ],
-      "perfect_message": "🏆 PERFECT EXPERT",
-      "perfect_result": "You completed the sequence.",
-      "new_challenge_label": "New Expert Challenge"
-    },
-    "scenario_rules": {
-      "initial_state": [
-        "P1 holds R1",
-        "P2 holds R2"
-      ],
-      "steps": [
-        {
-          "operation": "inspect",
-          "label": "INSPECT"
-        },
-        {
-          "operation": "request",
-          "label": "TRACE"
-        },
-        {
-          "operation": "detect",
-          "label": "DETECT"
-        }
-      ],
-      "final_state": [
-        "DEADLOCK"
-      ],
-      "target_state": [
-        "DEADLOCK"
-      ]
-    }
+        {"id": "blockedProcesses", "label": "Blocked processes", "type": "text", "placeholder": "P1, P2 or NONE"},
+        {"id": "classification", "label": "Final classification", "type": "choice", "options": [{"value": "safe", "label": "SAFE"}, {"value": "blocked", "label": "BLOCKED BUT RECOVERABLE"}, {"value": "deadlocked", "label": "DEADLOCKED"}]},
+        {"id": "cycleRequest", "label": "Request that completes the cycle", "type": "text", "placeholder": "P2->R1 or NONE"},
+        {"id": "cycleProcesses", "label": "Processes in the cycle", "type": "text", "placeholder": "P1, P2 or NONE"}
+      ], "submit_label": "Check prediction", "feedback": {"all_correct": "You diagnosed the allocation graph.", "incorrect": "Recheck the fields marked for revision."}},
+    "solve": {"title": "Expert Deadlocks", "instruction": "Diagnose the generated resource sequence with no hints.", "perfect_message": "🏆 PERFECT EXPERT", "new_challenge_label": "New Expert Challenge"}
   },
   "assessment": {
-    "quiz": {
-      "question": "What makes the example a deadlock?",
-      "options": [
-        "A circular wait with held resources",
-        "A fast CPU",
-        "An empty queue",
-        "A sorted list"
-      ],
-      "correct": 0
-    },
-    "discovery": {
-      "title": "Deadlock discovery",
-      "summary": "Deadlock reasoning connects what each process holds with what it requests."
-    },
-    "notes": {
-      "sections": [
-        {
-          "title": "What?",
-          "content": "A deadlock is a standstill: each process waits for a resource another process holds."
-        },
-        {
-          "title": "Example",
-          "content": "P1 holds R1 and waits for R2 while P2 holds R2 and waits for R1."
-        },
-        {
-          "title": "Why?",
-          "content": "No process can get the resource it needs, so no one can finish."
-        },
-        {
-          "title": "Remember",
-          "content": "Use the model shown; do not assume every cycle means deadlock without the holding/requesting evidence."
-        }
-      ]
-    },
+    "quiz": {"question": "P1 holds R1 and waits for R2. P2 holds R2 but requests nothing. What is this?", "options": ["Deadlock", "Blocked but recoverable", "Every request was granted", "A CPU scheduling problem"], "correct": 1},
+    "discovery": {"title": "Deadlock discovery", "summary": "In this one-instance model, deadlock requires a closed circular wait; ordinary blocking can still be resolved."},
+    "notes": {"sections": [
+      {"title": "What?", "content": "Deadlock means processes in a closed wait cycle cannot make progress."},
+      {"title": "Edge directions", "content": "Resource → Process is allocation. Process → Resource is a request."},
+      {"title": "Why the assumption matters", "content": "A cycle is decisive in this lesson because each resource has one instance. Multi-instance systems need a broader safety analysis."},
+      {"title": "Remember", "content": "Blocked does not automatically mean deadlocked; trace whether the wait chain closes."}
+    ]},
     "alternate_explanations": [
-      {
-        "title": "Think of a familiar workflow",
-        "type": "analogy",
-        "content": "Imagine Deadlocks as a small real-world process with visible steps."
-      },
-      {
-        "title": "Walk through the example",
-        "type": "example",
-        "content": "Inspect a small resource graph and decide whether progress is possible."
-      }
+      {"title": "Two locked toolboxes", "type": "analogy", "content": "Each worker holds one key and waits for the key held by the other. Neither can finish and release what they hold."},
+      {"title": "Trace the arrows", "type": "example", "content": "R1 → P1 → R2 → P2 → R1 closes a one-instance cycle, so P1 and P2 are deadlocked."}
     ]
   },
-  "completion": {
-    "recall": {
-      "title": "Recall",
-      "prompt": "In your own words, how does circular waiting stop both processes?",
-      "submit_label": "Submit recall",
-      "empty_message": "Write a short explanation first.",
-      "completion_message": "✓ Recall completed",
-      "model_answer": "Use the model shown; do not assume every cycle means deadlock without the holding/requesting evidence."
-    }
-  }
+  "completion": {"recall": {"title": "Recall", "prompt": "In your own words, why is a blocked process not always deadlocked?", "submit_label": "Submit recall", "empty_message": "Write a short explanation first.", "completion_message": "✓ Recall completed", "model_answer": "Blocking can end when the holder releases the resource. Deadlock needs a closed wait cycle where no participant can release what the next process needs."}}
 }

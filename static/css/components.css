@@ -4459,3 +4459,177 @@ body:has(#mastery-challenge-panel:not([hidden])) .notes{
     .transport-prediction > button,
     .transport-replay-control button { width: 100%; }
 }
+
+/* Executable Processes and Deadlocks playgrounds. */
+.playground-area:has(#stack.process-view),
+.playground-area:has(#stack.deadlock-view) {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+}
+
+#stack.process-view,
+#stack.deadlock-view,
+.process-expert-state,
+.deadlock-expert-state {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    height: auto;
+    min-height: 0;
+    margin: 25px 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    display: grid;
+    gap: .9rem;
+    overflow: visible;
+    box-sizing: border-box;
+    text-align: left;
+}
+
+.process-event,
+.deadlock-event {
+    display: grid;
+    gap: .3rem;
+    min-width: 0;
+    padding: .85rem 1rem;
+    border: 1px solid #3b82f6;
+    border-radius: .7rem;
+    background: #10213d;
+}
+
+.process-event span,
+.deadlock-event span,
+.process-zone h3,
+.deadlock-relationships h3 {
+    margin: 0;
+    color: #7cdaff;
+    font-size: .74rem;
+    font-weight: 800;
+    letter-spacing: .07em;
+}
+
+.process-event strong,
+.deadlock-event strong { color: #fff; font-size: 1rem; }
+.process-event p,
+.deadlock-event p { margin: 0; color: #b9c9df; }
+.process-complete,
+.deadlock-complete { border-color: #22c55e; background: #0f3328; }
+
+.process-zones {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(8rem, 1fr));
+    gap: .65rem;
+    width: 100%;
+    min-width: 0;
+}
+
+.process-zone {
+    min-width: 0;
+    min-height: 6.5rem;
+    padding: .75rem;
+    border: 1px solid #355276;
+    border-radius: .65rem;
+    background: #0c172a;
+    box-sizing: border-box;
+}
+
+.process-zone h3 { margin-bottom: .55rem; }
+.process-zone-items { display: flex; flex-wrap: wrap; gap: .4rem; }
+.process-card {
+    padding: .45rem .65rem;
+    border: 1px solid #55b9ec;
+    border-radius: .45rem;
+    background: #164c73;
+    color: #fff;
+    font-weight: 800;
+}
+.process-waiting .process-card { border-color: #f59e0b; background: #5b3a12; }
+.process-terminated .process-card { border-color: #22c55e; background: #164c2e; }
+.process-empty { color: #7285a2; font-size: .8rem; }
+.process-choices,
+.deadlock-choices { display: flex; flex-wrap: wrap; gap: .55rem; }
+.process-choices button,
+.deadlock-choices button,
+.process-view [data-process-retry],
+.deadlock-view [data-deadlock-retry] {
+    min-width: 7rem;
+    padding: .65rem .9rem;
+    border: 1px solid #3b82f6;
+    border-radius: .5rem;
+    background: #2563eb;
+    color: #fff;
+    font: inherit;
+    cursor: pointer;
+}
+.process-consequence,
+.deadlock-consequence { margin: 0; color: #f7d774; font-weight: 700; }
+.process-feedback,
+.deadlock-feedback { margin: 0; color: #d6ecff; line-height: 1.5; }
+.process-feedback:empty,
+.deadlock-feedback:empty { display: none; }
+.process-expert-grid,
+.deadlock-expert-grid { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(15rem, .8fr); gap: .8rem; min-width: 0; }
+.process-expert-grid > section,
+.deadlock-expert-grid > section,
+.process-result,
+.deadlock-result { min-width: 0; padding: .75rem; border: 1px solid #355276; border-radius: .65rem; background: #101d34; }
+.process-event-list,
+.deadlock-expert-grid ol { margin: .65rem 0 0; padding-left: 1.4rem; color: #d6ecff; }
+.process-event-list li,
+.deadlock-expert-grid li { margin: .4rem 0; }
+.process-hidden-result,
+.deadlock-hidden-result { margin: 0; padding: .7rem; border: 1px dashed #3b536f; border-radius: .5rem; color: #9db1cc; text-align: center; }
+
+.deadlock-assumption {
+    margin: 0;
+    padding: .55rem .75rem;
+    border-radius: .5rem;
+    background: #382b12;
+    color: #f7d774;
+    font-size: .8rem;
+    font-weight: 800;
+}
+.deadlock-graph { display: grid; gap: .75rem; min-width: 0; }
+.deadlock-node-row { display: flex; flex-wrap: wrap; justify-content: center; gap: .65rem; }
+.deadlock-node {
+    display: grid;
+    place-items: center;
+    min-width: 4.5rem;
+    min-height: 4rem;
+    padding: .45rem;
+    border: 2px solid #55b9ec;
+    background: #153b60;
+    color: #fff;
+    font-weight: 900;
+    box-sizing: border-box;
+}
+.process-node { border-radius: 999px; }
+.resource-node { border-radius: .45rem; border-color: #f59e0b; background: #4b3312; }
+.deadlock-node small { display: block; color: #b9c9df; font-size: .55rem; }
+.deadlock-relationships { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .65rem; min-width: 0; }
+.deadlock-relationships section { display: grid; align-content: start; gap: .4rem; min-width: 0; padding: .7rem; border: 1px solid #304766; border-radius: .55rem; background: #0c172a; }
+.deadlock-edge { display: flex; flex-wrap: wrap; align-items: center; gap: .35rem; min-width: 0; padding: .45rem .55rem; border-radius: .4rem; background: #172b4d; }
+.deadlock-edge i { color: #7cdaff; font-style: normal; }
+.deadlock-edge.request i { color: #f7d774; }
+.deadlock-status { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .5rem; padding: .65rem .8rem; border-radius: .5rem; background: #12304d; }
+.deadlock-status.blocked { background: #53390e; }
+.deadlock-status.deadlocked { background: #602029; }
+
+@media (max-width: 1050px) {
+    .process-zones { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .process-expert-grid,
+    .deadlock-expert-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 650px) {
+    .process-zones,
+    .deadlock-relationships { grid-template-columns: minmax(0, 1fr); }
+    .process-zone { min-height: 0; }
+    .process-choices button,
+    .deadlock-choices button,
+    .process-view [data-process-retry],
+    .deadlock-view [data-deadlock-retry] { width: 100%; }
+    .deadlock-node { min-width: 3.75rem; }
+}

@@ -228,7 +228,7 @@
     }
 
     const types = [
-        "process-states", "deadlock-graph", "table-records",
+        "table-records",
         "dbms-joins", "normalization", "transactions",
         "ip-addresses", "dns-lookup", "http-request"
     ];

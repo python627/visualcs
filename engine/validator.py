@@ -169,6 +169,16 @@ class LessonValidator:
                 self._validate_transport_problem(playground.get(name), f"playground.{name}", errors)
             if any(key in playground for key in ("guided_steps", "target_state", "initial_state")):
                 errors.append("transport-simulation uses the executable event model, not scripted states")
+        if playground_type == "process-states":
+            for name in ("problem", "challenge_problem"):
+                self._validate_process_problem(playground.get(name), f"playground.{name}", errors)
+            if any(key in playground for key in ("guided_steps", "target_state", "initial_state")):
+                errors.append("process-states uses the executable transition model, not scripted states")
+        if playground_type == "deadlock-graph":
+            for name in ("problem", "challenge_problem"):
+                self._validate_deadlock_problem(playground.get(name), f"playground.{name}", errors)
+            if any(key in playground for key in ("guided_steps", "target_state", "initial_state")):
+                errors.append("deadlock-graph uses the executable allocation model, not scripted states")
 
     def _validate_sql_select_problem(self, problem, path, errors):
         if not isinstance(problem, dict):
@@ -330,6 +340,127 @@ class LessonValidator:
                 errors.append(f"{path}.network.{field} must be a non-negative integer")
         if problem.get("knownProtocol") not in (None, "TCP", "UDP"):
             errors.append(f"{path}.knownProtocol must be TCP or UDP when provided")
+
+    def _validate_process_problem(self, problem, path, errors):
+        if not isinstance(problem, dict):
+            errors.append(f"{path} must contain process inputs and events")
+            return
+        if any(key in problem for key in ("oracle", "result", "finalState", "target_state")):
+            errors.append(f"{path} must contain inputs only, not model-derived answers")
+        cpu_count = problem.get("cpuCount")
+        if type(cpu_count) is not int or cpu_count < 1:
+            errors.append(f"{path}.cpuCount must be a positive integer")
+            cpu_count = 1
+        processes = problem.get("processes")
+        if not isinstance(processes, list) or not processes:
+            errors.append(f"{path}.processes must be a non-empty list")
+            return
+        valid_states = {"READY", "RUNNING", "WAITING", "TERMINATED"}
+        states = {}
+        for index, process in enumerate(processes):
+            process_path = f"{path}.processes[{index}]"
+            if not isinstance(process, dict) or not self._is_text(process.get("id")):
+                errors.append(f"{process_path} must contain a non-empty id")
+                continue
+            process_id = process["id"]
+            if process_id in states:
+                errors.append(f"{path}.processes repeats id '{process_id}'")
+            if process.get("state") not in valid_states:
+                errors.append(f"{process_path}.state must be READY, RUNNING, WAITING, or TERMINATED")
+            states[process_id] = process.get("state")
+        if sum(state == "RUNNING" for state in states.values()) > cpu_count:
+            errors.append(f"{path} has more RUNNING processes than available CPUs")
+
+        events = problem.get("events")
+        if not isinstance(events, list) or not events:
+            errors.append(f"{path}.events must be a non-empty list")
+            return
+        transitions = {
+            "dispatch": ("READY", "RUNNING"),
+            "timeslice": ("RUNNING", "READY"),
+            "io_request": ("RUNNING", "WAITING"),
+            "io_complete": ("WAITING", "READY"),
+            "finish": ("RUNNING", "TERMINATED"),
+        }
+        for index, event in enumerate(events):
+            event_path = f"{path}.events[{index}]"
+            if not isinstance(event, dict) or event.get("type") not in transitions or event.get("process") not in states:
+                errors.append(f"{event_path} must reference a known process and supported event")
+                continue
+            source, target = transitions[event["type"]]
+            process_id = event["process"]
+            if states[process_id] != source:
+                errors.append(f"{event_path} requires {process_id} to be {source}, not {states[process_id]}")
+                continue
+            if target == "RUNNING" and sum(state == "RUNNING" for state in states.values()) >= cpu_count:
+                errors.append(f"{event_path} dispatches a process when all CPUs are occupied")
+                continue
+            states[process_id] = target
+
+    def _validate_deadlock_problem(self, problem, path, errors):
+        if not isinstance(problem, dict):
+            errors.append(f"{path} must contain resource-allocation inputs and events")
+            return
+        if any(key in problem for key in ("oracle", "result", "classification", "cycle", "target_state")):
+            errors.append(f"{path} must contain inputs only, not model-derived answers")
+        if problem.get("assumption") != "one-instance-per-resource":
+            errors.append(f"{path}.assumption must explicitly be one-instance-per-resource")
+        processes = problem.get("processes")
+        resources = problem.get("resources")
+        if not self._is_string_list(processes) or not processes:
+            errors.append(f"{path}.processes must be a non-empty list of IDs")
+            return
+        if len(processes) != len(set(processes)):
+            errors.append(f"{path}.processes must contain unique IDs")
+        if not self._is_string_list(resources) or not resources:
+            errors.append(f"{path}.resources must be a non-empty list of IDs")
+            return
+        if len(resources) != len(set(resources)):
+            errors.append(f"{path}.resources must contain unique IDs")
+        allocations = problem.get("allocations")
+        if not isinstance(allocations, list):
+            errors.append(f"{path}.allocations must be a list")
+            return
+        held = {}
+        for index, allocation in enumerate(allocations):
+            allocation_path = f"{path}.allocations[{index}]"
+            if not isinstance(allocation, dict) or allocation.get("process") not in processes or allocation.get("resource") not in resources:
+                errors.append(f"{allocation_path} must reference a known process and resource")
+                continue
+            resource = allocation["resource"]
+            if resource in held:
+                errors.append(f"{path}.allocations assigns the one instance of {resource} more than once")
+            held[resource] = allocation["process"]
+
+        events = problem.get("events")
+        if not isinstance(events, list) or not events:
+            errors.append(f"{path}.events must be a non-empty list")
+            return
+        requests = []
+        for index, event in enumerate(events):
+            event_path = f"{path}.events[{index}]"
+            if not isinstance(event, dict) or event.get("type") not in ("request", "release") \
+                    or event.get("process") not in processes or event.get("resource") not in resources:
+                errors.append(f"{event_path} must reference a known process, resource, and request/release event")
+                continue
+            pair = (event["process"], event["resource"])
+            if event["type"] == "request":
+                if held.get(event["resource"]) == event["process"]:
+                    errors.append(f"{event_path} requests a resource already held by the same process")
+                elif pair in requests:
+                    errors.append(f"{event_path} duplicates a pending request")
+                elif event["resource"] not in held:
+                    held[event["resource"]] = event["process"]
+                else:
+                    requests.append(pair)
+            elif held.get(event["resource"]) != event["process"]:
+                errors.append(f"{event_path} releases a resource the process does not hold")
+            else:
+                del held[event["resource"]]
+                waiting = next((pair for pair in requests if pair[1] == event["resource"]), None)
+                if waiting:
+                    requests.remove(waiting)
+                    held[event["resource"]] = waiting[0]
 
     def _validate_controls(self, controls, path, errors, require_id=True):
         if not isinstance(controls, list) or not controls:
@@ -609,6 +740,8 @@ class LessonValidator:
         declared_capabilities = set(lesson.get("capabilities", []))
         executable_sql = lesson.get("playground", {}).get("type") == "sql-select"
         executable_transport = lesson.get("playground", {}).get("type") == "transport-simulation"
+        executable_process = lesson.get("playground", {}).get("type") == "process-states"
+        executable_deadlock = lesson.get("playground", {}).get("type") == "deadlock-graph"
         level_ids = []
         for index, level in enumerate(levels):
             path = f"mastery.levels[{index}]"
@@ -642,6 +775,10 @@ class LessonValidator:
                     errors.append(f"{path}.expert must use the sql-select evaluator-backed generator")
                 if executable_transport and level.get("expert", {}).get("generator") != "transport":
                     errors.append(f"{path}.expert must use the transport simulator-backed generator")
+                if executable_process and level.get("expert", {}).get("generator") != "process":
+                    errors.append(f"{path}.expert must use the process model-backed generator")
+                if executable_deadlock and level.get("expert", {}).get("generator") != "deadlock":
+                    errors.append(f"{path}.expert must use the deadlock model-backed generator")
                 continue
 
             scenario = level.get("scenario")
@@ -658,8 +795,17 @@ class LessonValidator:
                     errors.append(f"{path}.scenario must use the sql-select evaluator-backed generator")
                 if executable_transport and scenario.get("generator") != "transport":
                     errors.append(f"{path}.scenario must use the transport simulator-backed generator")
-            elif executable_sql or executable_transport:
-                generator_name = "sql-select evaluator" if executable_sql else "transport simulator"
+                if executable_process and scenario.get("generator") != "process":
+                    errors.append(f"{path}.scenario must use the process model-backed generator")
+                if executable_deadlock and scenario.get("generator") != "deadlock":
+                    errors.append(f"{path}.scenario must use the deadlock model-backed generator")
+            elif executable_sql or executable_transport or executable_process or executable_deadlock:
+                generator_name = (
+                    "sql-select evaluator" if executable_sql else
+                    "transport simulator" if executable_transport else
+                    "process model" if executable_process else
+                    "deadlock model"
+                )
                 errors.append(f"{path}.scenario must use the {generator_name}-backed generator")
 
             challenge = level.get("challenge")

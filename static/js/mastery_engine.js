@@ -663,6 +663,19 @@ class MasteryEngine {
     }
 
 
+    formatAssessmentValue(value) {
+        if (Array.isArray(value)) {
+            return value.join(", ");
+        }
+
+        if (value && typeof value === "object") {
+            return JSON.stringify(value);
+        }
+
+        return value ?? "";
+    }
+
+
     parsePredictionValue(rawValue, field) {
         const type = field?.type || "text";
 
@@ -1161,9 +1174,9 @@ class MasteryEngine {
         )).join("");
         const actualResult = assessment
             ? this.formatExpertText(thinking.actual_result, {
-                final_state: assessment.actualFinalState?.join(", "),
+                final_state: this.formatAssessmentValue(assessment.actualFinalState),
                 next_pop: assessment.actualNextPop,
-                compared_values: assessment.actualComparedValues?.join(", "),
+                compared_values: this.formatAssessmentValue(assessment.actualComparedValues),
                 comparison_count: assessment.actualComparisonCount,
                 outcome: assessment.actualOutcome === "found"
                     ? (thinking.found_label || "FOUND")

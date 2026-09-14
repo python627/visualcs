@@ -1,877 +1,106 @@
 {
   "schema_version": 2,
   "metadata": {
-    "id": "processes",
-    "order": 3,
-    "subject_order": 3,
-    "subject": "Operating Systems",
-    "topic": "Processes",
-    "title": "Explore Processes",
-    "description": "Follow a process as it moves between Ready, Running, Waiting, and Terminated.",
-    "difficulty": "Beginner",
-    "estimated_time": "15 min"
+    "id": "processes", "order": 3, "subject_order": 3, "subject": "Operating Systems",
+    "topic": "Processes", "title": "Explore Processes",
+    "description": "Predict valid process-state transitions caused by scheduler, CPU, and I/O events.",
+    "difficulty": "Beginner", "estimated_time": "15 min"
   },
-  "learning_objectives": [
-    "Explain Processes in simple terms.",
-    "Follow one visible Processes example.",
-    "Make a correct decision in the playground."
-  ],
-  "capabilities": [
-    "interactive_state",
-    "sequence_simulation",
-    "decision_tree"
-  ],
+  "learning_objectives": ["Explain why a process changes state.", "Distinguish Ready, Running, Waiting, and Terminated.", "Reject impossible transitions in a single-CPU process model."],
+  "capabilities": ["interactive_state", "sequence_simulation", "prediction", "decision_tree", "scheduling"],
   "teaching": {
-    "mission": {
-      "title": "Practise Processes",
-      "description": "Make each decision and watch the consequence."
-    },
+    "mission": {"title": "Follow real process events", "description": "Predict each next state, then let the executable process model apply the event."},
     "introduction": {
-      "title": "Processes: start here",
-      "content": "A process is a program that is currently running or waiting for CPU time.",
-      "points": [
-        "Watch a process move through its life cycle."
-      ],
-      "visual": {
-        "type": "array",
-        "label": "Processes",
-        "items": [
-          "What?",
-          "Example",
-          "Try it"
-        ]
-      }
+      "title": "A process changes state as its needs change", "content": "A process is a running program. It may wait for CPU time, use the CPU, pause for I/O, or finish.",
+      "points": ["READY means able to run.", "RUNNING means using a CPU.", "WAITING means paused for an event such as disk I/O.", "TERMINATED means finished."],
+      "visual": {"type": "sequence", "label": "PROCESS STATES", "items": ["READY", "RUNNING", "WAITING", "READY", "TERMINATED"]}
     },
     "worked_example": {
-      "title": "See one example",
-      "content": "Watch one concrete sequence before you try it.",
+      "title": "One CPU and one I/O request", "content": "The event—not memorized arrow order—determines the next valid state.",
       "steps": [
-        {
-          "action": "RUN P1",
-          "state": {
-            "zones": {
-              "Ready": [],
-              "Running": [
-                "P1"
-              ],
-              "Waiting": [],
-              "Terminated": []
-            }
-          },
-          "explanation": "The scheduler moves a ready process into Running."
-        },
-        {
-          "action": "WAIT FOR I/O",
-          "state": {
-            "zones": {
-              "Ready": [],
-              "Running": [],
-              "Waiting": [
-                "P1"
-              ],
-              "Terminated": []
-            }
-          },
-          "explanation": "An I/O request pauses the process in Waiting."
-        },
-        {
-          "action": "I/O COMPLETE",
-          "state": {
-            "zones": {
-              "Ready": [
-                "P1"
-              ],
-              "Running": [],
-              "Waiting": [],
-              "Terminated": []
-            }
-          },
-          "explanation": "When I/O completes, the process is ready again."
-        }
+        {"action": "DISPATCH P1", "state": ["P1: READY", "P1: RUNNING"], "explanation": "The scheduler gives the available CPU to a ready process."},
+        {"action": "P1 REQUESTS I/O", "state": ["P1: RUNNING", "P1: WAITING"], "explanation": "P1 cannot use the CPU while waiting for the I/O result."},
+        {"action": "I/O COMPLETES", "state": ["P1: WAITING", "P1: READY"], "explanation": "Completion makes P1 eligible for CPU time again."}
       ],
-      "conclusion": "The visual state changes because the concept follows a rule.",
-      "next": {
-        "title": "Now you try.",
-        "content": "Choose the next meaningful action."
-      }
+      "conclusion": "A process can only take a transition allowed by its current state and event.",
+      "next": {"title": "Now predict it.", "content": "Read each event and choose the state it causes."}
     },
-    "guided_practice": {
-      "action_explanations": {
-        "run": "The run action changes the state for a reason.",
-        "wait": "The wait action changes the state for a reason.",
-        "resume": "The resume action changes the state for a reason.",
-        "terminate": "The terminate action changes the state for a reason."
-      }
-    }
+    "guided_practice": {"action_explanations": {
+      "predict-running": "A scheduler dispatch moves a READY process to RUNNING.",
+      "predict-waiting": "An I/O request moves a RUNNING process to WAITING.",
+      "predict-terminated": "A finishing RUNNING process becomes TERMINATED.",
+      "predict-ready": "I/O completion or a time-slice expiry makes the process READY."
+    }}
   },
   "visualization": {
     "type": "process-states",
-    "view": "zones",
-    "initial_state": {
-      "zones": {
-        "Ready": [
-          "P1"
-        ],
-        "Running": [],
-        "Waiting": [],
-        "Terminated": []
-      }
+    "problem": {
+      "cpuCount": 1,
+      "processes": [{"id": "P1", "state": "READY"}, {"id": "P2", "state": "READY"}],
+      "events": [{"type": "dispatch", "process": "P1"}, {"type": "io_request", "process": "P1"}, {"type": "dispatch", "process": "P2"}, {"type": "finish", "process": "P2"}, {"type": "io_complete", "process": "P1"}]
     },
-    "guided_steps": [
-      {
-        "operation": "run",
-        "instruction": "Move P1 to Running",
-        "next_state": {
-          "zones": {
-            "Ready": [],
-            "Running": [
-              "P1"
-            ],
-            "Waiting": [],
-            "Terminated": []
-          }
-        },
-        "evaluation_state": [
-          "RUN"
-        ]
-      },
-      {
-        "operation": "wait",
-        "instruction": "Send P1 to Waiting for I/O",
-        "next_state": {
-          "zones": {
-            "Ready": [],
-            "Running": [],
-            "Waiting": [
-              "P1"
-            ],
-            "Terminated": []
-          }
-        },
-        "evaluation_state": [
-          "WAIT"
-        ]
-      },
-      {
-        "operation": "resume",
-        "instruction": "Return P1 to Ready",
-        "next_state": {
-          "zones": {
-            "Ready": [
-              "P1"
-            ],
-            "Running": [],
-            "Waiting": [],
-            "Terminated": []
-          }
-        },
-        "evaluation_state": [
-          "RESUME"
-        ]
-      },
-      {
-        "operation": "terminate",
-        "instruction": "Finish P1",
-        "next_state": {
-          "zones": {
-            "Ready": [],
-            "Running": [],
-            "Waiting": [],
-            "Terminated": [
-              "P1"
-            ]
-          }
-        },
-        "evaluation_state": [
-          "TERMINATE"
-        ]
-      }
-    ],
-    "controls": [
-      {
-        "id": "run",
-        "label": "RUN PROCESS",
-        "operation": "run"
-      },
-      {
-        "id": "wait",
-        "label": "REQUEST I/O",
-        "operation": "wait"
-      },
-      {
-        "id": "resume",
-        "label": "I/O COMPLETE",
-        "operation": "resume"
-      },
-      {
-        "id": "terminate",
-        "label": "CPU COMPLETE",
-        "operation": "terminate"
-      }
-    ],
+    "challenge_problem": {
+      "cpuCount": 1,
+      "processes": [{"id": "P1", "state": "RUNNING"}, {"id": "P2", "state": "READY"}, {"id": "P3", "state": "WAITING"}],
+      "events": [{"type": "timeslice", "process": "P1"}, {"type": "dispatch", "process": "P2"}, {"type": "finish", "process": "P2"}, {"type": "io_complete", "process": "P3"}]
+    },
+    "controls": [{"id": "predict-ready", "label": "READY", "operation": "predict-ready"}],
     "actions": [
-      {
-        "label": "Choose the first valid state transition",
-        "operation": "run",
-        "task": "Choose the first valid state transition"
-      },
-      {
-        "label": "Decide what an I/O request causes",
-        "operation": "wait",
-        "task": "Decide what an I/O request causes"
-      },
-      {
-        "label": "Bring the process back after I/O",
-        "operation": "resume",
-        "task": "Bring the process back after I/O"
-      },
-      {
-        "label": "Terminate after CPU work",
-        "operation": "terminate",
-        "task": "Terminate after CPU work"
-      }
-    ],
-    "instruction": "Choose the next meaningful action.",
-    "wrong_action_message": "Compare the active task with the current state before choosing."
+      {"label": "Dispatch a ready process", "operation": "predict-running", "task": "Where does P1 move when the scheduler dispatches it?"},
+      {"label": "Respond to an I/O request", "operation": "predict-waiting", "task": "Where does a running process wait for I/O?"},
+      {"label": "Dispatch the next ready process", "operation": "predict-running", "task": "Which state receives CPU time?"},
+      {"label": "Finish CPU work", "operation": "predict-terminated", "task": "Where does a finished process move?"},
+      {"label": "Complete I/O", "operation": "predict-ready", "task": "Where does a process go when I/O completes?"}
+    ]
   },
-  "practice": {
-    "challenge": {
-      "title": "Processes challenge",
-      "start_message": "Apply the concept to the displayed state.",
-      "continue_message": "Challenge complete. Keep experimenting.",
-      "phases": [
-        {
-          "title": "Reach the correct result",
-          "instruction": "Use the controls to reach the target state.",
-          "target": {
-            "label": "TARGET",
-            "items": [
-              "COMPLETE"
-            ]
-          },
-          "goal": {
-            "type": "state_equals",
-            "expected_state": [
-              "COMPLETE"
-            ]
-          },
-          "success": "✓ Challenge complete",
-          "feedback": "Compare your state with the target."
-        }
-      ]
-    }
-  },
+  "practice": {"challenge": {
+    "title": "Process-state challenge", "start_message": "Predict four events without being told which state to choose.", "continue_message": "Challenge complete. Replay the sequence to experiment.",
+    "phases": [{"title": "Apply the event rules", "instruction": "Move every process only through model-valid transitions.", "targetVisibility": "hidden", "target": {"label": "MODEL-DERIVED FINAL SNAPSHOT"}, "goal": {"type": "outcome_equals", "expected_outcome": "solved"}, "success": "✓ Process challenge complete", "feedback": "Read the current state and event together."}]
+  }},
   "mastery": {
-    "title": "Processes Mastery",
-    "mastered_label": "Processes Mastered",
-    "current_state_label": "YOUR STATE",
+    "title": "Processes Mastery", "mastered_label": "Processes Mastered", "current_state_label": "CURRENT PROCESS SNAPSHOT",
     "levels": [
-      {
-        "id": "learn",
-        "label": "Learn",
-        "completion": {
-          "type": "course_completion"
-        }
+      {"id": "learn", "label": "Learn", "completion": {"type": "course_completion"}},
+      {"id": "practice", "label": "Practice", "prerequisites": ["learn"], "retry_same_scenario": true, "new_problem": true,
+        "guidance": {"start_message": "Predict a short event sequence.", "hints": {"limit": 1, "items": [{"content": "A process requesting I/O must leave the CPU."}]}},
+        "controls": [{"operation": "predict-ready", "label": "READY"}, {"operation": "predict-running", "label": "RUNNING"}, {"operation": "predict-waiting", "label": "WAITING"}, {"operation": "predict-terminated", "label": "TERMINATED"}],
+        "scenario": {"generator": "process", "generator_version": 1, "scenario_rules": {"processCounts": [3], "eventCounts": [4]}},
+        "challenge": {"phases": [{"title": "Practice process events", "instruction": "Predict each next state.", "targetVisibility": "hidden", "target": {"label": "MODEL RESULT"}, "goal": {"type": "outcome_equals", "expected_outcome": "solved"}, "success": "✓ Practice complete", "feedback": "Use the current state and event."}]}
       },
-      {
-        "id": "practice",
-        "label": "Practice",
-        "prerequisites": [
-          "learn"
-        ],
-        "guidance": {
-          "start_message": "Compare the current state with the objective and choose the next action.",
-          "hints": {
-            "limit": 1,
-            "items": [
-              {
-                "content": "Use the operation that moves the state toward the target."
-              }
-            ]
-          }
-        },
-        "controls": [
-          {
-            "id": "run",
-            "label": "RUN PROCESS",
-            "operation": "run"
-          },
-          {
-            "id": "wait",
-            "label": "REQUEST I/O",
-            "operation": "wait"
-          },
-          {
-            "id": "resume",
-            "label": "I/O COMPLETE",
-            "operation": "resume"
-          }
-        ],
-        "scenario": {
-          "initial_state": {
-            "zones": {
-              "Ready": [
-                "P1"
-              ],
-              "Running": [],
-              "Waiting": [],
-              "Terminated": []
-            }
-          },
-          "operations": [
-            {
-              "operation": "run",
-              "instruction": "Move P1 to Running",
-              "next_state": {
-                "zones": {
-                  "Ready": [],
-                  "Running": [
-                    "P1"
-                  ],
-                  "Waiting": [],
-                  "Terminated": []
-                }
-              },
-              "evaluation_state": [
-                "RUN"
-              ]
-            }
-          ]
-        },
-        "challenge": {
-          "phases": [
-            {
-              "title": "Practice task",
-              "instruction": "Reach the target state by making the appropriate decisions.",
-              "target": {
-                "label": "TARGET STATE",
-                "items": [
-                  "COMPLETE"
-                ]
-              },
-              "goal": {
-                "type": "state_equals",
-                "expected_state": [
-                  "COMPLETE"
-                ]
-              },
-              "success": "✓ Practice complete",
-              "feedback": "Compare your current state with the target before choosing again."
-            }
-          ]
-        }
+      {"id": "apply", "label": "Apply", "prerequisites": ["practice"], "retry_same_scenario": true, "new_problem": true,
+        "guidance": {"start_message": "Apply the transition rules to more processes.", "hints": {"limit": 0, "items": []}},
+        "controls": [{"operation": "predict-ready", "label": "READY"}, {"operation": "predict-running", "label": "RUNNING"}, {"operation": "predict-waiting", "label": "WAITING"}, {"operation": "predict-terminated", "label": "TERMINATED"}],
+        "scenario": {"generator": "process", "generator_version": 1, "scenario_rules": {"processCounts": [3, 4], "eventCounts": [5, 6]}},
+        "challenge": {"phases": [{"title": "Apply process transitions", "instruction": "Track multiple processes with no hint.", "targetVisibility": "hidden", "target": {"label": "MODEL RESULT"}, "goal": {"type": "outcome_equals", "expected_outcome": "solved"}, "success": "✓ Apply complete", "feedback": "Only one process may run on this CPU."}]}
       },
-      {
-        "id": "apply",
-        "label": "Apply",
-        "prerequisites": [
-          "practice"
-        ],
-        "guidance": {
-          "start_message": "Compare the current state with the objective and choose the next action.",
-          "hints": {
-            "limit": 0,
-            "items": []
-          }
-        },
-        "controls": [
-          {
-            "id": "run",
-            "label": "RUN PROCESS",
-            "operation": "run"
-          },
-          {
-            "id": "wait",
-            "label": "REQUEST I/O",
-            "operation": "wait"
-          },
-          {
-            "id": "resume",
-            "label": "I/O COMPLETE",
-            "operation": "resume"
-          }
-        ],
-        "scenario": {
-          "initial_state": {
-            "zones": {
-              "Ready": [
-                "P1"
-              ],
-              "Running": [],
-              "Waiting": [],
-              "Terminated": []
-            }
-          },
-          "operations": [
-            {
-              "operation": "run",
-              "instruction": "Move P1 to Running",
-              "next_state": {
-                "zones": {
-                  "Ready": [],
-                  "Running": [
-                    "P1"
-                  ],
-                  "Waiting": [],
-                  "Terminated": []
-                }
-              },
-              "evaluation_state": [
-                "RUN"
-              ]
-            },
-            {
-              "operation": "wait",
-              "instruction": "Send P1 to Waiting for I/O",
-              "next_state": {
-                "zones": {
-                  "Ready": [],
-                  "Running": [],
-                  "Waiting": [
-                    "P1"
-                  ],
-                  "Terminated": []
-                }
-              },
-              "evaluation_state": [
-                "WAIT"
-              ]
-            }
-          ]
-        },
-        "challenge": {
-          "phases": [
-            {
-              "title": "Apply task",
-              "instruction": "Reach the target state by making the appropriate decisions.",
-              "target": {
-                "label": "TARGET STATE",
-                "items": [
-                  "COMPLETE"
-                ]
-              },
-              "goal": {
-                "type": "state_equals",
-                "expected_state": [
-                  "COMPLETE"
-                ]
-              },
-              "success": "✓ Apply complete",
-              "feedback": "Compare your current state with the target before choosing again."
-            }
-          ]
-        }
+      {"id": "solve", "label": "Solve", "prerequisites": ["apply"], "retry_same_scenario": true, "new_problem": true,
+        "guidance": {"start_message": "Solve a mixed-state scenario independently.", "hints": {"limit": 0, "items": []}},
+        "controls": [{"operation": "predict-ready", "label": "READY"}, {"operation": "predict-running", "label": "RUNNING"}, {"operation": "predict-waiting", "label": "WAITING"}, {"operation": "predict-terminated", "label": "TERMINATED"}],
+        "scenario": {"generator": "process", "generator_version": 1, "scenario_rules": {"processCounts": [4], "eventCounts": [7], "mixedInitial": true}},
+        "challenge": {"phases": [{"title": "Solve the process sequence", "instruction": "Use every event to derive the next valid state.", "targetVisibility": "hidden", "target": {"label": "MODEL RESULT"}, "goal": {"type": "outcome_equals", "expected_outcome": "solved"}, "success": "✓ Solve complete", "feedback": "Check the process's current state before choosing."}]}
       },
-      {
-        "id": "solve",
-        "label": "Solve",
-        "prerequisites": [
-          "apply"
-        ],
-        "guidance": {
-          "start_message": "Compare the current state with the objective and choose the next action.",
-          "hints": {
-            "limit": 0,
-            "items": []
-          }
-        },
-        "controls": [
-          {
-            "id": "run",
-            "label": "RUN PROCESS",
-            "operation": "run"
-          },
-          {
-            "id": "wait",
-            "label": "REQUEST I/O",
-            "operation": "wait"
-          },
-          {
-            "id": "resume",
-            "label": "I/O COMPLETE",
-            "operation": "resume"
-          }
-        ],
-        "scenario": {
-          "initial_state": {
-            "zones": {
-              "Ready": [
-                "P1"
-              ],
-              "Running": [],
-              "Waiting": [],
-              "Terminated": []
-            }
-          },
-          "operations": [
-            {
-              "operation": "run",
-              "instruction": "Move P1 to Running",
-              "next_state": {
-                "zones": {
-                  "Ready": [],
-                  "Running": [
-                    "P1"
-                  ],
-                  "Waiting": [],
-                  "Terminated": []
-                }
-              },
-              "evaluation_state": [
-                "RUN"
-              ]
-            },
-            {
-              "operation": "wait",
-              "instruction": "Send P1 to Waiting for I/O",
-              "next_state": {
-                "zones": {
-                  "Ready": [],
-                  "Running": [],
-                  "Waiting": [
-                    "P1"
-                  ],
-                  "Terminated": []
-                }
-              },
-              "evaluation_state": [
-                "WAIT"
-              ]
-            },
-            {
-              "operation": "resume",
-              "instruction": "Return P1 to Ready",
-              "next_state": {
-                "zones": {
-                  "Ready": [
-                    "P1"
-                  ],
-                  "Running": [],
-                  "Waiting": [],
-                  "Terminated": []
-                }
-              },
-              "evaluation_state": [
-                "RESUME"
-              ]
-            }
-          ]
-        },
-        "challenge": {
-          "phases": [
-            {
-              "title": "Solve task",
-              "instruction": "Reach the target state by making the appropriate decisions.",
-              "target": {
-                "label": "TARGET STATE",
-                "items": [
-                  "COMPLETE"
-                ]
-              },
-              "goal": {
-                "type": "state_equals",
-                "expected_state": [
-                  "COMPLETE"
-                ]
-              },
-              "success": "✓ Solve complete",
-              "feedback": "Compare your current state with the target before choosing again."
-            }
-          ]
-        }
-      },
-      {
-        "id": "mastery",
-        "label": "Mastery",
-        "prerequisites": [
-          "solve"
-        ],
-        "guidance": {
-          "start_message": "Compare the current state with the objective and choose the next action.",
-          "hints": {
-            "limit": 0,
-            "items": []
-          }
-        },
-        "controls": [
-          {
-            "id": "run",
-            "label": "RUN PROCESS",
-            "operation": "run"
-          },
-          {
-            "id": "wait",
-            "label": "REQUEST I/O",
-            "operation": "wait"
-          },
-          {
-            "id": "resume",
-            "label": "I/O COMPLETE",
-            "operation": "resume"
-          }
-        ],
-        "scenario": {
-          "initial_state": {
-            "zones": {
-              "Ready": [
-                "P1"
-              ],
-              "Running": [],
-              "Waiting": [],
-              "Terminated": []
-            }
-          },
-          "operations": [
-            {
-              "operation": "run",
-              "instruction": "Move P1 to Running",
-              "next_state": {
-                "zones": {
-                  "Ready": [],
-                  "Running": [
-                    "P1"
-                  ],
-                  "Waiting": [],
-                  "Terminated": []
-                }
-              },
-              "evaluation_state": [
-                "RUN"
-              ]
-            },
-            {
-              "operation": "wait",
-              "instruction": "Send P1 to Waiting for I/O",
-              "next_state": {
-                "zones": {
-                  "Ready": [],
-                  "Running": [],
-                  "Waiting": [
-                    "P1"
-                  ],
-                  "Terminated": []
-                }
-              },
-              "evaluation_state": [
-                "WAIT"
-              ]
-            },
-            {
-              "operation": "resume",
-              "instruction": "Return P1 to Ready",
-              "next_state": {
-                "zones": {
-                  "Ready": [
-                    "P1"
-                  ],
-                  "Running": [],
-                  "Waiting": [],
-                  "Terminated": []
-                }
-              },
-              "evaluation_state": [
-                "RESUME"
-              ]
-            },
-            {
-              "operation": "terminate",
-              "instruction": "Finish P1",
-              "next_state": {
-                "zones": {
-                  "Ready": [],
-                  "Running": [],
-                  "Waiting": [],
-                  "Terminated": [
-                    "P1"
-                  ]
-                }
-              },
-              "evaluation_state": [
-                "TERMINATE"
-              ]
-            }
-          ]
-        },
-        "challenge": {
-          "phases": [
-            {
-              "title": "Mastery task",
-              "instruction": "Reach the target state by making the appropriate decisions.",
-              "target": {
-                "label": "TARGET STATE",
-                "items": [
-                  "COMPLETE"
-                ]
-              },
-              "goal": {
-                "type": "state_equals",
-                "expected_state": [
-                  "COMPLETE"
-                ]
-              },
-              "success": "✓ Mastery complete",
-              "feedback": "Compare your current state with the target before choosing again."
-            }
-          ]
-        }
+      {"id": "mastery", "label": "Mastery", "prerequisites": ["solve"], "retry_same_scenario": true, "new_problem": true,
+        "guidance": {"start_message": "Track an unfamiliar process workload with no hints.", "hints": {"limit": 0, "items": []}},
+        "controls": [{"operation": "predict-ready", "label": "READY"}, {"operation": "predict-running", "label": "RUNNING"}, {"operation": "predict-waiting", "label": "WAITING"}, {"operation": "predict-terminated", "label": "TERMINATED"}],
+        "scenario": {"generator": "process", "generator_version": 1, "scenario_rules": {"processCounts": [4, 5], "eventCounts": [8, 9], "mixedInitial": true}},
+        "challenge": {"phases": [{"title": "Master process-state reasoning", "instruction": "Complete the unfamiliar event sequence.", "targetVisibility": "hidden", "target": {"label": "MODEL RESULT"}, "goal": {"type": "outcome_equals", "expected_outcome": "solved"}, "success": "✓ Mastery complete", "feedback": "Derive each consequence from the executable rules."}]}
       }
     ]
   },
   "expert": {
-    "id": "expert",
-    "label": "Expert",
-    "prerequisites": [
-      "mastery"
-    ],
-    "generator": "phase2-expert",
-    "generator_version": 1,
-    "required_capabilities": [
-      "interactive_state",
-      "sequence_simulation",
-      "decision_tree"
-    ],
-    "thinking": {
-      "title": "Predict the sequence",
-      "objective_label": "Think first",
-      "instruction": "Mentally follow the sequence before acting.",
-      "starting_stack_label": "STARTING STATE",
-      "sequence_label": "ACTIONS TO SIMULATE",
-      "do_not_execute": "Do not act yet. Work through the sequence in order.",
-      "prediction_label": "YOUR PREDICTION",
-      "prediction_fields": [
-        {
-          "id": "finalState",
-          "label": "Final state",
-          "prompt": "What will the final state contain?",
-          "type": "text",
-          "placeholder": "Describe the result"
-        }
-      ],
-      "submit_label": "Check my prediction",
-      "continue_label": "Continue to Expert Challenge →",
-      "actual_label": "RESULT",
-      "your_prediction_label": "Your prediction",
-      "actual_result": "Final state: {{final_state}}.",
-      "feedback": {
-        "all_correct": "You tracked the sequence.",
-        "incorrect": "Recheck each transition."
-      }
-    },
-    "solve": {
-      "title": "Expert Processes",
-      "instruction": "Apply the sequence with no hints.",
-      "target_label": "TARGET STATE",
-      "your_label": "YOUR STATE",
-      "metric_label": "Actions",
-      "hints_label": "Hints: none",
-      "operation_rule": "Each action counts once.",
-      "controls": [
-        {
-          "id": "run",
-          "label": "RUN PROCESS",
-          "operation": "run"
-        },
-        {
-          "id": "wait",
-          "label": "REQUEST I/O",
-          "operation": "wait"
-        },
-        {
-          "id": "resume",
-          "label": "I/O COMPLETE",
-          "operation": "resume"
-        }
-      ],
-      "perfect_message": "🏆 PERFECT EXPERT",
-      "perfect_result": "You completed the sequence.",
-      "new_challenge_label": "New Expert Challenge"
-    },
-    "scenario_rules": {
-      "initial_state": [
-        "READY:P1"
-      ],
-      "steps": [
-        {
-          "operation": "run",
-          "label": "RUN P1"
-        },
-        {
-          "operation": "wait",
-          "label": "REQUEST I/O"
-        },
-        {
-          "operation": "resume",
-          "label": "I/O COMPLETE"
-        },
-        {
-          "operation": "terminate",
-          "label": "CPU COMPLETE"
-        }
-      ],
-      "final_state": [
-        "TERMINATED:P1"
-      ],
-      "target_state": [
-        "TERMINATED:P1"
-      ]
-    }
+    "id": "expert", "label": "Expert", "prerequisites": ["mastery"], "generator": "process", "generator_version": 1, "assessment_mode": "prediction", "targetVisibility": "hidden",
+    "scenario_rules": {"processCounts": [4, 5], "eventCounts": [8, 9, 10], "mixedInitial": true},
+    "required_capabilities": ["interactive_state", "sequence_simulation", "prediction", "scheduling"],
+    "thinking": {"title": "Mentally simulate the process workload", "objective_label": "Think first", "instruction": "Start from the visible snapshot and work through every scheduler, CPU, and I/O event before revealing the result.", "prediction_label": "YOUR FINAL SNAPSHOT", "empty_message": "Complete every process-state field. Use NONE for an empty state.",
+      "prediction_fields": [{"id": "ready", "label": "READY processes", "type": "text", "placeholder": "P1, P2 or NONE"}, {"id": "running", "label": "RUNNING processes", "type": "text", "placeholder": "P1 or NONE"}, {"id": "waiting", "label": "WAITING processes", "type": "text", "placeholder": "P3 or NONE"}, {"id": "terminated", "label": "TERMINATED processes", "type": "text", "placeholder": "P4 or NONE"}],
+      "submit_label": "Check prediction", "feedback": {"all_correct": "You tracked every transition.", "incorrect": "Recheck the fields marked for revision."}},
+    "solve": {"title": "Expert Processes", "instruction": "Predict the final snapshot with no hints.", "perfect_message": "🏆 PERFECT EXPERT", "new_challenge_label": "New Expert Challenge"}
   },
   "assessment": {
-    "quiz": {
-      "question": "Which state means a process is waiting for CPU time?",
-      "options": [
-        "Ready",
-        "Running",
-        "Terminated",
-        "Deleted"
-      ],
-      "correct": 0
-    },
-    "discovery": {
-      "title": "Process discovery",
-      "summary": "Process states describe where a running program is in its life cycle."
-    },
-    "notes": {
-      "sections": [
-        {
-          "title": "What?",
-          "content": "A process is a program with its own current state."
-        },
-        {
-          "title": "States",
-          "content": "Ready waits for CPU; Running uses CPU; Waiting pauses for I/O; Terminated is finished."
-        },
-        {
-          "title": "Example",
-          "content": "Ready → Running → Waiting → Ready → Terminated."
-        },
-        {
-          "title": "Remember",
-          "content": "A process changes state when an event happens."
-        }
-      ]
-    },
-    "alternate_explanations": [
-      {
-        "title": "Think of a familiar workflow",
-        "type": "analogy",
-        "content": "Imagine Processes as a small real-world process with visible steps."
-      },
-      {
-        "title": "Walk through the example",
-        "type": "example",
-        "content": "Watch a process move through its life cycle."
-      }
-    ]
+    "quiz": {"question": "A RUNNING process requests disk I/O. Which state should it enter?", "options": ["READY", "WAITING", "TERMINATED", "It stays RUNNING"], "correct": 1},
+    "discovery": {"title": "Process-state discovery", "summary": "Scheduler, CPU, and I/O events cause valid transitions; a process cannot jump arbitrarily between states."},
+    "notes": {"sections": [{"title": "What?", "content": "A process is a program being managed while it runs or waits."}, {"title": "Example", "content": "RUNNING → WAITING happens when a process requests I/O."}, {"title": "Why?", "content": "States tell the operating system which processes can use the CPU and which must wait."}, {"title": "Remember", "content": "An event and the current state together determine the only valid transition."}]},
+    "alternate_explanations": [{"title": "Think of one service desk", "type": "analogy", "content": "One customer is being served, others are ready in line, and someone waiting for paperwork cannot use the desk yet."}, {"title": "Walk through P1", "type": "example", "content": "P1 READY → dispatched → RUNNING → asks for disk → WAITING → disk finishes → READY."}]
   },
-  "completion": {
-    "recall": {
-      "title": "Recall",
-      "prompt": "In your own words, why does an I/O request move a running process to Waiting?",
-      "submit_label": "Submit recall",
-      "empty_message": "Write a short explanation first.",
-      "completion_message": "✓ Recall completed",
-      "model_answer": "A process changes state when an event happens."
-    }
-  }
+  "completion": {"recall": {"title": "Recall", "prompt": "In your own words, why does an I/O request move a running process into Waiting?", "submit_label": "Submit recall", "empty_message": "Write a short explanation first.", "completion_message": "✓ Recall completed", "model_answer": "The process cannot continue until the I/O result arrives, so it releases the CPU and waits."}}
 }
