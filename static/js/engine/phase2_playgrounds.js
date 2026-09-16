@@ -227,10 +227,7 @@
         };
     }
 
-    const types = [
-        "normalization",
-        "ip-addresses", "dns-lookup", "http-request"
-    ];
+    const types = ["normalization"];
     types.forEach(type => registerPlayground(type, createPlayground));
 
     if (typeof registerScenarioGenerator === "function" && !ScenarioFactory.getGenerator("phase2-expert")) {

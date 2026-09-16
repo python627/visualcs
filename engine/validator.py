@@ -214,6 +214,59 @@ class LessonValidator:
                     errors.append(f"playground.{name} must not contain an authored final transaction state")
             if any(key in playground for key in ("guided_steps", "target_state", "initial_state")):
                 errors.append("transactions uses TransactionModel, not scripted states")
+        if playground_type == "ip-addresses":
+            problems = playground.get("problems")
+            if not isinstance(problems, list) or not problems:
+                errors.append("playground.problems must contain executable IPv4 tasks")
+            else:
+                for index, problem in enumerate(problems):
+                    self._validate_ipv4_problem(problem, f"playground.problems[{index}]", errors)
+            self._validate_ipv4_problem(playground.get("challenge_problem"), "playground.challenge_problem", errors)
+            if any(key in playground for key in ("guided_steps", "target_state", "initial_state", "next_state")):
+                errors.append("ip-addresses uses IPv4Address, not scripted states")
+        if playground_type == "dns-lookup":
+            problems = playground.get("problems")
+            if not isinstance(problems, list) or not problems:
+                errors.append("playground.problems must contain executable DNS lookups")
+            else:
+                for index, problem in enumerate(problems):
+                    self._validate_dns_problem(problem, f"playground.problems[{index}]", errors)
+            self._validate_dns_problem(playground.get("challenge_problem"), "playground.challenge_problem", errors)
+            if any(key in playground for key in ("guided_steps", "target_state", "initial_state", "next_state")):
+                errors.append("dns-lookup uses DnsModel, not scripted states")
+        if playground_type == "http-request":
+            problems = playground.get("problems")
+            if not isinstance(problems, list) or not problems:
+                errors.append("playground.problems must contain executable HTTP exchanges")
+            else:
+                for index, problem in enumerate(problems):
+                    self._validate_http_problem(problem, f"playground.problems[{index}]", errors)
+            self._validate_http_problem(playground.get("challenge_problem"), "playground.challenge_problem", errors)
+            if any(key in playground for key in ("guided_steps", "target_state", "initial_state", "next_state")):
+                errors.append("http-request uses HttpModel, not scripted states")
+
+    def _validate_ipv4_problem(self, problem, path, errors):
+        if not isinstance(problem, dict) or not isinstance(problem.get("devices"), list) or not isinstance(problem.get("task"), dict):
+            errors.append(f"{path} must contain IPv4 devices and a task")
+            return
+        if any(key in problem for key in ("answer", "result", "oracle", "expected", "destinationDeviceId")):
+            errors.append(f"{path} must contain IPv4 inputs only, not derived answers")
+
+    def _validate_dns_problem(self, problem, path, errors):
+        if not isinstance(problem, dict) or not isinstance(problem.get("records"), list) or not isinstance(problem.get("cache"), dict) or not isinstance(problem.get("query"), dict):
+            errors.append(f"{path} must contain DNS records, cache, and query inputs")
+            return
+        if any(key in problem for key in ("answer", "result", "oracle", "resolvedIp", "sequence", "destinationServerId")):
+            errors.append(f"{path} must not contain authored DNS results")
+
+    def _validate_http_problem(self, problem, path, errors):
+        if not isinstance(problem, dict) or not isinstance(problem.get("client"), dict) or not isinstance(problem.get("server"), dict) or not isinstance(problem.get("goal"), dict):
+            errors.append(f"{path} must contain HTTP client, server, and goal inputs")
+            return
+        if not isinstance(problem.get("server", {}).get("routes"), list):
+            errors.append(f"{path}.server.routes must be a list")
+        if any(key in problem for key in ("answer", "result", "oracle", "response", "status")):
+            errors.append(f"{path} must not contain an authored HTTP response")
 
     def _validate_sql_select_problem(self, problem, path, errors):
         if not isinstance(problem, dict):
@@ -780,6 +833,9 @@ class LessonValidator:
         executable_tables = lesson.get("playground", {}).get("type") == "table-records"
         executable_join = lesson.get("playground", {}).get("type") == "dbms-joins"
         executable_transaction = lesson.get("playground", {}).get("type") == "transactions"
+        executable_ipv4 = lesson.get("playground", {}).get("type") == "ip-addresses"
+        executable_dns = lesson.get("playground", {}).get("type") == "dns-lookup"
+        executable_http = lesson.get("playground", {}).get("type") == "http-request"
         level_ids = []
         for index, level in enumerate(levels):
             path = f"mastery.levels[{index}]"
@@ -823,6 +879,12 @@ class LessonValidator:
                     errors.append(f"{path}.expert must use the JOIN evaluator-backed generator")
                 if executable_transaction and level.get("expert", {}).get("generator") != "transaction":
                     errors.append(f"{path}.expert must use the transaction model-backed generator")
+                if executable_ipv4 and level.get("expert", {}).get("generator") != "ipv4":
+                    errors.append(f"{path}.expert must use the IPv4 model-backed generator")
+                if executable_dns and level.get("expert", {}).get("generator") != "dns":
+                    errors.append(f"{path}.expert must use the DNS model-backed generator")
+                if executable_http and level.get("expert", {}).get("generator") != "http":
+                    errors.append(f"{path}.expert must use the HTTP model-backed generator")
                 continue
 
             scenario = level.get("scenario")
@@ -849,7 +911,13 @@ class LessonValidator:
                     errors.append(f"{path}.scenario must use the JOIN evaluator-backed generator")
                 if executable_transaction and scenario.get("generator") != "transaction":
                     errors.append(f"{path}.scenario must use the transaction model-backed generator")
-            elif executable_sql or executable_transport or executable_process or executable_deadlock or executable_tables or executable_join or executable_transaction:
+                if executable_ipv4 and scenario.get("generator") != "ipv4":
+                    errors.append(f"{path}.scenario must use the IPv4 model-backed generator")
+                if executable_dns and scenario.get("generator") != "dns":
+                    errors.append(f"{path}.scenario must use the DNS model-backed generator")
+                if executable_http and scenario.get("generator") != "http":
+                    errors.append(f"{path}.scenario must use the HTTP model-backed generator")
+            elif executable_sql or executable_transport or executable_process or executable_deadlock or executable_tables or executable_join or executable_transaction or executable_ipv4 or executable_dns or executable_http:
                 generator_name = (
                     "sql-select evaluator" if executable_sql else
                     "transport simulator" if executable_transport else
@@ -857,7 +925,10 @@ class LessonValidator:
                     "deadlock model" if executable_deadlock else
                     "table-record model" if executable_tables else
                     "JOIN evaluator" if executable_join else
-                    "transaction model"
+                    "transaction model" if executable_transaction else
+                    "IPv4 model" if executable_ipv4 else
+                    "DNS model" if executable_dns else
+                    "HTTP model"
                 )
                 errors.append(f"{path}.scenario must use the {generator_name}-backed generator")
 
