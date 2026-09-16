@@ -1,974 +1,137 @@
 {
   "schema_version": 2,
   "metadata": {
-    "id": "tables-records",
-    "order": 2,
-    "subject_order": 4,
-    "subject": "DBMS",
-    "topic": "Tables & Records",
-    "title": "Explore Tables and Records",
-    "description": "Recognize rows, columns, fields, and schema in a small database table.",
-    "difficulty": "Beginner",
-    "estimated_time": "15 min"
+    "id": "tables-records", "order": 2, "subject_order": 4, "subject": "DBMS",
+    "topic": "Tables & Records", "title": "Explore Tables and Records",
+    "description": "Use schemas, records, fields, and types to make safe table changes.",
+    "difficulty": "Beginner", "estimated_time": "15 min"
   },
-  "learning_objectives": [
-    "Explain Tables & Records in simple terms.",
-    "Follow one visible Tables & Records example.",
-    "Make a correct decision in the playground."
-  ],
-  "capabilities": [
-    "interactive_state",
-    "array_access",
-    "target_transformation"
-  ],
+  "learning_objectives": ["Distinguish schema, columns, rows, and field values.", "Use a schema to predict whether a record or edit is valid.", "Explain why stable row identity matters."],
+  "capabilities": ["interactive_state", "array_access", "prediction", "target_transformation"],
   "teaching": {
-    "mission": {
-      "title": "Practise Tables & Records",
-      "description": "Make each decision and watch the consequence."
-    },
+    "mission": { "title": "Work with a real table", "description": "Predict each structural choice or change, then check the model consequence." },
     "introduction": {
-      "title": "Tables & Records: start here",
-      "content": "A database table organizes related values in rows and columns.",
-      "points": [
-        "Explore how a row is a record and a column is a field."
-      ],
-      "visual": {
-        "type": "array",
-        "label": "Tables & Records",
-        "items": [
-          "What?",
-          "Example",
-          "Try it"
-        ]
-      }
+      "title": "A table has structure and data", "content": "A schema names each column and its type. Every row is one record; each cell is a field value.",
+      "points": ["Rows describe individual records.", "Columns describe the same kind of field across records.", "Types prevent invalid values from entering a column."],
+      "visual": { "type": "array", "label": "TABLE", "items": ["schema", "records", "field values"] }
     },
     "worked_example": {
-      "title": "See one example",
-      "content": "Watch one concrete sequence before you try it.",
+      "title": "Read the structure before changing data", "content": "Use the schema to interpret a student record.",
       "steps": [
-        {
-          "action": "ROW",
-          "state": {
-            "tables": {
-              "STUDENTS": [
-                [
-                  "ID",
-                  "NAME",
-                  "AGE"
-                ],
-                [
-                  "1",
-                  "Ana",
-                  "19"
-                ],
-                [
-                  "2",
-                  "Ben",
-                  "21"
-                ]
-              ]
-            },
-            "result": "row 2 is Ben"
-          },
-          "explanation": "One complete row is a record."
-        },
-        {
-          "action": "COLUMN",
-          "state": {
-            "tables": {
-              "STUDENTS": [
-                [
-                  "ID"
-                ],
-                [
-                  "1"
-                ],
-                [
-                  "2"
-                ]
-              ]
-            },
-            "result": "ID is a field"
-          },
-          "explanation": "A column describes one field across records."
-        },
-        {
-          "action": "SCHEMA",
-          "state": {
-            "tables": {
-              "STUDENTS": [
-                [
-                  "ID",
-                  "NAME",
-                  "AGE"
-                ]
-              ]
-            },
-            "result": "schema = column design"
-          },
-          "explanation": "The schema describes the table shape."
-        }
+        { "action": "SCHEMA", "state": ["id:number", "name:string", "age:number"], "explanation": "The schema defines the allowed columns and value types." },
+        { "action": "RECORD", "state": ["student-2", "102", "Ben", "21"], "explanation": "One complete row is a record with a stable row id." },
+        { "action": "FIELD", "state": ["student-2.age", "21"], "explanation": "A field is one value at a row-and-column intersection." }
       ],
-      "conclusion": "The visual state changes because the concept follows a rule.",
-      "next": {
-        "title": "Now you try.",
-        "content": "Choose the next meaningful action."
-      }
+      "conclusion": "A valid change must preserve the schema while keeping row identity stable.",
+      "next": { "title": "Now you try.", "content": "Predict each answer before revealing the model consequence." }
     },
-    "guided_practice": {
-      "action_explanations": {
-        "row": "record selected",
-        "column": "field selected",
-        "schema": "schema selected"
-      }
-    }
+    "guided_practice": { "action_explanations": {
+      "identify-row": "You identified a complete record by its stable row id.",
+      "identify-column": "You identified the field shared down one column.",
+      "add-record": "The schema decided whether the proposed record could be added.",
+      "edit-field": "The column type decided whether the field edit was valid."
+    } }
   },
   "visualization": {
     "type": "table-records",
-    "view": "table",
-    "initial_state": {
-      "tables": {
-        "STUDENTS": [
-          [
-            "ID",
-            "NAME",
-            "AGE"
-          ],
-          [
-            "1",
-            "Ana",
-            "19"
-          ],
-          [
-            "2",
-            "Ben",
-            "21"
+    "problems": [
+      {
+        "database": { "tables": [{
+          "name": "students",
+          "columns": [{ "name": "id", "type": "number" }, { "name": "name", "type": "string" }, { "name": "age", "type": "number" }, { "name": "active", "type": "boolean" }],
+          "rows": [
+            { "id": "student-1", "values": { "id": 101, "name": "Ana", "age": 19, "active": true } },
+            { "id": "student-2", "values": { "id": 102, "name": "Ben", "age": 21, "active": false } }
           ]
-        ]
+        }] },
+        "task": { "kind": "identify-row", "table": "students", "rowId": "student-2", "prompt": "Which row id identifies Ben's complete record?" }
       },
-      "result": "choose a row or field"
+      { "task": { "kind": "identify-column", "table": "students", "column": "age", "prompt": "Which column stores every student's age?" } },
+      { "task": { "kind": "add-record", "table": "students", "prompt": "Will this proposed record pass the schema, and how many rows will remain?", "record": { "id": "student-3", "values": { "id": 103, "name": "Cara", "age": 20, "active": true } } } },
+      { "task": { "kind": "edit-field", "table": "students", "rowId": "student-2", "column": "age", "value": "twenty-two", "prompt": "Will this edit pass the number type, and what age will remain?" } }
+    ],
+    "challenge_problem": {
+      "database": { "tables": [{
+        "name": "products",
+        "columns": [{ "name": "code", "type": "string" }, { "name": "price", "type": "number" }, { "name": "in_stock", "type": "boolean" }],
+        "rows": [{ "id": "product-1", "values": { "code": "A1", "price": 25, "in_stock": true } }]
+      }] },
+      "task": { "kind": "add-record", "table": "products", "prompt": "Predict whether this mixed-type record is valid and the resulting row count.", "record": { "id": "product-2", "values": { "code": "B2", "price": "forty", "in_stock": true } } }
     },
-    "guided_steps": [
-      {
-        "operation": "row",
-        "instruction": "Identify a complete record",
-        "next_state": {
-          "tables": {
-            "STUDENTS": [
-              [
-                "ID",
-                "NAME",
-                "AGE"
-              ],
-              [
-                "2",
-                "Ben",
-                "21"
-              ]
-            ]
-          },
-          "result": "record selected"
-        },
-        "evaluation_state": [
-          "ROW"
-        ]
-      },
-      {
-        "operation": "column",
-        "instruction": "Choose the requested field",
-        "next_state": {
-          "tables": {
-            "STUDENTS": [
-              [
-                "AGE"
-              ],
-              [
-                "19"
-              ],
-              [
-                "21"
-              ]
-            ]
-          },
-          "result": "field selected"
-        },
-        "evaluation_state": [
-          "COLUMN"
-        ]
-      },
-      {
-        "operation": "schema",
-        "instruction": "Separate schema from data",
-        "next_state": {
-          "tables": {
-            "STUDENTS": [
-              [
-                "ID",
-                "NAME",
-                "AGE"
-              ]
-            ]
-          },
-          "result": "schema selected"
-        },
-        "evaluation_state": [
-          "SCHEMA"
-        ]
-      }
-    ],
-    "controls": [
-      {
-        "id": "row",
-        "label": "SELECT RECORD",
-        "operation": "row"
-      },
-      {
-        "id": "column",
-        "label": "SELECT FIELD",
-        "operation": "column"
-      },
-      {
-        "id": "schema",
-        "label": "SHOW SCHEMA",
-        "operation": "schema"
-      }
-    ],
+    "controls": [{ "id": "check-table", "label": "CHECK PREDICTION", "operation": "check-table" }],
     "actions": [
-      {
-        "label": "Identify a row",
-        "operation": "row",
-        "task": "Identify a row"
-      },
-      {
-        "label": "Identify a column",
-        "operation": "column",
-        "task": "Identify a column"
-      },
-      {
-        "label": "Distinguish schema from values",
-        "operation": "schema",
-        "task": "Distinguish schema from values"
-      }
-    ],
-    "instruction": "Choose the next meaningful action.",
-    "wrong_action_message": "Compare the active task with the current state before choosing."
+      { "label": "Identify a record", "operation": "identify-row" }, { "label": "Identify a column", "operation": "identify-column" },
+      { "label": "Predict a valid addition", "operation": "add-record" }, { "label": "Detect an invalid field type", "operation": "edit-field" }
+    ]
   },
-  "practice": {
-    "challenge": {
-      "title": "Tables & Records challenge",
-      "start_message": "Apply the concept to the displayed state.",
-      "continue_message": "Challenge complete. Keep experimenting.",
-      "phases": [
-        {
-          "title": "Reach the correct result",
-          "instruction": "Use the controls to reach the target state.",
-          "target": {
-            "label": "TARGET",
-            "items": [
-              "COMPLETE"
-            ]
-          },
-          "goal": {
-            "type": "state_equals",
-            "expected_state": [
-              "COMPLETE"
-            ]
-          },
-          "success": "✓ Challenge complete",
-          "feedback": "Compare your state with the target."
-        }
-      ]
-    }
-  },
+  "practice": { "challenge": {
+    "title": "Schema decision challenge", "start_message": "Use the schema, then predict the consequence.", "continue_message": "Challenge complete. Keep inspecting the table.",
+    "phases": [{ "title": "Validate a record", "instruction": "Decide whether the proposed record can be added and predict the row count.",
+      "target": { "label": "TARGET", "description": "A completely correct model-backed prediction" },
+      "goal": { "type": "outcome_equals", "expected_outcome": "solved" }, "success": "✓ Table challenge complete", "feedback": "Recheck every proposed value against its column type." }]
+  } },
   "mastery": {
-    "title": "Tables & Records Mastery",
-    "mastered_label": "Tables & Records Mastered",
-    "current_state_label": "YOUR STATE",
+    "title": "Tables & Records Mastery", "mastered_label": "Tables & Records Mastered", "current_state_label": "YOUR TABLE",
     "levels": [
+      { "id": "learn", "label": "Learn", "completion": { "type": "course_completion" } },
       {
-        "id": "learn",
-        "label": "Learn",
-        "completion": {
-          "type": "course_completion"
-        }
+        "id": "practice", "label": "Practice", "prerequisites": ["learn"],
+        "guidance": { "start_message": "Use the visible row and column labels.", "hints": { "limit": 1, "items": [{ "content": "A row id identifies one complete record." }] } },
+        "controls": [{ "label": "CHECK PREDICTION", "operation": "check-table" }],
+        "scenario": { "generator": "table-records", "generator_version": 1, "scenario_rules": { "rowCounts": [3], "taskKinds": ["identify-row", "identify-column", "inspect-field"] } },
+        "challenge": { "phases": [{ "title": "Read the table", "instruction": "Answer the generated structure question.", "target": { "label": "TARGET", "description": "Correct structural answer" }, "goal": { "type": "outcome_equals", "expected_outcome": "solved" }, "success": "✓ Practice complete", "feedback": "Use the row id, column name, and field intersection carefully." }] }
       },
       {
-        "id": "practice",
-        "label": "Practice",
-        "prerequisites": [
-          "learn"
-        ],
-        "guidance": {
-          "start_message": "Compare the current state with the objective and choose the next action.",
-          "hints": {
-            "limit": 1,
-            "items": [
-              {
-                "content": "Use the operation that moves the state toward the target."
-              }
-            ]
-          }
-        },
-        "controls": [
-          {
-            "id": "row",
-            "label": "SELECT RECORD",
-            "operation": "row"
-          },
-          {
-            "id": "column",
-            "label": "SELECT FIELD",
-            "operation": "column"
-          },
-          {
-            "id": "schema",
-            "label": "SHOW SCHEMA",
-            "operation": "schema"
-          }
-        ],
-        "scenario": {
-          "initial_state": {
-            "tables": {
-              "STUDENTS": [
-                [
-                  "ID",
-                  "NAME",
-                  "AGE"
-                ],
-                [
-                  "1",
-                  "Ana",
-                  "19"
-                ],
-                [
-                  "2",
-                  "Ben",
-                  "21"
-                ]
-              ]
-            },
-            "result": "choose a row or field"
-          },
-          "operations": [
-            {
-              "operation": "row",
-              "instruction": "Identify a complete record",
-              "next_state": {
-                "tables": {
-                  "STUDENTS": [
-                    [
-                      "ID",
-                      "NAME",
-                      "AGE"
-                    ],
-                    [
-                      "2",
-                      "Ben",
-                      "21"
-                    ]
-                  ]
-                },
-                "result": "record selected"
-              },
-              "evaluation_state": [
-                "ROW"
-              ]
-            }
-          ]
-        },
-        "challenge": {
-          "phases": [
-            {
-              "title": "Practice task",
-              "instruction": "Reach the target state by making the appropriate decisions.",
-              "target": {
-                "label": "TARGET STATE",
-                "items": [
-                  "COMPLETE"
-                ]
-              },
-              "goal": {
-                "type": "state_equals",
-                "expected_state": [
-                  "COMPLETE"
-                ]
-              },
-              "success": "✓ Practice complete",
-              "feedback": "Compare your current state with the target before choosing again."
-            }
-          ]
-        }
+        "id": "apply", "label": "Apply", "prerequisites": ["practice"],
+        "guidance": { "start_message": "Predict whether the schema accepts the change.", "hints": { "limit": 0, "items": [] } },
+        "controls": [{ "label": "CHECK PREDICTION", "operation": "check-table" }],
+        "scenario": { "generator": "table-records", "generator_version": 1, "scenario_rules": { "rowCounts": [4], "taskKinds": ["add-record"], "invalidRate": 0.5 } },
+        "challenge": { "phases": [{ "title": "Apply the schema", "instruction": "Predict the validity and resulting row count.", "target": { "label": "TARGET", "description": "Correct consequence" }, "goal": { "type": "outcome_equals", "expected_outcome": "solved" }, "success": "✓ Apply complete", "feedback": "Check every required column and type." }] }
       },
       {
-        "id": "apply",
-        "label": "Apply",
-        "prerequisites": [
-          "practice"
-        ],
-        "guidance": {
-          "start_message": "Compare the current state with the objective and choose the next action.",
-          "hints": {
-            "limit": 0,
-            "items": []
-          }
-        },
-        "controls": [
-          {
-            "id": "row",
-            "label": "SELECT RECORD",
-            "operation": "row"
-          },
-          {
-            "id": "column",
-            "label": "SELECT FIELD",
-            "operation": "column"
-          },
-          {
-            "id": "schema",
-            "label": "SHOW SCHEMA",
-            "operation": "schema"
-          }
-        ],
-        "scenario": {
-          "initial_state": {
-            "tables": {
-              "STUDENTS": [
-                [
-                  "ID",
-                  "NAME",
-                  "AGE"
-                ],
-                [
-                  "1",
-                  "Ana",
-                  "19"
-                ],
-                [
-                  "2",
-                  "Ben",
-                  "21"
-                ]
-              ]
-            },
-            "result": "choose a row or field"
-          },
-          "operations": [
-            {
-              "operation": "row",
-              "instruction": "Identify a complete record",
-              "next_state": {
-                "tables": {
-                  "STUDENTS": [
-                    [
-                      "ID",
-                      "NAME",
-                      "AGE"
-                    ],
-                    [
-                      "2",
-                      "Ben",
-                      "21"
-                    ]
-                  ]
-                },
-                "result": "record selected"
-              },
-              "evaluation_state": [
-                "ROW"
-              ]
-            },
-            {
-              "operation": "column",
-              "instruction": "Choose the requested field",
-              "next_state": {
-                "tables": {
-                  "STUDENTS": [
-                    [
-                      "AGE"
-                    ],
-                    [
-                      "19"
-                    ],
-                    [
-                      "21"
-                    ]
-                  ]
-                },
-                "result": "field selected"
-              },
-              "evaluation_state": [
-                "COLUMN"
-              ]
-            }
-          ]
-        },
-        "challenge": {
-          "phases": [
-            {
-              "title": "Apply task",
-              "instruction": "Reach the target state by making the appropriate decisions.",
-              "target": {
-                "label": "TARGET STATE",
-                "items": [
-                  "COMPLETE"
-                ]
-              },
-              "goal": {
-                "type": "state_equals",
-                "expected_state": [
-                  "COMPLETE"
-                ]
-              },
-              "success": "✓ Apply complete",
-              "feedback": "Compare your current state with the target before choosing again."
-            }
-          ]
-        }
+        "id": "solve", "label": "Solve", "prerequisites": ["apply"], "new_problem": true,
+        "guidance": { "start_message": "Reason from the schema with no hints.", "hints": { "limit": 0, "items": [] } },
+        "controls": [{ "label": "CHECK PREDICTION", "operation": "check-table" }],
+        "scenario": { "generator": "table-records", "generator_version": 1, "scenario_rules": { "rowCounts": [4, 5], "taskKinds": ["edit-field"], "invalidRate": 0.5 } },
+        "challenge": { "phases": [{ "title": "Solve an edit", "instruction": "Predict whether the edit occurs and the value that remains.", "target": { "label": "TARGET", "description": "Correct model consequence" }, "goal": { "type": "outcome_equals", "expected_outcome": "solved" }, "success": "✓ Solve complete", "feedback": "Compare the proposed value with the field type." }] }
       },
       {
-        "id": "solve",
-        "label": "Solve",
-        "prerequisites": [
-          "apply"
-        ],
-        "guidance": {
-          "start_message": "Compare the current state with the objective and choose the next action.",
-          "hints": {
-            "limit": 0,
-            "items": []
-          }
-        },
-        "controls": [
-          {
-            "id": "row",
-            "label": "SELECT RECORD",
-            "operation": "row"
-          },
-          {
-            "id": "column",
-            "label": "SELECT FIELD",
-            "operation": "column"
-          },
-          {
-            "id": "schema",
-            "label": "SHOW SCHEMA",
-            "operation": "schema"
-          }
-        ],
-        "scenario": {
-          "initial_state": {
-            "tables": {
-              "STUDENTS": [
-                [
-                  "ID",
-                  "NAME",
-                  "AGE"
-                ],
-                [
-                  "1",
-                  "Ana",
-                  "19"
-                ],
-                [
-                  "2",
-                  "Ben",
-                  "21"
-                ]
-              ]
-            },
-            "result": "choose a row or field"
-          },
-          "operations": [
-            {
-              "operation": "row",
-              "instruction": "Identify a complete record",
-              "next_state": {
-                "tables": {
-                  "STUDENTS": [
-                    [
-                      "ID",
-                      "NAME",
-                      "AGE"
-                    ],
-                    [
-                      "2",
-                      "Ben",
-                      "21"
-                    ]
-                  ]
-                },
-                "result": "record selected"
-              },
-              "evaluation_state": [
-                "ROW"
-              ]
-            },
-            {
-              "operation": "column",
-              "instruction": "Choose the requested field",
-              "next_state": {
-                "tables": {
-                  "STUDENTS": [
-                    [
-                      "AGE"
-                    ],
-                    [
-                      "19"
-                    ],
-                    [
-                      "21"
-                    ]
-                  ]
-                },
-                "result": "field selected"
-              },
-              "evaluation_state": [
-                "COLUMN"
-              ]
-            },
-            {
-              "operation": "schema",
-              "instruction": "Separate schema from data",
-              "next_state": {
-                "tables": {
-                  "STUDENTS": [
-                    [
-                      "ID",
-                      "NAME",
-                      "AGE"
-                    ]
-                  ]
-                },
-                "result": "schema selected"
-              },
-              "evaluation_state": [
-                "SCHEMA"
-              ]
-            }
-          ]
-        },
-        "challenge": {
-          "phases": [
-            {
-              "title": "Solve task",
-              "instruction": "Reach the target state by making the appropriate decisions.",
-              "target": {
-                "label": "TARGET STATE",
-                "items": [
-                  "COMPLETE"
-                ]
-              },
-              "goal": {
-                "type": "state_equals",
-                "expected_state": [
-                  "COMPLETE"
-                ]
-              },
-              "success": "✓ Solve complete",
-              "feedback": "Compare your current state with the target before choosing again."
-            }
-          ]
-        }
-      },
-      {
-        "id": "mastery",
-        "label": "Mastery",
-        "prerequisites": [
-          "solve"
-        ],
-        "guidance": {
-          "start_message": "Compare the current state with the objective and choose the next action.",
-          "hints": {
-            "limit": 0,
-            "items": []
-          }
-        },
-        "controls": [
-          {
-            "id": "row",
-            "label": "SELECT RECORD",
-            "operation": "row"
-          },
-          {
-            "id": "column",
-            "label": "SELECT FIELD",
-            "operation": "column"
-          },
-          {
-            "id": "schema",
-            "label": "SHOW SCHEMA",
-            "operation": "schema"
-          }
-        ],
-        "scenario": {
-          "initial_state": {
-            "tables": {
-              "STUDENTS": [
-                [
-                  "ID",
-                  "NAME",
-                  "AGE"
-                ],
-                [
-                  "1",
-                  "Ana",
-                  "19"
-                ],
-                [
-                  "2",
-                  "Ben",
-                  "21"
-                ]
-              ]
-            },
-            "result": "choose a row or field"
-          },
-          "operations": [
-            {
-              "operation": "row",
-              "instruction": "Identify a complete record",
-              "next_state": {
-                "tables": {
-                  "STUDENTS": [
-                    [
-                      "ID",
-                      "NAME",
-                      "AGE"
-                    ],
-                    [
-                      "2",
-                      "Ben",
-                      "21"
-                    ]
-                  ]
-                },
-                "result": "record selected"
-              },
-              "evaluation_state": [
-                "ROW"
-              ]
-            },
-            {
-              "operation": "column",
-              "instruction": "Choose the requested field",
-              "next_state": {
-                "tables": {
-                  "STUDENTS": [
-                    [
-                      "AGE"
-                    ],
-                    [
-                      "19"
-                    ],
-                    [
-                      "21"
-                    ]
-                  ]
-                },
-                "result": "field selected"
-              },
-              "evaluation_state": [
-                "COLUMN"
-              ]
-            },
-            {
-              "operation": "schema",
-              "instruction": "Separate schema from data",
-              "next_state": {
-                "tables": {
-                  "STUDENTS": [
-                    [
-                      "ID",
-                      "NAME",
-                      "AGE"
-                    ]
-                  ]
-                },
-                "result": "schema selected"
-              },
-              "evaluation_state": [
-                "SCHEMA"
-              ]
-            }
-          ]
-        },
-        "challenge": {
-          "phases": [
-            {
-              "title": "Mastery task",
-              "instruction": "Reach the target state by making the appropriate decisions.",
-              "target": {
-                "label": "TARGET STATE",
-                "items": [
-                  "COMPLETE"
-                ]
-              },
-              "goal": {
-                "type": "state_equals",
-                "expected_state": [
-                  "COMPLETE"
-                ]
-              },
-              "success": "✓ Mastery complete",
-              "feedback": "Compare your current state with the target before choosing again."
-            }
-          ]
-        }
+        "id": "mastery", "label": "Mastery", "prerequisites": ["solve"], "new_problem": true,
+        "guidance": { "start_message": "Interpret an unfamiliar table task independently.", "hints": { "limit": 0, "items": [] } },
+        "controls": [{ "label": "CHECK PREDICTION", "operation": "check-table" }],
+        "scenario": { "generator": "table-records", "generator_version": 1, "scenario_rules": { "rowCounts": [5], "taskKinds": ["inspect-field", "add-record", "edit-field"], "invalidRate": 0.5 } },
+        "challenge": { "phases": [{ "title": "Master the structure", "instruction": "Solve the generated mixed-type table task.", "target": { "label": "TARGET", "description": "Complete field-level correctness" }, "goal": { "type": "outcome_equals", "expected_outcome": "solved" }, "success": "✓ Mastery complete", "feedback": "Separate schema rules from the current data." }] }
       }
     ]
   },
   "expert": {
-    "id": "expert",
-    "label": "Expert",
-    "prerequisites": [
-      "mastery"
-    ],
-    "generator": "phase2-expert",
-    "generator_version": 1,
-    "required_capabilities": [
-      "interactive_state",
-      "array_access",
-      "target_transformation"
-    ],
+    "id": "expert", "label": "Expert", "prerequisites": ["mastery"], "generator": "table-records", "generator_version": 1,
+    "assessment_mode": "prediction", "targetVisibility": "hidden", "required_capabilities": ["interactive_state", "array_access", "prediction", "target_transformation"],
     "thinking": {
-      "title": "Predict the sequence",
-      "objective_label": "Think first",
-      "instruction": "Mentally follow the sequence before acting.",
-      "starting_stack_label": "STARTING STATE",
-      "sequence_label": "ACTIONS TO SIMULATE",
-      "do_not_execute": "Do not act yet. Work through the sequence in order.",
+      "title": "Predict a hidden table consequence", "objective_label": "Think first",
+      "instruction": "Use the larger mixed-type schema. The resulting table is hidden until your prediction is checked.",
+      "sequence_label": "REASONING STEPS", "do_not_execute": "Inspect the schema, then predict validity and row count without applying the record.",
       "prediction_label": "YOUR PREDICTION",
       "prediction_fields": [
-        {
-          "id": "finalState",
-          "label": "Final state",
-          "prompt": "What will the final state contain?",
-          "type": "text",
-          "placeholder": "Describe the result"
-        }
+        { "id": "validity", "label": "Schema validity", "prompt": "Will the record be valid or invalid?", "type": "choice", "options": [{ "value": "valid", "label": "Valid" }, { "value": "invalid", "label": "Invalid" }] },
+        { "id": "rowCount", "label": "Resulting row count", "prompt": "How many records will the table contain?", "type": "number", "placeholder": "Count" }
       ],
-      "submit_label": "Check my prediction",
-      "continue_label": "Continue to Expert Challenge →",
-      "actual_label": "RESULT",
-      "your_prediction_label": "Your prediction",
-      "actual_result": "Final state: {{final_state}}.",
-      "feedback": {
-        "all_correct": "You tracked the sequence.",
-        "incorrect": "Recheck each transition."
-      }
+      "submit_label": "Check prediction", "feedback": { "all_correct": "You reasoned correctly from the schema.", "incorrect": "Review the field-level results." }
     },
-    "solve": {
-      "title": "Expert Tables & Records",
-      "instruction": "Apply the sequence with no hints.",
-      "target_label": "TARGET STATE",
-      "your_label": "YOUR STATE",
-      "metric_label": "Actions",
-      "hints_label": "Hints: none",
-      "operation_rule": "Each action counts once.",
-      "controls": [
-        {
-          "id": "row",
-          "label": "SELECT RECORD",
-          "operation": "row"
-        },
-        {
-          "id": "column",
-          "label": "SELECT FIELD",
-          "operation": "column"
-        },
-        {
-          "id": "schema",
-          "label": "SHOW SCHEMA",
-          "operation": "schema"
-        }
-      ],
-      "perfect_message": "🏆 PERFECT EXPERT",
-      "perfect_result": "You completed the sequence.",
-      "new_challenge_label": "New Expert Challenge"
-    },
-    "scenario_rules": {
-      "initial_state": [
-        "ROW:1",
-        "ROW:2"
-      ],
-      "steps": [
-        {
-          "operation": "row",
-          "label": "SELECT RECORD"
-        },
-        {
-          "operation": "column",
-          "label": "SELECT FIELD"
-        },
-        {
-          "operation": "schema",
-          "label": "SHOW SCHEMA"
-        }
-      ],
-      "final_state": [
-        "SCHEMA"
-      ],
-      "target_state": [
-        "SCHEMA"
-      ]
-    }
+    "solve": { "title": "Expert Tables", "instruction": "Complete the hidden-result prediction.", "controls": [{ "id": "check-table", "label": "CHECK PREDICTION", "operation": "check-table" }] },
+    "scenario_rules": { "rowCounts": [6, 7], "taskKinds": ["add-record"], "invalidRate": 0.5 }
   },
   "assessment": {
-    "quiz": {
-      "question": "What is a row in a table?",
-      "options": [
-        "A record",
-        "A field name",
-        "The schema only",
-        "A database server"
-      ],
-      "correct": 0
-    },
-    "discovery": {
-      "title": "Tables discovery",
-      "summary": "Tables give structured names to records and their fields."
-    },
-    "notes": {
-      "sections": [
-        {
-          "title": "What?",
-          "content": "A table stores records (rows) made of fields (columns)."
-        },
-        {
-          "title": "Example",
-          "content": "The row 2, Ben, 21 is one student record."
-        },
-        {
-          "title": "Why?",
-          "content": "A schema describes which columns every record should have."
-        },
-        {
-          "title": "Remember",
-          "content": "Rows are records; columns are fields."
-        }
-      ]
-    },
+    "quiz": { "question": "What decides whether a value is valid for a column?", "options": ["The schema and column type", "The row position", "The table color", "The browser"], "correct": 0 },
+    "discovery": { "title": "Tables discovery", "summary": "Schemas describe structure; records contain data that must follow that structure." },
+    "notes": { "sections": [
+      { "title": "Schema", "content": "The schema names columns and their types." }, { "title": "Records", "content": "Each row is one record with a stable identity." },
+      { "title": "Fields", "content": "A field is one value at a row-and-column intersection." }, { "title": "Remember", "content": "Changing data must not break the schema." }
+    ] },
     "alternate_explanations": [
-      {
-        "title": "Think of a familiar workflow",
-        "type": "analogy",
-        "content": "Imagine Tables & Records as a small real-world process with visible steps."
-      },
-      {
-        "title": "Walk through the example",
-        "type": "example",
-        "content": "Explore how a row is a record and a column is a field."
-      }
+      { "title": "Think of a form", "type": "analogy", "content": "A schema is like a form template; each completed form is one record." },
+      { "title": "Walk through a row", "type": "example", "content": "student-2 identifies the row; age identifies the column; 21 is their intersecting field value." }
     ]
   },
-  "completion": {
-    "recall": {
-      "title": "Recall",
-      "prompt": "In your own words, what is the difference between a row and a column?",
-      "submit_label": "Submit recall",
-      "empty_message": "Write a short explanation first.",
-      "completion_message": "✓ Recall completed",
-      "model_answer": "Rows are records; columns are fields."
-    }
-  }
+  "completion": { "recall": { "title": "Recall", "prompt": "In your own words, how are schema and data different?", "submit_label": "Submit recall", "empty_message": "Write a short explanation first.", "completion_message": "✓ Recall completed", "model_answer": "The schema defines allowed structure and types; rows contain the actual record values." } }
 }

@@ -1,778 +1,135 @@
 {
   "schema_version": 2,
   "metadata": {
-    "id": "transactions",
-    "order": 6,
-    "subject_order": 4,
-    "subject": "DBMS",
-    "topic": "Transactions",
-    "title": "Commit or Roll Back",
-    "description": "Follow a transfer as a transaction either commits completely or rolls back after failure.",
-    "difficulty": "Beginner",
-    "estimated_time": "15 min"
+    "id": "transactions", "order": 6, "subject_order": 4, "subject": "DBMS", "topic": "Transactions",
+    "title": "Commit or Roll Back", "description": "Operate on a working transaction and protect the committed database from partial changes.",
+    "difficulty": "Beginner", "estimated_time": "18 min"
   },
-  "learning_objectives": [
-    "Explain Transactions in simple terms.",
-    "Follow one visible Transactions example.",
-    "Make a correct decision in the playground."
-  ],
-  "capabilities": [
-    "interactive_state",
-    "sequence_simulation",
-    "decision_tree"
-  ],
+  "learning_objectives": ["Distinguish committed data from a working transaction.", "Predict COMMIT, ROLLBACK, and failure consequences.", "Explain atomicity without assuming a full recovery engine."],
+  "capabilities": ["interactive_state", "sequence_simulation", "prediction", "decision_tree"],
   "teaching": {
-    "mission": {
-      "title": "Practise Transactions",
-      "description": "Make each decision and watch the consequence."
-    },
+    "mission": { "title": "Run one complete transaction", "description": "BEGIN, change the working copy, predict the durable result, then COMMIT." },
     "introduction": {
-      "title": "Transactions: start here",
-      "content": "A transaction groups related database changes into one unit.",
-      "points": [
-        "Watch a transfer either commit fully or roll back safely."
-      ],
-      "visual": {
-        "type": "array",
-        "label": "Transactions",
-        "items": [
-          "What?",
-          "Example",
-          "Try it"
-        ]
-      }
+      "title": "A transaction protects a complete unit of work", "content": "Changes happen in a working copy first. COMMIT makes the whole unit durable; ROLLBACK or a pre-commit failure discards it.",
+      "points": ["Committed data is the durable starting point.", "Working data can change without becoming durable.", "A partial transaction must not be saved as if it were complete."],
+      "visual": { "type": "linked-list", "label": "TRANSACTION", "items": ["BEGIN", "working changes", "COMMIT or discard"] }
     },
     "worked_example": {
-      "title": "See one example",
-      "content": "Watch one concrete sequence before you try it.",
+      "title": "Move a value as one unit", "content": "A transfer contains two related changes.",
       "steps": [
-        {
-          "action": "DEBIT",
-          "state": {
-            "flow": [
-              "A: 80",
-              "B: 50"
-            ],
-            "status": "first change made"
-          },
-          "explanation": "The sender loses 20."
-        },
-        {
-          "action": "CREDIT",
-          "state": {
-            "flow": [
-              "A: 80",
-              "B: 70"
-            ],
-            "status": "both changes made"
-          },
-          "explanation": "The receiver gains 20."
-        },
-        {
-          "action": "COMMIT",
-          "state": {
-            "flow": [
-              "A: 80",
-              "B: 70"
-            ],
-            "status": "saved"
-          },
-          "explanation": "Commit makes the complete transfer permanent."
-        }
+        { "action": "BEGIN", "state": ["committed A=100 B=50", "working A=100 B=50"], "explanation": "BEGIN creates a separate working state." },
+        { "action": "CHANGE", "state": ["working A=80", "working B=70"], "explanation": "Both changes happen in the working state first." },
+        { "action": "COMMIT", "state": ["committed A=80 B=70"], "explanation": "COMMIT makes the complete working state durable." }
       ],
-      "conclusion": "The visual state changes because the concept follows a rule.",
-      "next": {
-        "title": "Now you try.",
-        "content": "Choose the next meaningful action."
-      }
+      "conclusion": "If failure occurs before COMMIT, the committed state must not contain only half the transfer.",
+      "next": { "title": "Now you try.", "content": "Watch committed and working data separately while you control the transaction." }
     },
-    "guided_practice": {
-      "action_explanations": {
-        "debit": "The debit action changes the state for a reason.",
-        "credit": "The credit action changes the state for a reason.",
-        "commit": "The commit action changes the state for a reason."
-      }
-    }
+    "guided_practice": { "action_explanations": {
+      "begin": "BEGIN copied the committed data into a working transaction.",
+      "apply": "The operation changed only the working copy; committed data stayed unchanged.",
+      "commit": "COMMIT made both related changes durable together.",
+      "rollback": "ROLLBACK discarded every uncommitted change.",
+      "failure": "Failure before COMMIT discarded the working copy instead of saving a partial result."
+    } }
   },
   "visualization": {
     "type": "transactions",
-    "view": "flow",
-    "initial_state": {
-      "flow": [
-        "Account A: 100",
-        "Account B: 50"
-      ],
-      "status": "ready to transfer 20"
+    "problem": {
+      "database": { "tables": [{
+        "name": "accounts", "columns": [{ "name": "account", "type": "string" }, { "name": "balance", "type": "number" }],
+        "rows": [{ "id": "A", "values": { "account": "A", "balance": 100 } }, { "id": "B", "values": { "account": "B", "balance": 50 } }]
+      }] },
+      "table": "accounts", "valueField": "balance", "terminal": "commit", "terminalAfter": 2,
+      "instruction": "Transfer 20 units from A to B and commit both changes as one transaction.",
+      "operations": [{ "type": "adjust", "rowId": "A", "delta": -20, "label": "Subtract 20 from A" }, { "type": "adjust", "rowId": "B", "delta": 20, "label": "Add 20 to B" }]
     },
-    "guided_steps": [
-      {
-        "operation": "debit",
-        "instruction": "Apply the first transfer change",
-        "next_state": {
-          "flow": [
-            "A: 80",
-            "B: 50"
-          ],
-          "status": "debit applied"
-        },
-        "evaluation_state": [
-          "DEBIT"
-        ]
-      },
-      {
-        "operation": "credit",
-        "instruction": "Apply the matching change",
-        "next_state": {
-          "flow": [
-            "A: 80",
-            "B: 70"
-          ],
-          "status": "credit applied"
-        },
-        "evaluation_state": [
-          "CREDIT"
-        ]
-      },
-      {
-        "operation": "commit",
-        "instruction": "Choose COMMIT when both changes are ready",
-        "next_state": {
-          "flow": [
-            "A: 80",
-            "B: 70"
-          ],
-          "status": "committed"
-        },
-        "evaluation_state": [
-          "COMMIT"
-        ]
-      }
-    ],
+    "challenge_problem": {
+      "database": { "tables": [{
+        "name": "inventory", "columns": [{ "name": "item", "type": "string" }, { "name": "quantity", "type": "number" }],
+        "rows": [{ "id": "warehouse-A", "values": { "item": "Cable", "quantity": 40 } }, { "id": "warehouse-B", "values": { "item": "Cable", "quantity": 10 } }]
+      }] },
+      "table": "inventory", "valueField": "quantity", "terminal": "failure", "terminalAfter": 1,
+      "instruction": "A failure occurs after removing 5 units from warehouse A but before adding them to B. Predict the durable inventory.",
+      "operations": [{ "type": "adjust", "rowId": "warehouse-A", "delta": -5, "label": "Remove 5 from warehouse A" }, { "type": "adjust", "rowId": "warehouse-B", "delta": 5, "label": "Add 5 to warehouse B" }]
+    },
     "controls": [
-      {
-        "id": "debit",
-        "label": "DEBIT 20",
-        "operation": "debit"
-      },
-      {
-        "id": "credit",
-        "label": "CREDIT 20",
-        "operation": "credit"
-      },
-      {
-        "id": "commit",
-        "label": "COMMIT",
-        "operation": "commit"
-      },
-      {
-        "id": "rollback",
-        "label": "ROLLBACK",
-        "operation": "rollback"
-      }
+      { "id": "begin", "label": "BEGIN", "operation": "begin" }, { "id": "apply", "label": "APPLY NEXT CHANGE", "operation": "apply" },
+      { "id": "commit", "label": "COMMIT", "operation": "commit" }, { "id": "rollback", "label": "ROLLBACK", "operation": "rollback" },
+      { "id": "failure", "label": "SIMULATE FAILURE", "operation": "failure" }
     ],
     "actions": [
-      {
-        "label": "Apply the debit",
-        "operation": "debit",
-        "task": "Apply the debit"
-      },
-      {
-        "label": "Apply the credit",
-        "operation": "credit",
-        "task": "Apply the credit"
-      },
-      {
-        "label": "Commit the complete transfer",
-        "operation": "commit",
-        "task": "Commit the complete transfer"
-      }
-    ],
-    "instruction": "Choose the next meaningful action.",
-    "wrong_action_message": "Compare the active task with the current state before choosing."
+      { "label": "Begin a working transaction", "operation": "begin" }, { "label": "Apply the debit to working data", "operation": "apply" },
+      { "label": "Apply the credit to working data", "operation": "apply" }, { "label": "Commit the complete transaction", "operation": "commit" }
+    ]
   },
-  "practice": {
-    "challenge": {
-      "title": "Transactions challenge",
-      "start_message": "Apply the concept to the displayed state.",
-      "continue_message": "Challenge complete. Keep experimenting.",
-      "phases": [
-        {
-          "title": "Reach the correct result",
-          "instruction": "Use the controls to reach the target state.",
-          "target": {
-            "label": "TARGET",
-            "items": [
-              "COMPLETE"
-            ]
-          },
-          "goal": {
-            "type": "state_equals",
-            "expected_state": [
-              "COMPLETE"
-            ]
-          },
-          "success": "✓ Challenge complete",
-          "feedback": "Compare your state with the target."
-        }
-      ]
-    }
-  },
+  "practice": { "challenge": {
+    "title": "Failure and atomicity challenge", "start_message": "Keep committed and uncommitted data separate.", "continue_message": "Challenge complete. The durable state stayed consistent.",
+    "phases": [{ "title": "Handle a pre-commit failure", "instruction": "Run until failure and correctly predict the durable inventory.",
+      "target": { "label": "TARGET", "description": "No half-committed transfer" }, "goal": { "type": "outcome_equals", "expected_outcome": "solved" },
+      "success": "✓ Transaction challenge complete", "feedback": "Failure before COMMIT must discard the working copy." }]
+  } },
   "mastery": {
-    "title": "Transactions Mastery",
-    "mastered_label": "Transactions Mastered",
-    "current_state_label": "YOUR STATE",
+    "title": "Transaction Mastery", "mastered_label": "Transactions Mastered", "current_state_label": "YOUR TRANSACTION",
     "levels": [
+      { "id": "learn", "label": "Learn", "completion": { "type": "course_completion" } },
       {
-        "id": "learn",
-        "label": "Learn",
-        "completion": {
-          "type": "course_completion"
-        }
+        "id": "practice", "label": "Practice", "prerequisites": ["learn"],
+        "guidance": { "start_message": "Complete both working changes before COMMIT.", "hints": { "limit": 1, "items": [{ "content": "Committed data changes only at COMMIT." }] } },
+        "controls": [{ "label": "BEGIN", "operation": "begin" }, { "label": "APPLY NEXT", "operation": "apply" }, { "label": "COMMIT", "operation": "commit" }],
+        "scenario": { "generator": "transaction", "generator_version": 1, "scenario_rules": { "terminals": ["commit"], "amounts": [10, 20] } },
+        "challenge": { "phases": [{ "title": "Commit a complete transfer", "instruction": "Run both operations and predict the committed result.", "target": { "label": "TARGET", "description": "Complete committed transaction" }, "goal": { "type": "outcome_equals", "expected_outcome": "solved" }, "success": "✓ Practice complete", "feedback": "Keep working and committed balances separate until COMMIT." }] }
       },
       {
-        "id": "practice",
-        "label": "Practice",
-        "prerequisites": [
-          "learn"
-        ],
-        "guidance": {
-          "start_message": "Compare the current state with the objective and choose the next action.",
-          "hints": {
-            "limit": 1,
-            "items": [
-              {
-                "content": "Use the operation that moves the state toward the target."
-              }
-            ]
-          }
-        },
-        "controls": [
-          {
-            "id": "debit",
-            "label": "DEBIT 20",
-            "operation": "debit"
-          },
-          {
-            "id": "credit",
-            "label": "CREDIT 20",
-            "operation": "credit"
-          },
-          {
-            "id": "commit",
-            "label": "COMMIT",
-            "operation": "commit"
-          }
-        ],
-        "scenario": {
-          "initial_state": {
-            "flow": [
-              "Account A: 100",
-              "Account B: 50"
-            ],
-            "status": "ready to transfer 20"
-          },
-          "operations": [
-            {
-              "operation": "debit",
-              "instruction": "Apply the first transfer change",
-              "next_state": {
-                "flow": [
-                  "A: 80",
-                  "B: 50"
-                ],
-                "status": "debit applied"
-              },
-              "evaluation_state": [
-                "DEBIT"
-              ]
-            }
-          ]
-        },
-        "challenge": {
-          "phases": [
-            {
-              "title": "Practice task",
-              "instruction": "Reach the target state by making the appropriate decisions.",
-              "target": {
-                "label": "TARGET STATE",
-                "items": [
-                  "COMPLETE"
-                ]
-              },
-              "goal": {
-                "type": "state_equals",
-                "expected_state": [
-                  "COMPLETE"
-                ]
-              },
-              "success": "✓ Practice complete",
-              "feedback": "Compare your current state with the target before choosing again."
-            }
-          ]
-        }
+        "id": "apply", "label": "Apply", "prerequisites": ["practice"],
+        "guidance": { "start_message": "Predict what ROLLBACK preserves.", "hints": { "limit": 0, "items": [] } },
+        "controls": [{ "label": "BEGIN", "operation": "begin" }, { "label": "APPLY NEXT", "operation": "apply" }, { "label": "ROLLBACK", "operation": "rollback" }],
+        "scenario": { "generator": "transaction", "generator_version": 1, "scenario_rules": { "terminals": ["rollback"], "interruptionPoints": [1, 2] } },
+        "challenge": { "phases": [{ "title": "Apply rollback", "instruction": "Stop at the configured point and predict durable state after ROLLBACK.", "target": { "label": "TARGET", "description": "Original committed state" }, "goal": { "type": "outcome_equals", "expected_outcome": "solved" }, "success": "✓ Apply complete", "feedback": "ROLLBACK discards every working change." }] }
       },
       {
-        "id": "apply",
-        "label": "Apply",
-        "prerequisites": [
-          "practice"
-        ],
-        "guidance": {
-          "start_message": "Compare the current state with the objective and choose the next action.",
-          "hints": {
-            "limit": 0,
-            "items": []
-          }
-        },
-        "controls": [
-          {
-            "id": "debit",
-            "label": "DEBIT 20",
-            "operation": "debit"
-          },
-          {
-            "id": "credit",
-            "label": "CREDIT 20",
-            "operation": "credit"
-          },
-          {
-            "id": "commit",
-            "label": "COMMIT",
-            "operation": "commit"
-          }
-        ],
-        "scenario": {
-          "initial_state": {
-            "flow": [
-              "Account A: 100",
-              "Account B: 50"
-            ],
-            "status": "ready to transfer 20"
-          },
-          "operations": [
-            {
-              "operation": "debit",
-              "instruction": "Apply the first transfer change",
-              "next_state": {
-                "flow": [
-                  "A: 80",
-                  "B: 50"
-                ],
-                "status": "debit applied"
-              },
-              "evaluation_state": [
-                "DEBIT"
-              ]
-            },
-            {
-              "operation": "credit",
-              "instruction": "Apply the matching change",
-              "next_state": {
-                "flow": [
-                  "A: 80",
-                  "B: 70"
-                ],
-                "status": "credit applied"
-              },
-              "evaluation_state": [
-                "CREDIT"
-              ]
-            }
-          ]
-        },
-        "challenge": {
-          "phases": [
-            {
-              "title": "Apply task",
-              "instruction": "Reach the target state by making the appropriate decisions.",
-              "target": {
-                "label": "TARGET STATE",
-                "items": [
-                  "COMPLETE"
-                ]
-              },
-              "goal": {
-                "type": "state_equals",
-                "expected_state": [
-                  "COMPLETE"
-                ]
-              },
-              "success": "✓ Apply complete",
-              "feedback": "Compare your current state with the target before choosing again."
-            }
-          ]
-        }
+        "id": "solve", "label": "Solve", "prerequisites": ["apply"], "new_problem": true,
+        "guidance": { "start_message": "Handle a failure at an unknown operation boundary.", "hints": { "limit": 0, "items": [] } },
+        "controls": [{ "label": "BEGIN", "operation": "begin" }, { "label": "APPLY NEXT", "operation": "apply" }, { "label": "SIMULATE FAILURE", "operation": "failure" }],
+        "scenario": { "generator": "transaction", "generator_version": 1, "scenario_rules": { "terminals": ["failure"], "interruptionPoints": [1, 2], "amounts": [15, 25] } },
+        "challenge": { "phases": [{ "title": "Solve a failure", "instruction": "Follow the condition and predict the durable state after failure.", "target": { "label": "TARGET", "description": "Atomic durable state" }, "goal": { "type": "outcome_equals", "expected_outcome": "solved" }, "success": "✓ Solve complete", "feedback": "A pre-commit failure cannot save a partial transaction." }] }
       },
       {
-        "id": "solve",
-        "label": "Solve",
-        "prerequisites": [
-          "apply"
-        ],
-        "guidance": {
-          "start_message": "Compare the current state with the objective and choose the next action.",
-          "hints": {
-            "limit": 0,
-            "items": []
-          }
-        },
-        "controls": [
-          {
-            "id": "debit",
-            "label": "DEBIT 20",
-            "operation": "debit"
-          },
-          {
-            "id": "credit",
-            "label": "CREDIT 20",
-            "operation": "credit"
-          },
-          {
-            "id": "commit",
-            "label": "COMMIT",
-            "operation": "commit"
-          }
-        ],
-        "scenario": {
-          "initial_state": {
-            "flow": [
-              "Account A: 100",
-              "Account B: 50"
-            ],
-            "status": "ready to transfer 20"
-          },
-          "operations": [
-            {
-              "operation": "debit",
-              "instruction": "Apply the first transfer change",
-              "next_state": {
-                "flow": [
-                  "A: 80",
-                  "B: 50"
-                ],
-                "status": "debit applied"
-              },
-              "evaluation_state": [
-                "DEBIT"
-              ]
-            },
-            {
-              "operation": "credit",
-              "instruction": "Apply the matching change",
-              "next_state": {
-                "flow": [
-                  "A: 80",
-                  "B: 70"
-                ],
-                "status": "credit applied"
-              },
-              "evaluation_state": [
-                "CREDIT"
-              ]
-            },
-            {
-              "operation": "commit",
-              "instruction": "Choose COMMIT when both changes are ready",
-              "next_state": {
-                "flow": [
-                  "A: 80",
-                  "B: 70"
-                ],
-                "status": "committed"
-              },
-              "evaluation_state": [
-                "COMMIT"
-              ]
-            }
-          ]
-        },
-        "challenge": {
-          "phases": [
-            {
-              "title": "Solve task",
-              "instruction": "Reach the target state by making the appropriate decisions.",
-              "target": {
-                "label": "TARGET STATE",
-                "items": [
-                  "COMPLETE"
-                ]
-              },
-              "goal": {
-                "type": "state_equals",
-                "expected_state": [
-                  "COMPLETE"
-                ]
-              },
-              "success": "✓ Solve complete",
-              "feedback": "Compare your current state with the target before choosing again."
-            }
-          ]
-        }
-      },
-      {
-        "id": "mastery",
-        "label": "Mastery",
-        "prerequisites": [
-          "solve"
-        ],
-        "guidance": {
-          "start_message": "Compare the current state with the objective and choose the next action.",
-          "hints": {
-            "limit": 0,
-            "items": []
-          }
-        },
-        "controls": [
-          {
-            "id": "debit",
-            "label": "DEBIT 20",
-            "operation": "debit"
-          },
-          {
-            "id": "credit",
-            "label": "CREDIT 20",
-            "operation": "credit"
-          },
-          {
-            "id": "commit",
-            "label": "COMMIT",
-            "operation": "commit"
-          }
-        ],
-        "scenario": {
-          "initial_state": {
-            "flow": [
-              "Account A: 100",
-              "Account B: 50"
-            ],
-            "status": "ready to transfer 20"
-          },
-          "operations": [
-            {
-              "operation": "debit",
-              "instruction": "Apply the first transfer change",
-              "next_state": {
-                "flow": [
-                  "A: 80",
-                  "B: 50"
-                ],
-                "status": "debit applied"
-              },
-              "evaluation_state": [
-                "DEBIT"
-              ]
-            },
-            {
-              "operation": "credit",
-              "instruction": "Apply the matching change",
-              "next_state": {
-                "flow": [
-                  "A: 80",
-                  "B: 70"
-                ],
-                "status": "credit applied"
-              },
-              "evaluation_state": [
-                "CREDIT"
-              ]
-            },
-            {
-              "operation": "commit",
-              "instruction": "Choose COMMIT when both changes are ready",
-              "next_state": {
-                "flow": [
-                  "A: 80",
-                  "B: 70"
-                ],
-                "status": "committed"
-              },
-              "evaluation_state": [
-                "COMMIT"
-              ]
-            }
-          ]
-        },
-        "challenge": {
-          "phases": [
-            {
-              "title": "Mastery task",
-              "instruction": "Reach the target state by making the appropriate decisions.",
-              "target": {
-                "label": "TARGET STATE",
-                "items": [
-                  "COMPLETE"
-                ]
-              },
-              "goal": {
-                "type": "state_equals",
-                "expected_state": [
-                  "COMPLETE"
-                ]
-              },
-              "success": "✓ Mastery complete",
-              "feedback": "Compare your current state with the target before choosing again."
-            }
-          ]
-        }
+        "id": "mastery", "label": "Mastery", "prerequisites": ["solve"], "new_problem": true,
+        "guidance": { "start_message": "Interpret the generated terminal condition independently.", "hints": { "limit": 0, "items": [] } },
+        "controls": [{ "label": "BEGIN", "operation": "begin" }, { "label": "APPLY NEXT", "operation": "apply" }, { "label": "COMMIT", "operation": "commit" }, { "label": "ROLLBACK", "operation": "rollback" }, { "label": "FAILURE", "operation": "failure" }],
+        "scenario": { "generator": "transaction", "generator_version": 1, "scenario_rules": { "terminals": ["commit", "rollback", "failure"], "interruptionPoints": [1, 2], "amounts": [10, 15, 20, 25, 30] } },
+        "challenge": { "phases": [{ "title": "Master transaction outcomes", "instruction": "Run the correct lifecycle and predict every durable field.", "target": { "label": "TARGET", "description": "Correct model-derived final state" }, "goal": { "type": "outcome_equals", "expected_outcome": "solved" }, "success": "✓ Mastery complete", "feedback": "Check the terminal condition and committed values." }] }
       }
     ]
   },
   "expert": {
-    "id": "expert",
-    "label": "Expert",
-    "prerequisites": [
-      "mastery"
-    ],
-    "generator": "phase2-expert",
-    "generator_version": 1,
-    "required_capabilities": [
-      "interactive_state",
-      "sequence_simulation",
-      "decision_tree"
-    ],
+    "id": "expert", "label": "Expert", "prerequisites": ["mastery"], "generator": "transaction", "generator_version": 1,
+    "assessment_mode": "prediction", "targetVisibility": "hidden", "required_capabilities": ["interactive_state", "sequence_simulation", "prediction", "decision_tree"],
     "thinking": {
-      "title": "Predict the sequence",
-      "objective_label": "Think first",
-      "instruction": "Mentally follow the sequence before acting.",
-      "starting_stack_label": "STARTING STATE",
-      "sequence_label": "ACTIONS TO SIMULATE",
-      "do_not_execute": "Do not act yet. Work through the sequence in order.",
-      "prediction_label": "YOUR PREDICTION",
+      "title": "Predict the durable database", "objective_label": "Think first",
+      "instruction": "Mentally follow the displayed operations and terminal condition. The final committed state stays hidden.",
+      "sequence_label": "TRANSACTION TO SIMULATE", "do_not_execute": "Track working changes separately from committed values.", "prediction_label": "YOUR PREDICTION",
       "prediction_fields": [
-        {
-          "id": "finalState",
-          "label": "Final state",
-          "prompt": "What will the final state contain?",
-          "type": "text",
-          "placeholder": "Describe the result"
-        }
+        { "id": "status", "label": "Final status", "prompt": "What status will the model end in?", "type": "choice", "options": [{ "value": "committed", "label": "committed" }, { "value": "rolled_back", "label": "rolled back" }, { "value": "failed_rolled_back", "label": "failed and rolled back" }] },
+        { "id": "A", "label": "Committed A", "prompt": "What durable value remains for A?", "type": "number", "placeholder": "Value" },
+        { "id": "B", "label": "Committed B", "prompt": "What durable value remains for B?", "type": "number", "placeholder": "Value" }
       ],
-      "submit_label": "Check my prediction",
-      "continue_label": "Continue to Expert Challenge →",
-      "actual_label": "RESULT",
-      "your_prediction_label": "Your prediction",
-      "actual_result": "Final state: {{final_state}}.",
-      "feedback": {
-        "all_correct": "You tracked the sequence.",
-        "incorrect": "Recheck each transition."
-      }
+      "submit_label": "Check prediction", "feedback": { "all_correct": "You separated working and durable state correctly.", "incorrect": "Review the field-level transaction result." }
     },
-    "solve": {
-      "title": "Expert Transactions",
-      "instruction": "Apply the sequence with no hints.",
-      "target_label": "TARGET STATE",
-      "your_label": "YOUR STATE",
-      "metric_label": "Actions",
-      "hints_label": "Hints: none",
-      "operation_rule": "Each action counts once.",
-      "controls": [
-        {
-          "id": "debit",
-          "label": "DEBIT 20",
-          "operation": "debit"
-        },
-        {
-          "id": "credit",
-          "label": "CREDIT 20",
-          "operation": "credit"
-        },
-        {
-          "id": "commit",
-          "label": "COMMIT",
-          "operation": "commit"
-        }
-      ],
-      "perfect_message": "🏆 PERFECT EXPERT",
-      "perfect_result": "You completed the sequence.",
-      "new_challenge_label": "New Expert Challenge"
-    },
-    "scenario_rules": {
-      "initial_state": [
-        "A:100",
-        "B:50"
-      ],
-      "steps": [
-        {
-          "operation": "debit",
-          "label": "DEBIT 20"
-        },
-        {
-          "operation": "credit",
-          "label": "CREDIT 20"
-        },
-        {
-          "operation": "commit",
-          "label": "COMMIT"
-        }
-      ],
-      "final_state": [
-        "A:80",
-        "B:70",
-        "COMMITTED"
-      ],
-      "target_state": [
-        "A:80",
-        "B:70",
-        "COMMITTED"
-      ]
-    }
+    "solve": { "title": "Expert Transaction", "instruction": "Complete the hidden-result prediction.", "controls": [{ "id": "begin", "label": "BEGIN", "operation": "begin" }] },
+    "scenario_rules": { "terminals": ["commit", "rollback", "failure"], "interruptionPoints": [1, 2], "amounts": [10, 15, 20, 25, 30] }
   },
   "assessment": {
-    "quiz": {
-      "question": "What does ROLLBACK do after a failed transfer?",
-      "options": [
-        "Undo its changes",
-        "Add another debit",
-        "Delete the database",
-        "Commit half"
-      ],
-      "correct": 0
-    },
-    "discovery": {
-      "title": "Transaction discovery",
-      "summary": "Transactions protect consistency by committing a complete unit or rolling it back."
-    },
-    "notes": {
-      "sections": [
-        {
-          "title": "What?",
-          "content": "A transaction is a group of changes treated as one unit."
-        },
-        {
-          "title": "Example",
-          "content": "Debit 20 from A, credit 20 to B, then COMMIT."
-        },
-        {
-          "title": "Why?",
-          "content": "ROLLBACK prevents a half-finished transfer from being saved."
-        },
-        {
-          "title": "Remember",
-          "content": "All changes commit together or are undone together."
-        }
-      ]
-    },
+    "quiz": { "question": "A failure happens before COMMIT after only the debit. What should remain durable?", "options": ["The original complete state", "Only the debit", "Only the credit", "A random balance"], "correct": 0 },
+    "discovery": { "title": "Transaction discovery", "summary": "A transaction isolates working changes and makes them durable only as a complete committed unit." },
+    "notes": { "sections": [
+      { "title": "Working state", "content": "Operations first change an uncommitted working copy." }, { "title": "COMMIT", "content": "COMMIT makes the complete working state durable." },
+      { "title": "ROLLBACK and failure", "content": "Discarding the working state protects the committed database from partial work." }, { "title": "Remember", "content": "Atomicity means all of the unit becomes durable, or none of it does." }
+    ] },
     "alternate_explanations": [
-      {
-        "title": "Think of a familiar workflow",
-        "type": "analogy",
-        "content": "Imagine Transactions as a small real-world process with visible steps."
-      },
-      {
-        "title": "Walk through the example",
-        "type": "example",
-        "content": "Watch a transfer either commit fully or roll back safely."
-      }
+      { "title": "Edit a draft", "type": "analogy", "content": "Working data is like an unsaved draft; COMMIT saves it, while rollback closes it without saving." },
+      { "title": "Follow a transfer", "type": "example", "content": "Subtract 20 from A and add 20 to B in working state; only COMMIT changes both durable balances." }
     ]
   },
-  "completion": {
-    "recall": {
-      "title": "Recall",
-      "prompt": "In your own words, why is rollback safer than saving only half of a transfer?",
-      "submit_label": "Submit recall",
-      "empty_message": "Write a short explanation first.",
-      "completion_message": "✓ Recall completed",
-      "model_answer": "All changes commit together or are undone together."
-    }
-  }
+  "completion": { "recall": { "title": "Recall", "prompt": "In your own words, why must a failure before COMMIT not leave half a transaction durable?", "submit_label": "Submit recall", "empty_message": "Write a short explanation first.", "completion_message": "✓ Recall completed", "model_answer": "The related changes form one atomic unit, so a partial working result must be discarded." } }
 }

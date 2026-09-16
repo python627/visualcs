@@ -94,6 +94,63 @@ const RelationalModel = (() => {
         return columns.map(name => row.values[getColumn(table, name).name]);
     }
 
+    function validateRecord(table, record, { allowExistingId = false } = {}) {
+        validateTable(table);
+        const errors = [];
+        if (!record || !isIdentifier(record.id) || !record.values || typeof record.values !== "object" || Array.isArray(record.values)) {
+            return { valid: false, errors: ["A record needs a stable row id and a values object."] };
+        }
+        if (!allowExistingId && table.rows.some(row => row.id === record.id)) {
+            errors.push(`Row id "${record.id}" already exists.`);
+        }
+        const columns = new Set(table.columns.map(column => column.name));
+        Object.keys(record.values).filter(name => !columns.has(name)).forEach(name => {
+            errors.push(`Unknown column "${name}".`);
+        });
+        table.columns.forEach(column => {
+            if (!Object.hasOwn(record.values, column.name)) {
+                errors.push(`Missing value for "${column.name}".`);
+            }
+            else if (!valueMatchesType(record.values[column.name], column.type)) {
+                errors.push(`Value for "${column.name}" must be ${column.type}.`);
+            }
+        });
+        return { valid: errors.length === 0, errors };
+    }
+
+    function addRecord(database, tableName, record) {
+        const next = clone(database);
+        const table = getTable(next, tableName);
+        const assessment = validateRecord(table, record);
+        if (!assessment.valid) fail(assessment.errors[0]);
+        table.rows.push(clone(record));
+        validateDatabase(next);
+        return next;
+    }
+
+    function editField(database, tableName, rowId, fieldName, value) {
+        const next = clone(database);
+        const table = getTable(next, tableName);
+        const column = getColumn(table, fieldName);
+        const row = table.rows.find(candidate => candidate.id === rowId);
+        if (!row) fail(`Unknown row "${rowId}" in table "${tableName}".`);
+        if (!valueMatchesType(value, column.type)) fail(`Value for "${fieldName}" must be ${column.type}.`);
+        row.values[fieldName] = value;
+        validateDatabase(next);
+        return next;
+    }
+
+    function sameDatabase(left, right) {
+        try {
+            validateDatabase(left);
+            validateDatabase(right);
+            return JSON.stringify(left) === JSON.stringify(right);
+        }
+        catch (_) {
+            return false;
+        }
+    }
+
     return {
         createDatabase,
         validateDatabase,
@@ -101,6 +158,11 @@ const RelationalModel = (() => {
         getTable,
         getColumn,
         rowValues,
+        validateRecord,
+        addRecord,
+        editField,
+        sameDatabase,
+        valueMatchesType,
         clone,
         supportedTypes: Object.freeze([...supportedTypes])
     };

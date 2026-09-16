@@ -179,6 +179,41 @@ class LessonValidator:
                 self._validate_deadlock_problem(playground.get(name), f"playground.{name}", errors)
             if any(key in playground for key in ("guided_steps", "target_state", "initial_state")):
                 errors.append("deadlock-graph uses the executable allocation model, not scripted states")
+        if playground_type == "table-records":
+            problems = playground.get("problems")
+            if not isinstance(problems, list) or not problems:
+                errors.append("playground.problems must contain executable table tasks")
+            else:
+                for index, problem in enumerate(problems):
+                    if not isinstance(problem, dict) or not isinstance(problem.get("task"), dict):
+                        errors.append(f"playground.problems[{index}] must contain a table task")
+                if not isinstance(problems[0].get("database"), dict):
+                    errors.append("playground.problems[0].database must contain relational source data")
+            challenge = playground.get("challenge_problem")
+            if not isinstance(challenge, dict) or not isinstance(challenge.get("database"), dict) or not isinstance(challenge.get("task"), dict):
+                errors.append("playground.challenge_problem must contain relational source data and a table task")
+            if any(key in playground for key in ("guided_steps", "target_state", "initial_state")):
+                errors.append("table-records uses the executable relational model, not scripted states")
+        if playground_type == "dbms-joins":
+            for name in ("problem", "challenge_problem"):
+                problem = playground.get(name)
+                if not isinstance(problem, dict) or not isinstance(problem.get("database"), dict):
+                    errors.append(f"playground.{name} must contain relational source tables")
+                elif not isinstance(problem.get("goal", {}).get("join"), dict):
+                    errors.append(f"playground.{name}.goal.join must define join inputs")
+                if isinstance(problem, dict) and any(key in problem for key in ("result", "joinedRows", "expectedRows", "oracle")):
+                    errors.append(f"playground.{name} must not contain authored JOIN result rows")
+            if any(key in playground for key in ("guided_steps", "target_state", "initial_state")):
+                errors.append("dbms-joins uses JoinEvaluator, not scripted result states")
+        if playground_type == "transactions":
+            for name in ("problem", "challenge_problem"):
+                problem = playground.get(name)
+                if not isinstance(problem, dict) or not isinstance(problem.get("database"), dict) or not isinstance(problem.get("operations"), list):
+                    errors.append(f"playground.{name} must contain transaction inputs and operations")
+                if isinstance(problem, dict) and any(key in problem for key in ("final_state", "finalState", "expectedBalances", "oracle")):
+                    errors.append(f"playground.{name} must not contain an authored final transaction state")
+            if any(key in playground for key in ("guided_steps", "target_state", "initial_state")):
+                errors.append("transactions uses TransactionModel, not scripted states")
 
     def _validate_sql_select_problem(self, problem, path, errors):
         if not isinstance(problem, dict):
@@ -742,6 +777,9 @@ class LessonValidator:
         executable_transport = lesson.get("playground", {}).get("type") == "transport-simulation"
         executable_process = lesson.get("playground", {}).get("type") == "process-states"
         executable_deadlock = lesson.get("playground", {}).get("type") == "deadlock-graph"
+        executable_tables = lesson.get("playground", {}).get("type") == "table-records"
+        executable_join = lesson.get("playground", {}).get("type") == "dbms-joins"
+        executable_transaction = lesson.get("playground", {}).get("type") == "transactions"
         level_ids = []
         for index, level in enumerate(levels):
             path = f"mastery.levels[{index}]"
@@ -779,6 +817,12 @@ class LessonValidator:
                     errors.append(f"{path}.expert must use the process model-backed generator")
                 if executable_deadlock and level.get("expert", {}).get("generator") != "deadlock":
                     errors.append(f"{path}.expert must use the deadlock model-backed generator")
+                if executable_tables and level.get("expert", {}).get("generator") != "table-records":
+                    errors.append(f"{path}.expert must use the table-record model-backed generator")
+                if executable_join and level.get("expert", {}).get("generator") != "join":
+                    errors.append(f"{path}.expert must use the JOIN evaluator-backed generator")
+                if executable_transaction and level.get("expert", {}).get("generator") != "transaction":
+                    errors.append(f"{path}.expert must use the transaction model-backed generator")
                 continue
 
             scenario = level.get("scenario")
@@ -799,12 +843,21 @@ class LessonValidator:
                     errors.append(f"{path}.scenario must use the process model-backed generator")
                 if executable_deadlock and scenario.get("generator") != "deadlock":
                     errors.append(f"{path}.scenario must use the deadlock model-backed generator")
-            elif executable_sql or executable_transport or executable_process or executable_deadlock:
+                if executable_tables and scenario.get("generator") != "table-records":
+                    errors.append(f"{path}.scenario must use the table-record model-backed generator")
+                if executable_join and scenario.get("generator") != "join":
+                    errors.append(f"{path}.scenario must use the JOIN evaluator-backed generator")
+                if executable_transaction and scenario.get("generator") != "transaction":
+                    errors.append(f"{path}.scenario must use the transaction model-backed generator")
+            elif executable_sql or executable_transport or executable_process or executable_deadlock or executable_tables or executable_join or executable_transaction:
                 generator_name = (
                     "sql-select evaluator" if executable_sql else
                     "transport simulator" if executable_transport else
                     "process model" if executable_process else
-                    "deadlock model"
+                    "deadlock model" if executable_deadlock else
+                    "table-record model" if executable_tables else
+                    "JOIN evaluator" if executable_join else
+                    "transaction model"
                 )
                 errors.append(f"{path}.scenario must use the {generator_name}-backed generator")
 

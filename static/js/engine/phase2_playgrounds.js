@@ -228,8 +228,7 @@
     }
 
     const types = [
-        "table-records",
-        "dbms-joins", "normalization", "transactions",
+        "normalization",
         "ip-addresses", "dns-lookup", "http-request"
     ];
     types.forEach(type => registerPlayground(type, createPlayground));

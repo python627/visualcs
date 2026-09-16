@@ -4633,3 +4633,164 @@ body:has(#mastery-challenge-panel:not([hidden])) .notes{
     .deadlock-view [data-deadlock-retry] { width: 100%; }
     .deadlock-node { min-width: 3.75rem; }
 }
+
+/* Executable relational lessons: shared responsive table and prediction layout. */
+.playground-area:has(#stack.relational-exercise-view) {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+}
+
+#stack.relational-exercise-view,
+.relational-expert-state {
+    width: 100%;
+    min-width: 0;
+    max-width: none;
+    height: auto;
+    min-height: 0;
+    margin: 25px 0;
+    padding: 0;
+    border: 0;
+    display: grid;
+    gap: .85rem;
+    overflow: visible;
+    box-sizing: border-box;
+    text-align: left;
+}
+
+.relational-task,
+.relational-proposal,
+.join-builder,
+.join-result,
+.transaction-workflow,
+.transaction-prediction {
+    min-width: 0;
+    padding: .8rem;
+    border: 1px solid #355276;
+    border-radius: .65rem;
+    background: #101d34;
+    box-sizing: border-box;
+}
+
+.relational-task { border-color: #3b82f6; background: #10213d; }
+.relational-task span,
+.relational-proposal strong,
+.join-builder > h3,
+.join-result > h3,
+.transaction-state-grid h3,
+.transaction-workflow h3 {
+    display: block;
+    margin: 0 0 .35rem;
+    color: #7cdaff;
+    font-size: .74rem;
+    font-weight: 800;
+    letter-spacing: .07em;
+}
+.relational-task h3 { margin: 0; color: #fff; font-size: 1rem; line-height: 1.45; }
+.relational-proposal { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; margin-top: .65rem; background: #0c172a; }
+.relational-proposal code { color: #f7d774; overflow-wrap: anywhere; }
+
+.relational-database,
+.join-source-tables,
+.transaction-state-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+    gap: .75rem;
+    width: 100%;
+    min-width: 0;
+}
+.relational-table-shell { width: 100%; min-width: 0; overflow-x: auto; border: 1px solid #304766; border-radius: .55rem; }
+.relational-table { width: 100%; min-width: 26rem; border-collapse: collapse; background: #0c172a; color: #e8f2ff; }
+.relational-table caption { padding: .6rem; background: #172b4d; color: #fff; font-weight: 800; text-align: left; }
+.relational-table th,
+.relational-table td { padding: .55rem .65rem; border: 1px solid #304766; text-align: left; white-space: nowrap; }
+.relational-table th { color: #9edcff; }
+.relational-table th small { display: block; color: #7f91aa; font-size: .62rem; }
+.relational-table .is-highlighted { background: #15496b; color: #fff; }
+
+.relational-answer-grid,
+.join-definition-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr));
+    gap: .65rem;
+    min-width: 0;
+}
+.relational-answer-grid label,
+.join-definition-grid label,
+.transaction-prediction label {
+    display: grid;
+    gap: .35rem;
+    min-width: 0;
+    color: #b9c9df;
+    font-size: .8rem;
+}
+.relational-answer-grid input,
+.relational-answer-grid select,
+.join-definition-grid select,
+.transaction-prediction input,
+.transaction-prediction select {
+    width: 100%;
+    min-width: 0;
+    padding: .6rem;
+    border: 1px solid #456384;
+    border-radius: .45rem;
+    background: #091526;
+    color: #fff;
+    box-sizing: border-box;
+}
+.relational-check,
+.transaction-controls button,
+.relational-exercise-view [data-transaction-retry] {
+    padding: .65rem 1rem;
+    border: 0;
+    border-radius: .5rem;
+    background: #2563eb;
+    color: #fff;
+    font: inherit;
+    cursor: pointer;
+}
+.relational-feedback { margin: 0; color: #d6ecff; line-height: 1.45; }
+.relational-feedback:empty { display: none; }
+.relational-field-feedback { display: grid; gap: .35rem; margin: 0; padding: 0; list-style: none; }
+.relational-field-feedback li { padding: .5rem .6rem; border-radius: .4rem; background: #0c172a; overflow-wrap: anywhere; }
+.relational-hidden-result,
+.transaction-empty { margin: 0; padding: .75rem; border: 1px dashed #3b536f; border-radius: .5rem; color: #9db1cc; text-align: center; }
+
+.join-source-tables { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; }
+.join-link,
+.transaction-divider { color: #7cdaff; font-size: 1.5rem; text-align: center; }
+.join-builder { display: grid; gap: .75rem; }
+.join-pairs { min-width: 0; margin: 0; border: 1px solid #304766; border-radius: .5rem; }
+.join-pairs p { margin: .25rem 0 .5rem; color: #9db1cc; }
+.join-pairs > div { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 12rem), 1fr)); gap: .35rem; }
+.join-pairs label { padding: .4rem; border-radius: .35rem; background: #0c172a; overflow-wrap: anywhere; }
+.join-result { display: grid; gap: .55rem; }
+
+.transaction-state-grid { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); align-items: center; }
+.transaction-state-grid > section { min-width: 0; }
+.transaction-workflow { display: grid; grid-template-columns: minmax(0, 1fr) minmax(9rem, .35fr); gap: .75rem; }
+.transaction-plan { margin: 0; padding-left: 1.4rem; color: #b9c9df; }
+.transaction-plan li { margin: .35rem 0; }
+.transaction-plan .is-current { color: #f7d774; font-weight: 800; }
+.transaction-plan .is-complete { color: #86efac; }
+.transaction-status { color: #f7d774; overflow-wrap: anywhere; }
+.transaction-prediction { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr)); gap: .65rem; }
+.transaction-prediction legend { color: #7cdaff; font-weight: 800; }
+.transaction-prediction p { grid-column: 1 / -1; margin: 0; color: #9db1cc; font-size: .78rem; }
+.transaction-controls { display: flex; flex-wrap: wrap; gap: .5rem; }
+.transaction-controls button:disabled { opacity: .4; cursor: not-allowed; }
+
+@media (max-width: 800px) {
+    .join-source-tables,
+    .transaction-state-grid,
+    .transaction-workflow { grid-template-columns: minmax(0, 1fr); }
+    .join-link,
+    .transaction-divider { transform: rotate(90deg); }
+}
+
+@media (max-width: 480px) {
+    .relational-table { min-width: 22rem; }
+    .transaction-controls button,
+    .relational-check,
+    .relational-exercise-view [data-transaction-retry] { width: 100%; }
+}

@@ -1,1010 +1,142 @@
 {
   "schema_version": 2,
   "metadata": {
-    "id": "joins",
-    "order": 4,
-    "subject_order": 4,
-    "subject": "DBMS",
-    "topic": "Joins",
-    "title": "Connect Related Tables",
-    "description": "Match keys across two tables to build an INNER JOIN result.",
-    "difficulty": "Beginner",
-    "estimated_time": "15 min"
+    "id": "joins", "order": 4, "subject_order": 4, "subject": "DBMS", "topic": "Joins",
+    "title": "Connect Related Tables", "description": "Choose related columns and predict every row produced by an INNER or LEFT JOIN.",
+    "difficulty": "Beginner", "estimated_time": "18 min"
   },
-  "learning_objectives": [
-    "Explain Joins in simple terms.",
-    "Follow one visible Joins example.",
-    "Make a correct decision in the playground."
-  ],
-  "capabilities": [
-    "interactive_state",
-    "relationship_reasoning"
-  ],
+  "learning_objectives": ["Explain why rows match on related key values.", "Predict one-to-many and unmatched JOIN output.", "Distinguish INNER JOIN from LEFT JOIN."],
+  "capabilities": ["interactive_state", "relationship_reasoning", "prediction", "target_transformation"],
   "teaching": {
-    "mission": {
-      "title": "Practise Joins",
-      "description": "Make each decision and watch the consequence."
-    },
+    "mission": { "title": "Build a JOIN from source rows", "description": "Choose the relationship, predict every matching pair, then run the evaluator." },
     "introduction": {
-      "title": "Joins: start here",
-      "content": "A join combines rows that share a related key.",
-      "points": [
-        "Match student_id in each table to make one combined record."
-      ],
-      "visual": {
-        "type": "array",
-        "label": "Joins",
-        "items": [
-          "What?",
-          "Example",
-          "Try it"
-        ]
-      }
+      "title": "A JOIN follows shared values", "content": "Related tables store different facts. A JOIN compares chosen columns and combines rows only when their key values satisfy the join rule.",
+      "points": ["Equal key values can create a row pair.", "One row may match several rows.", "INNER and LEFT JOIN handle unmatched rows differently."],
+      "visual": { "type": "linked-list", "label": "RELATED ROWS", "items": ["students.student_id", "=", "enrollments.student_id"] }
     },
     "worked_example": {
-      "title": "See one example",
-      "content": "Watch one concrete sequence before you try it.",
+      "title": "Follow the keys, not the row positions", "content": "Suppose student 101 is Ana and two enrollment records also contain 101.",
       "steps": [
-        {
-          "action": "MATCH 101",
-          "state": {
-            "tables": {
-              "MATCH": [
-                [
-                  "student_id",
-                  "name",
-                  "course"
-                ],
-                [
-                  "101",
-                  "Ana",
-                  "Databases"
-                ]
-              ]
-            },
-            "result": "one matching pair"
-          },
-          "explanation": "Equal keys connect the two rows."
-        },
-        {
-          "action": "MATCH 102",
-          "state": {
-            "tables": {
-              "MATCH": [
-                [
-                  "student_id",
-                  "name",
-                  "course"
-                ],
-                [
-                  "102",
-                  "Ben",
-                  "Networks"
-                ]
-              ]
-            },
-            "result": "second matching pair"
-          },
-          "explanation": "The same rule finds the next pair."
-        },
-        {
-          "action": "JOIN",
-          "state": {
-            "tables": {
-              "JOINED": [
-                [
-                  "student_id",
-                  "name",
-                  "course"
-                ],
-                [
-                  "101",
-                  "Ana",
-                  "Databases"
-                ],
-                [
-                  "102",
-                  "Ben",
-                  "Networks"
-                ]
-              ]
-            },
-            "result": "joined table"
-          },
-          "explanation": "INNER JOIN keeps rows with a match on both sides."
-        }
+        { "action": "COMPARE", "state": ["student-1: 101", "enrollment-1: 101"], "explanation": "Equal keys make one valid pair." },
+        { "action": "COMPARE AGAIN", "state": ["student-1: 101", "enrollment-2: 101"], "explanation": "The same left row can make another valid pair." },
+        { "action": "INNER RULE", "state": ["unmatched", "omitted"], "explanation": "An INNER JOIN omits source rows that never find a match." }
       ],
-      "conclusion": "The visual state changes because the concept follows a rule.",
-      "next": {
-        "title": "Now you try.",
-        "content": "Choose the next meaningful action."
-      }
+      "conclusion": "JOIN output comes from every matching combination; duplicate keys must not be deduplicated.",
+      "next": { "title": "Now you try.", "content": "Choose the relationship and predict the exact source-row pairs." }
     },
-    "guided_practice": {
-      "action_explanations": {
-        "match-101": "101 matched",
-        "match-102": "102 matched",
-        "join": "complete"
-      }
-    }
+    "guided_practice": { "action_explanations": {
+      "choose-left-column": "The left join column supplies one side of each comparison.",
+      "choose-right-column": "The right join column supplies the related values.",
+      "choose-join-type": "The join type decides what happens to unmatched rows.",
+      "predict-matches": "Each selected pair predicts one possible output row.",
+      "run-join": "The evaluator compared actual values and constructed every valid output row."
+    } }
   },
   "visualization": {
     "type": "dbms-joins",
-    "view": "table",
-    "initial_state": {
-      "tables": {
-        "STUDENTS": [
-          [
-            "student_id",
-            "name"
-          ],
-          [
-            "101",
-            "Ana"
-          ],
-          [
-            "102",
-            "Ben"
-          ]
-        ],
-        "ENROLLMENTS": [
-          [
-            "student_id",
-            "course"
-          ],
-          [
-            "101",
-            "Databases"
-          ],
-          [
-            "102",
-            "Networks"
-          ]
-        ]
-      },
-      "result": "match student_id values"
+    "problem": {
+      "database": { "tables": [
+        { "name": "students", "columns": [{ "name": "student_id", "type": "number" }, { "name": "name", "type": "string" }], "rows": [
+          { "id": "student-1", "values": { "student_id": 101, "name": "Ana" } },
+          { "id": "student-2", "values": { "student_id": 102, "name": "Ben" } },
+          { "id": "student-3", "values": { "student_id": 103, "name": "Cara" } }
+        ] },
+        { "name": "enrollments", "columns": [{ "name": "student_id", "type": "number" }, { "name": "course", "type": "string" }], "rows": [
+          { "id": "enrollment-1", "values": { "student_id": 101, "course": "Databases" } },
+          { "id": "enrollment-2", "values": { "student_id": 101, "course": "Networks" } },
+          { "id": "enrollment-3", "values": { "student_id": 103, "course": "Algorithms" } },
+          { "id": "enrollment-4", "values": { "student_id": 999, "course": "Security" } }
+        ] }
+      ] },
+      "goal": { "instruction": "Build an INNER JOIN that relates students to enrollments by student_id.", "join": { "leftTable": "students", "leftColumn": "student_id", "rightTable": "enrollments", "rightColumn": "student_id", "type": "inner" } },
+      "allowed": { "joinTypes": ["inner"], "leftTable": "students", "rightTable": "enrollments" }
     },
-    "guided_steps": [
-      {
-        "operation": "match-101",
-        "instruction": "Match the first key",
-        "next_state": {
-          "tables": {
-            "MATCH": [
-              [
-                "101",
-                "Ana",
-                "Databases"
-              ]
-            ]
-          },
-          "result": "101 matched"
-        },
-        "evaluation_state": [
-          "MATCH-101"
-        ]
-      },
-      {
-        "operation": "match-102",
-        "instruction": "Match the second key",
-        "next_state": {
-          "tables": {
-            "MATCH": [
-              [
-                "102",
-                "Ben",
-                "Networks"
-              ]
-            ]
-          },
-          "result": "102 matched"
-        },
-        "evaluation_state": [
-          "MATCH-102"
-        ]
-      },
-      {
-        "operation": "join",
-        "instruction": "Build the joined result",
-        "next_state": {
-          "tables": {
-            "JOINED": [
-              [
-                "101",
-                "Ana",
-                "Databases"
-              ],
-              [
-                "102",
-                "Ben",
-                "Networks"
-              ]
-            ]
-          },
-          "result": "complete"
-        },
-        "evaluation_state": [
-          "JOIN"
-        ]
-      }
-    ],
-    "controls": [
-      {
-        "id": "match-101",
-        "label": "MATCH FIRST KEY",
-        "operation": "match-101"
-      },
-      {
-        "id": "match-102",
-        "label": "MATCH NEXT KEY",
-        "operation": "match-102"
-      },
-      {
-        "id": "join",
-        "label": "BUILD INNER JOIN",
-        "operation": "join"
-      }
-    ],
-    "actions": [
-      {
-        "label": "Match the first related key",
-        "operation": "match-101",
-        "task": "Match the first related key"
-      },
-      {
-        "label": "Match another key",
-        "operation": "match-102",
-        "task": "Match another key"
-      },
-      {
-        "label": "Construct the joined rows",
-        "operation": "join",
-        "task": "Construct the joined rows"
-      }
-    ],
-    "instruction": "Choose the next meaningful action.",
-    "wrong_action_message": "Compare the active task with the current state before choosing."
+    "challenge_problem": {
+      "database": { "tables": [
+        { "name": "authors", "columns": [{ "name": "author_id", "type": "number" }, { "name": "name", "type": "string" }], "rows": [
+          { "id": "author-1", "values": { "author_id": 1, "name": "Mina" } }, { "id": "author-2", "values": { "author_id": 2, "name": "Noah" } }, { "id": "author-3", "values": { "author_id": 3, "name": "Ola" } }
+        ] },
+        { "name": "books", "columns": [{ "name": "author_id", "type": "number" }, { "name": "title", "type": "string" }], "rows": [
+          { "id": "book-1", "values": { "author_id": 1, "title": "Data" } }, { "id": "book-2", "values": { "author_id": 1, "title": "Systems" } }, { "id": "book-3", "values": { "author_id": 4, "title": "Networks" } }
+        ] }
+      ] },
+      "goal": { "instruction": "Build a LEFT JOIN that keeps every author and matches books by author_id.", "join": { "leftTable": "authors", "leftColumn": "author_id", "rightTable": "books", "rightColumn": "author_id", "type": "left" } },
+      "allowed": { "joinTypes": ["left"], "leftTable": "authors", "rightTable": "books" }
+    },
+    "controls": [{ "id": "run-join", "label": "RUN AND CHECK JOIN", "operation": "run-join" }],
+    "actions": [{ "label": "Build, predict, and run the JOIN", "operation": "run-join" }]
   },
-  "practice": {
-    "challenge": {
-      "title": "Joins challenge",
-      "start_message": "Apply the concept to the displayed state.",
-      "continue_message": "Challenge complete. Keep experimenting.",
-      "phases": [
-        {
-          "title": "Reach the correct result",
-          "instruction": "Use the controls to reach the target state.",
-          "target": {
-            "label": "TARGET",
-            "items": [
-              "COMPLETE"
-            ]
-          },
-          "goal": {
-            "type": "state_equals",
-            "expected_state": [
-              "COMPLETE"
-            ]
-          },
-          "success": "✓ Challenge complete",
-          "feedback": "Compare your state with the target."
-        }
-      ]
-    }
-  },
+  "practice": { "challenge": {
+    "title": "LEFT JOIN challenge", "start_message": "Keep every left row while predicting actual matches.", "continue_message": "Challenge complete. Keep exploring the relationship.",
+    "phases": [{ "title": "Construct the LEFT JOIN", "instruction": "Choose related columns and predict all result-row pairs, including unmatched left rows.",
+      "target": { "label": "TARGET", "description": "A correct evaluator-backed LEFT JOIN" }, "goal": { "type": "outcome_equals", "expected_outcome": "solved" },
+      "success": "✓ JOIN challenge complete", "feedback": "Compare every left key with every right key; do not deduplicate repeated matches." }]
+  } },
   "mastery": {
-    "title": "Joins Mastery",
-    "mastered_label": "Joins Mastered",
-    "current_state_label": "YOUR STATE",
+    "title": "JOIN Mastery", "mastered_label": "JOINs Mastered", "current_state_label": "YOUR JOIN",
     "levels": [
+      { "id": "learn", "label": "Learn", "completion": { "type": "course_completion" } },
       {
-        "id": "learn",
-        "label": "Learn",
-        "completion": {
-          "type": "course_completion"
-        }
+        "id": "practice", "label": "Practice", "prerequisites": ["learn"],
+        "guidance": { "start_message": "Match equal student identifiers.", "hints": { "limit": 1, "items": [{ "content": "Compare the values, not row positions." }] } },
+        "controls": [{ "label": "RUN AND CHECK JOIN", "operation": "run-join" }],
+        "scenario": { "generator": "join", "generator_version": 1, "scenario_rules": { "leftRowCounts": [3], "rightRowCounts": [3], "joinTypes": ["inner"], "unmatchedRate": 0.1, "forceDuplicate": false } },
+        "challenge": { "phases": [{ "title": "Practice INNER JOIN", "instruction": "Choose the related columns and predict every match.", "target": { "label": "TARGET", "description": "Correct computed INNER JOIN" }, "goal": { "type": "outcome_equals", "expected_outcome": "solved" }, "success": "✓ Practice complete", "feedback": "Select exactly the equal-key row pairs." }] }
       },
       {
-        "id": "practice",
-        "label": "Practice",
-        "prerequisites": [
-          "learn"
-        ],
-        "guidance": {
-          "start_message": "Compare the current state with the objective and choose the next action.",
-          "hints": {
-            "limit": 1,
-            "items": [
-              {
-                "content": "Use the operation that moves the state toward the target."
-              }
-            ]
-          }
-        },
-        "controls": [
-          {
-            "id": "match-101",
-            "label": "MATCH FIRST KEY",
-            "operation": "match-101"
-          },
-          {
-            "id": "match-102",
-            "label": "MATCH NEXT KEY",
-            "operation": "match-102"
-          },
-          {
-            "id": "join",
-            "label": "BUILD INNER JOIN",
-            "operation": "join"
-          }
-        ],
-        "scenario": {
-          "initial_state": {
-            "tables": {
-              "STUDENTS": [
-                [
-                  "student_id",
-                  "name"
-                ],
-                [
-                  "101",
-                  "Ana"
-                ],
-                [
-                  "102",
-                  "Ben"
-                ]
-              ],
-              "ENROLLMENTS": [
-                [
-                  "student_id",
-                  "course"
-                ],
-                [
-                  "101",
-                  "Databases"
-                ],
-                [
-                  "102",
-                  "Networks"
-                ]
-              ]
-            },
-            "result": "match student_id values"
-          },
-          "operations": [
-            {
-              "operation": "match-101",
-              "instruction": "Match the first key",
-              "next_state": {
-                "tables": {
-                  "MATCH": [
-                    [
-                      "101",
-                      "Ana",
-                      "Databases"
-                    ]
-                  ]
-                },
-                "result": "101 matched"
-              },
-              "evaluation_state": [
-                "MATCH-101"
-              ]
-            }
-          ]
-        },
-        "challenge": {
-          "phases": [
-            {
-              "title": "Practice task",
-              "instruction": "Reach the target state by making the appropriate decisions.",
-              "target": {
-                "label": "TARGET STATE",
-                "items": [
-                  "COMPLETE"
-                ]
-              },
-              "goal": {
-                "type": "state_equals",
-                "expected_state": [
-                  "COMPLETE"
-                ]
-              },
-              "success": "✓ Practice complete",
-              "feedback": "Compare your current state with the target before choosing again."
-            }
-          ]
-        }
+        "id": "apply", "label": "Apply", "prerequisites": ["practice"],
+        "guidance": { "start_message": "Account for a one-to-many match.", "hints": { "limit": 0, "items": [] } },
+        "controls": [{ "label": "RUN AND CHECK JOIN", "operation": "run-join" }],
+        "scenario": { "generator": "join", "generator_version": 1, "scenario_rules": { "leftRowCounts": [4], "rightRowCounts": [5], "joinTypes": ["inner"], "unmatchedRate": 0.2, "forceDuplicate": true } },
+        "challenge": { "phases": [{ "title": "Apply one-to-many matching", "instruction": "Keep every valid duplicate-key combination.", "target": { "label": "TARGET", "description": "All computed row combinations" }, "goal": { "type": "outcome_equals", "expected_outcome": "solved" }, "success": "✓ Apply complete", "feedback": "One left row may contribute several output rows." }] }
       },
       {
-        "id": "apply",
-        "label": "Apply",
-        "prerequisites": [
-          "practice"
-        ],
-        "guidance": {
-          "start_message": "Compare the current state with the objective and choose the next action.",
-          "hints": {
-            "limit": 0,
-            "items": []
-          }
-        },
-        "controls": [
-          {
-            "id": "match-101",
-            "label": "MATCH FIRST KEY",
-            "operation": "match-101"
-          },
-          {
-            "id": "match-102",
-            "label": "MATCH NEXT KEY",
-            "operation": "match-102"
-          },
-          {
-            "id": "join",
-            "label": "BUILD INNER JOIN",
-            "operation": "join"
-          }
-        ],
-        "scenario": {
-          "initial_state": {
-            "tables": {
-              "STUDENTS": [
-                [
-                  "student_id",
-                  "name"
-                ],
-                [
-                  "101",
-                  "Ana"
-                ],
-                [
-                  "102",
-                  "Ben"
-                ]
-              ],
-              "ENROLLMENTS": [
-                [
-                  "student_id",
-                  "course"
-                ],
-                [
-                  "101",
-                  "Databases"
-                ],
-                [
-                  "102",
-                  "Networks"
-                ]
-              ]
-            },
-            "result": "match student_id values"
-          },
-          "operations": [
-            {
-              "operation": "match-101",
-              "instruction": "Match the first key",
-              "next_state": {
-                "tables": {
-                  "MATCH": [
-                    [
-                      "101",
-                      "Ana",
-                      "Databases"
-                    ]
-                  ]
-                },
-                "result": "101 matched"
-              },
-              "evaluation_state": [
-                "MATCH-101"
-              ]
-            },
-            {
-              "operation": "match-102",
-              "instruction": "Match the second key",
-              "next_state": {
-                "tables": {
-                  "MATCH": [
-                    [
-                      "102",
-                      "Ben",
-                      "Networks"
-                    ]
-                  ]
-                },
-                "result": "102 matched"
-              },
-              "evaluation_state": [
-                "MATCH-102"
-              ]
-            }
-          ]
-        },
-        "challenge": {
-          "phases": [
-            {
-              "title": "Apply task",
-              "instruction": "Reach the target state by making the appropriate decisions.",
-              "target": {
-                "label": "TARGET STATE",
-                "items": [
-                  "COMPLETE"
-                ]
-              },
-              "goal": {
-                "type": "state_equals",
-                "expected_state": [
-                  "COMPLETE"
-                ]
-              },
-              "success": "✓ Apply complete",
-              "feedback": "Compare your current state with the target before choosing again."
-            }
-          ]
-        }
+        "id": "solve", "label": "Solve", "prerequisites": ["apply"], "new_problem": true,
+        "guidance": { "start_message": "Solve a LEFT JOIN with unmatched source rows.", "hints": { "limit": 0, "items": [] } },
+        "controls": [{ "label": "RUN AND CHECK JOIN", "operation": "run-join" }],
+        "scenario": { "generator": "join", "generator_version": 1, "scenario_rules": { "leftRowCounts": [4, 5], "rightRowCounts": [4, 5], "joinTypes": ["left"], "unmatchedRate": 0.4, "forceDuplicate": true } },
+        "challenge": { "phases": [{ "title": "Solve LEFT JOIN", "instruction": "Predict matches and NULL-side rows without hints.", "target": { "label": "TARGET", "description": "Correct LEFT JOIN output" }, "goal": { "type": "outcome_equals", "expected_outcome": "solved" }, "success": "✓ Solve complete", "feedback": "Every left row remains; unmatched right values become NULL." }] }
       },
       {
-        "id": "solve",
-        "label": "Solve",
-        "prerequisites": [
-          "apply"
-        ],
-        "guidance": {
-          "start_message": "Compare the current state with the objective and choose the next action.",
-          "hints": {
-            "limit": 0,
-            "items": []
-          }
-        },
-        "controls": [
-          {
-            "id": "match-101",
-            "label": "MATCH FIRST KEY",
-            "operation": "match-101"
-          },
-          {
-            "id": "match-102",
-            "label": "MATCH NEXT KEY",
-            "operation": "match-102"
-          },
-          {
-            "id": "join",
-            "label": "BUILD INNER JOIN",
-            "operation": "join"
-          }
-        ],
-        "scenario": {
-          "initial_state": {
-            "tables": {
-              "STUDENTS": [
-                [
-                  "student_id",
-                  "name"
-                ],
-                [
-                  "101",
-                  "Ana"
-                ],
-                [
-                  "102",
-                  "Ben"
-                ]
-              ],
-              "ENROLLMENTS": [
-                [
-                  "student_id",
-                  "course"
-                ],
-                [
-                  "101",
-                  "Databases"
-                ],
-                [
-                  "102",
-                  "Networks"
-                ]
-              ]
-            },
-            "result": "match student_id values"
-          },
-          "operations": [
-            {
-              "operation": "match-101",
-              "instruction": "Match the first key",
-              "next_state": {
-                "tables": {
-                  "MATCH": [
-                    [
-                      "101",
-                      "Ana",
-                      "Databases"
-                    ]
-                  ]
-                },
-                "result": "101 matched"
-              },
-              "evaluation_state": [
-                "MATCH-101"
-              ]
-            },
-            {
-              "operation": "match-102",
-              "instruction": "Match the second key",
-              "next_state": {
-                "tables": {
-                  "MATCH": [
-                    [
-                      "102",
-                      "Ben",
-                      "Networks"
-                    ]
-                  ]
-                },
-                "result": "102 matched"
-              },
-              "evaluation_state": [
-                "MATCH-102"
-              ]
-            },
-            {
-              "operation": "join",
-              "instruction": "Build the joined result",
-              "next_state": {
-                "tables": {
-                  "JOINED": [
-                    [
-                      "101",
-                      "Ana",
-                      "Databases"
-                    ],
-                    [
-                      "102",
-                      "Ben",
-                      "Networks"
-                    ]
-                  ]
-                },
-                "result": "complete"
-              },
-              "evaluation_state": [
-                "JOIN"
-              ]
-            }
-          ]
-        },
-        "challenge": {
-          "phases": [
-            {
-              "title": "Solve task",
-              "instruction": "Reach the target state by making the appropriate decisions.",
-              "target": {
-                "label": "TARGET STATE",
-                "items": [
-                  "COMPLETE"
-                ]
-              },
-              "goal": {
-                "type": "state_equals",
-                "expected_state": [
-                  "COMPLETE"
-                ]
-              },
-              "success": "✓ Solve complete",
-              "feedback": "Compare your current state with the target before choosing again."
-            }
-          ]
-        }
-      },
-      {
-        "id": "mastery",
-        "label": "Mastery",
-        "prerequisites": [
-          "solve"
-        ],
-        "guidance": {
-          "start_message": "Compare the current state with the objective and choose the next action.",
-          "hints": {
-            "limit": 0,
-            "items": []
-          }
-        },
-        "controls": [
-          {
-            "id": "match-101",
-            "label": "MATCH FIRST KEY",
-            "operation": "match-101"
-          },
-          {
-            "id": "match-102",
-            "label": "MATCH NEXT KEY",
-            "operation": "match-102"
-          },
-          {
-            "id": "join",
-            "label": "BUILD INNER JOIN",
-            "operation": "join"
-          }
-        ],
-        "scenario": {
-          "initial_state": {
-            "tables": {
-              "STUDENTS": [
-                [
-                  "student_id",
-                  "name"
-                ],
-                [
-                  "101",
-                  "Ana"
-                ],
-                [
-                  "102",
-                  "Ben"
-                ]
-              ],
-              "ENROLLMENTS": [
-                [
-                  "student_id",
-                  "course"
-                ],
-                [
-                  "101",
-                  "Databases"
-                ],
-                [
-                  "102",
-                  "Networks"
-                ]
-              ]
-            },
-            "result": "match student_id values"
-          },
-          "operations": [
-            {
-              "operation": "match-101",
-              "instruction": "Match the first key",
-              "next_state": {
-                "tables": {
-                  "MATCH": [
-                    [
-                      "101",
-                      "Ana",
-                      "Databases"
-                    ]
-                  ]
-                },
-                "result": "101 matched"
-              },
-              "evaluation_state": [
-                "MATCH-101"
-              ]
-            },
-            {
-              "operation": "match-102",
-              "instruction": "Match the second key",
-              "next_state": {
-                "tables": {
-                  "MATCH": [
-                    [
-                      "102",
-                      "Ben",
-                      "Networks"
-                    ]
-                  ]
-                },
-                "result": "102 matched"
-              },
-              "evaluation_state": [
-                "MATCH-102"
-              ]
-            },
-            {
-              "operation": "join",
-              "instruction": "Build the joined result",
-              "next_state": {
-                "tables": {
-                  "JOINED": [
-                    [
-                      "101",
-                      "Ana",
-                      "Databases"
-                    ],
-                    [
-                      "102",
-                      "Ben",
-                      "Networks"
-                    ]
-                  ]
-                },
-                "result": "complete"
-              },
-              "evaluation_state": [
-                "JOIN"
-              ]
-            }
-          ]
-        },
-        "challenge": {
-          "phases": [
-            {
-              "title": "Mastery task",
-              "instruction": "Reach the target state by making the appropriate decisions.",
-              "target": {
-                "label": "TARGET STATE",
-                "items": [
-                  "COMPLETE"
-                ]
-              },
-              "goal": {
-                "type": "state_equals",
-                "expected_state": [
-                  "COMPLETE"
-                ]
-              },
-              "success": "✓ Mastery complete",
-              "feedback": "Compare your current state with the target before choosing again."
-            }
-          ]
-        }
+        "id": "mastery", "label": "Mastery", "prerequisites": ["solve"], "new_problem": true,
+        "guidance": { "start_message": "Choose between INNER and LEFT semantics independently.", "hints": { "limit": 0, "items": [] } },
+        "controls": [{ "label": "RUN AND CHECK JOIN", "operation": "run-join" }],
+        "scenario": { "generator": "join", "generator_version": 1, "scenario_rules": { "leftRowCounts": [5], "rightRowCounts": [6], "joinTypes": ["inner", "left"], "unmatchedRate": 0.35, "forceDuplicate": true } },
+        "challenge": { "phases": [{ "title": "Master JOIN reasoning", "instruction": "Interpret the generated rule and predict every result row.", "target": { "label": "TARGET", "description": "Complete evaluator agreement" }, "goal": { "type": "outcome_equals", "expected_outcome": "solved" }, "success": "✓ Mastery complete", "feedback": "Recheck the join type, columns, and every row combination." }] }
       }
     ]
   },
   "expert": {
-    "id": "expert",
-    "label": "Expert",
-    "prerequisites": [
-      "mastery"
-    ],
-    "generator": "phase2-expert",
-    "generator_version": 1,
-    "required_capabilities": [
-      "interactive_state",
-      "relationship_reasoning",
-      "interactive_state"
-    ],
+    "id": "expert", "label": "Expert", "prerequisites": ["mastery"], "generator": "join", "generator_version": 1,
+    "assessment_mode": "prediction", "targetVisibility": "hidden", "required_capabilities": ["interactive_state", "relationship_reasoning", "prediction", "target_transformation"],
     "thinking": {
-      "title": "Predict the sequence",
-      "objective_label": "Think first",
-      "instruction": "Mentally follow the sequence before acting.",
-      "starting_stack_label": "STARTING STATE",
-      "sequence_label": "ACTIONS TO SIMULATE",
-      "do_not_execute": "Do not act yet. Work through the sequence in order.",
-      "prediction_label": "YOUR PREDICTION",
+      "title": "Predict a hidden JOIN result", "objective_label": "Think first",
+      "instruction": "Choose the relationship and list every source-row pair before any result table is revealed.",
+      "sequence_label": "REASONING STEPS", "do_not_execute": "Compare all keys mentally. Duplicate values can create multiple output rows.", "prediction_label": "YOUR PREDICTION",
       "prediction_fields": [
-        {
-          "id": "finalState",
-          "label": "Final state",
-          "prompt": "What will the final state contain?",
-          "type": "text",
-          "placeholder": "Describe the result"
-        }
+        { "id": "joinType", "label": "Join type", "prompt": "Which join type does the goal require?", "type": "choice", "options": [{ "value": "inner", "label": "INNER" }, { "value": "left", "label": "LEFT" }] },
+        { "id": "leftColumn", "label": "Left column", "prompt": "Enter the left join column name.", "type": "text", "placeholder": "student_id" },
+        { "id": "rightColumn", "label": "Right column", "prompt": "Enter the right join column name.", "type": "text", "placeholder": "student_id" },
+        { "id": "matchingPairs", "label": "Result row pairs", "prompt": "List pair IDs separated by commas, or NONE.", "type": "text", "placeholder": "student-1+enrollment-2, ..." }
       ],
-      "submit_label": "Check my prediction",
-      "continue_label": "Continue to Expert Challenge →",
-      "actual_label": "RESULT",
-      "your_prediction_label": "Your prediction",
-      "actual_result": "Final state: {{final_state}}.",
-      "feedback": {
-        "all_correct": "You tracked the sequence.",
-        "incorrect": "Recheck each transition."
-      }
+      "submit_label": "Check prediction", "feedback": { "all_correct": "You predicted every computed match.", "incorrect": "Review each field and equal-key combination." }
     },
-    "solve": {
-      "title": "Expert Joins",
-      "instruction": "Apply the sequence with no hints.",
-      "target_label": "TARGET STATE",
-      "your_label": "YOUR STATE",
-      "metric_label": "Actions",
-      "hints_label": "Hints: none",
-      "operation_rule": "Each action counts once.",
-      "controls": [
-        {
-          "id": "match-101",
-          "label": "MATCH FIRST KEY",
-          "operation": "match-101"
-        },
-        {
-          "id": "match-102",
-          "label": "MATCH NEXT KEY",
-          "operation": "match-102"
-        },
-        {
-          "id": "join",
-          "label": "BUILD INNER JOIN",
-          "operation": "join"
-        }
-      ],
-      "perfect_message": "🏆 PERFECT EXPERT",
-      "perfect_result": "You completed the sequence.",
-      "new_challenge_label": "New Expert Challenge"
-    },
-    "scenario_rules": {
-      "initial_state": [
-        "101",
-        "102"
-      ],
-      "steps": [
-        {
-          "operation": "match-101",
-          "label": "MATCH 101"
-        },
-        {
-          "operation": "match-102",
-          "label": "MATCH 102"
-        },
-        {
-          "operation": "join",
-          "label": "BUILD JOIN"
-        }
-      ],
-      "final_state": [
-        "101 joined",
-        "102 joined"
-      ],
-      "target_state": [
-        "101 joined",
-        "102 joined"
-      ]
-    }
+    "solve": { "title": "Expert JOIN", "instruction": "Complete the hidden-result prediction.", "controls": [{ "id": "run-join", "label": "RUN JOIN", "operation": "run-join" }] },
+    "scenario_rules": { "leftRowCounts": [5, 6], "rightRowCounts": [6, 7], "joinTypes": ["inner", "left"], "unmatchedRate": 0.35, "forceDuplicate": true }
   },
   "assessment": {
-    "quiz": {
-      "question": "What does an INNER JOIN keep?",
-      "options": [
-        "Rows with matching keys",
-        "Every row from one table",
-        "Only empty rows",
-        "Random rows"
-      ],
-      "correct": 0
-    },
-    "discovery": {
-      "title": "Join discovery",
-      "summary": "A join follows shared keys to connect related records into one result."
-    },
-    "notes": {
-      "sections": [
-        {
-          "title": "What?",
-          "content": "A join combines rows from tables when their related values match."
-        },
-        {
-          "title": "Example",
-          "content": "student_id 101 links Ana to Databases."
-        },
-        {
-          "title": "Why?",
-          "content": "Related tables avoid repeating every fact in one giant table."
-        },
-        {
-          "title": "Remember",
-          "content": "INNER JOIN keeps matching pairs."
-        }
-      ]
-    },
+    "quiz": { "question": "Why can one left row produce multiple INNER JOIN rows?", "options": ["Several right rows can have the same matching key", "JOIN duplicates rows randomly", "The schema is ignored", "Unmatched rows are copied"], "correct": 0 },
+    "discovery": { "title": "JOIN discovery", "summary": "A JOIN computes row combinations from actual equality between the chosen key columns." },
+    "notes": { "sections": [
+      { "title": "Matching", "content": "Rows combine because their selected key values satisfy the join condition." },
+      { "title": "One-to-many", "content": "One row can match several rows and therefore create several output rows." },
+      { "title": "INNER vs LEFT", "content": "INNER omits unmatched rows; LEFT preserves unmatched left rows with NULL right values." },
+      { "title": "Remember", "content": "Never deduplicate legitimate matching combinations." }
+    ] },
     "alternate_explanations": [
-      {
-        "title": "Think of a familiar workflow",
-        "type": "analogy",
-        "content": "Imagine Joins as a small real-world process with visible steps."
-      },
-      {
-        "title": "Walk through the example",
-        "type": "example",
-        "content": "Match student_id in each table to make one combined record."
-      }
+      { "title": "Match claim tickets", "type": "analogy", "content": "A JOIN is like matching every bag to every claim ticket with the same number." },
+      { "title": "Follow 101", "type": "example", "content": "If student 101 has two enrollment rows, INNER JOIN produces two combined rows for that student." }
     ]
   },
-  "completion": {
-    "recall": {
-      "title": "Recall",
-      "prompt": "In your own words, why must joined rows have matching keys?",
-      "submit_label": "Submit recall",
-      "empty_message": "Write a short explanation first.",
-      "completion_message": "✓ Recall completed",
-      "model_answer": "INNER JOIN keeps matching pairs."
-    }
-  }
+  "completion": { "recall": { "title": "Recall", "prompt": "In your own words, why can duplicate join keys create several result rows?", "submit_label": "Submit recall", "empty_message": "Write a short explanation first.", "completion_message": "✓ Recall completed", "model_answer": "The evaluator creates one result row for every valid left-right matching combination." } }
 }
