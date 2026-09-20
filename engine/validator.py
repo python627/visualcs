@@ -214,6 +214,18 @@ class LessonValidator:
                     errors.append(f"playground.{name} must not contain an authored final transaction state")
             if any(key in playground for key in ("guided_steps", "target_state", "initial_state")):
                 errors.append("transactions uses TransactionModel, not scripted states")
+        if playground_type == "normalization":
+            problems = playground.get("problems")
+            if not isinstance(problems, list) or not problems:
+                errors.append("playground.problems must contain executable normalization tasks")
+            else:
+                for index, problem in enumerate(problems):
+                    self._validate_normalization_problem(problem, f"playground.problems[{index}]", errors)
+            self._validate_normalization_problem(
+                playground.get("challenge_problem"), "playground.challenge_problem", errors
+            )
+            if any(key in playground for key in ("guided_steps", "target_state", "initial_state", "next_state")):
+                errors.append("normalization uses NormalizationModel, not scripted states")
         if playground_type == "ip-addresses":
             problems = playground.get("problems")
             if not isinstance(problems, list) or not problems:
@@ -267,6 +279,61 @@ class LessonValidator:
             errors.append(f"{path}.server.routes must be a list")
         if any(key in problem for key in ("answer", "result", "oracle", "response", "status")):
             errors.append(f"{path} must not contain an authored HTTP response")
+
+    def _validate_normalization_problem(self, problem, path, errors):
+        if not isinstance(problem, dict):
+            errors.append(f"{path} must contain a relation, dependencies, and a task")
+            return
+        if any(key in problem for key in (
+            "answer", "oracle", "result", "expectedRelations", "finalDecomposition"
+        )):
+            errors.append(f"{path} must contain normalization inputs only, not derived answers")
+        relation = problem.get("relation")
+        if not isinstance(relation, dict) or not self._is_text(relation.get("name")):
+            errors.append(f"{path}.relation must have a non-empty name")
+            return
+        columns = relation.get("columns")
+        if not isinstance(columns, list) or len(columns) < 2:
+            errors.append(f"{path}.relation.columns must contain at least two columns")
+            return
+        names = []
+        for index, column in enumerate(columns):
+            if not isinstance(column, dict) or not self._is_text(column.get("name")):
+                errors.append(f"{path}.relation.columns[{index}].name must be a non-empty string")
+                continue
+            if column.get("type") not in ("string", "number", "boolean"):
+                errors.append(f"{path}.relation.columns[{index}].type must be string, number, or boolean")
+            names.append(column["name"])
+        if len(set(names)) != len(names):
+            errors.append(f"{path}.relation.columns must be unique")
+        key = relation.get("primaryKey")
+        if not isinstance(key, list) or not key or not all(item in names for item in key):
+            errors.append(f"{path}.relation.primaryKey must reference source columns")
+        rows = relation.get("rows")
+        if not isinstance(rows, list) or not rows:
+            errors.append(f"{path}.relation.rows must be a non-empty list")
+        else:
+            for index, row in enumerate(rows):
+                if not isinstance(row, dict) or not self._is_text(row.get("id")) or not isinstance(row.get("values"), dict):
+                    errors.append(f"{path}.relation.rows[{index}] must contain id and values")
+                elif set(row["values"]) != set(names):
+                    errors.append(f"{path}.relation.rows[{index}].values must match the columns")
+        dependencies = problem.get("dependencies")
+        if not isinstance(dependencies, list):
+            errors.append(f"{path}.dependencies must be a list")
+        else:
+            for index, dependency in enumerate(dependencies):
+                determinant = dependency.get("determinant") if isinstance(dependency, dict) else None
+                dependent = dependency.get("dependent") if isinstance(dependency, dict) else None
+                if not isinstance(determinant, list) or not determinant or not all(item in names for item in determinant):
+                    errors.append(f"{path}.dependencies[{index}].determinant must reference columns")
+                if not isinstance(dependent, list) or not dependent or not all(item in names for item in dependent):
+                    errors.append(f"{path}.dependencies[{index}].dependent must reference columns")
+        task = problem.get("task")
+        if not isinstance(task, dict) or task.get("kind") not in (
+            "identify-normal-form", "identify-redundancy", "identify-dependency", "identify-anomaly", "decompose"
+        ) or not self._is_text(task.get("prompt")):
+            errors.append(f"{path}.task must define a supported executable normalization task")
 
     def _validate_sql_select_problem(self, problem, path, errors):
         if not isinstance(problem, dict):
@@ -836,6 +903,7 @@ class LessonValidator:
         executable_ipv4 = lesson.get("playground", {}).get("type") == "ip-addresses"
         executable_dns = lesson.get("playground", {}).get("type") == "dns-lookup"
         executable_http = lesson.get("playground", {}).get("type") == "http-request"
+        executable_normalization = lesson.get("playground", {}).get("type") == "normalization"
         level_ids = []
         for index, level in enumerate(levels):
             path = f"mastery.levels[{index}]"
@@ -885,6 +953,8 @@ class LessonValidator:
                     errors.append(f"{path}.expert must use the DNS model-backed generator")
                 if executable_http and level.get("expert", {}).get("generator") != "http":
                     errors.append(f"{path}.expert must use the HTTP model-backed generator")
+                if executable_normalization and level.get("expert", {}).get("generator") != "normalization":
+                    errors.append(f"{path}.expert must use the NormalizationModel-backed generator")
                 continue
 
             scenario = level.get("scenario")
@@ -917,7 +987,9 @@ class LessonValidator:
                     errors.append(f"{path}.scenario must use the DNS model-backed generator")
                 if executable_http and scenario.get("generator") != "http":
                     errors.append(f"{path}.scenario must use the HTTP model-backed generator")
-            elif executable_sql or executable_transport or executable_process or executable_deadlock or executable_tables or executable_join or executable_transaction or executable_ipv4 or executable_dns or executable_http:
+                if executable_normalization and scenario.get("generator") != "normalization":
+                    errors.append(f"{path}.scenario must use the NormalizationModel-backed generator")
+            elif executable_sql or executable_transport or executable_process or executable_deadlock or executable_tables or executable_join or executable_transaction or executable_ipv4 or executable_dns or executable_http or executable_normalization:
                 generator_name = (
                     "sql-select evaluator" if executable_sql else
                     "transport simulator" if executable_transport else
@@ -928,7 +1000,8 @@ class LessonValidator:
                     "transaction model" if executable_transaction else
                     "IPv4 model" if executable_ipv4 else
                     "DNS model" if executable_dns else
-                    "HTTP model"
+                    "HTTP model" if executable_http else
+                    "NormalizationModel"
                 )
                 errors.append(f"{path}.scenario must use the {generator_name}-backed generator")
 

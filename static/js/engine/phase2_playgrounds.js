@@ -227,7 +227,8 @@
         };
     }
 
-    const types = ["normalization"];
+    // All Phase 2 lessons now have dedicated executable playgrounds.
+    const types = [];
     types.forEach(type => registerPlayground(type, createPlayground));
 
     if (typeof registerScenarioGenerator === "function" && !ScenarioFactory.getGenerator("phase2-expert")) {

@@ -1,1094 +1,188 @@
 {
   "schema_version": 2,
   "metadata": {
-    "id": "normalization",
-    "order": 5,
-    "subject_order": 4,
-    "subject": "DBMS",
-    "topic": "Normalization",
-    "title": "Reduce Repeated Data",
-    "description": "Spot duplicated information and split it into cleaner related tables.",
-    "difficulty": "Beginner",
-    "estimated_time": "15 min"
+    "id": "normalization", "order": 5, "subject_order": 4, "subject": "DBMS", "topic": "Normalization",
+    "title": "Reduce Repeated Data", "description": "Diagnose repeated facts and decompose a relation into safer related tables.",
+    "difficulty": "Beginner", "estimated_time": "20 min"
   },
   "learning_objectives": [
-    "Explain Normalization in simple terms.",
-    "Follow one visible Normalization example.",
-    "Make a correct decision in the playground."
+    "Recognize atomic values and the purpose of 1NF.",
+    "Distinguish partial dependencies in 2NF from transitive dependencies in 3NF.",
+    "Demonstrate update, insertion, and deletion anomalies.",
+    "Construct a dependency-preserving decomposition from declared keys and functional dependencies."
   ],
-  "capabilities": [
-    "interactive_state",
-    "target_transformation",
-    "relationship_reasoning"
-  ],
+  "capabilities": ["interactive_state", "prediction", "target_transformation", "relationship_reasoning", "decision_tree"],
   "teaching": {
-    "mission": {
-      "title": "Practise Normalization",
-      "description": "Make each decision and watch the consequence."
-    },
+    "mission": { "title": "Diagnose and normalize a relation", "description": "Observe repeated facts, identify why they repeat, then split them without losing information." },
     "introduction": {
-      "title": "Normalization: start here",
-      "content": "Normalization organizes data so one fact is not copied in many rows.",
-      "points": [
-        "Compare a repeated table with a cleaner split design."
-      ],
-      "visual": {
-        "type": "array",
-        "label": "Normalization",
-        "items": [
-          "What?",
-          "Example",
-          "Try it"
-        ]
-      }
+      "title": "One fact should have one reliable home",
+      "content": "A single wide table can repeat the same student, course, or department fact many times. Normalization uses dependencies to separate facts that belong to different things.",
+      "points": ["1NF keeps one atomic value in each cell.", "2NF removes facts that depend on only part of a composite key.", "3NF removes non-key facts that depend on another non-key fact."],
+      "visual": { "type": "linked-list", "label": "NORMALIZATION", "items": ["observe repetition", "find dependency", "split safely", "inspect consequence"] }
     },
     "worked_example": {
-      "title": "See one example",
-      "content": "Watch one concrete sequence before you try it.",
+      "title": "A course name is a course fact", "content": "In ENROLLMENT, the key is student_id + course_id, but course_name depends only on course_id.",
       "steps": [
-        {
-          "action": "SPOT DUPLICATE",
-          "state": {
-            "tables": {
-              "BEFORE": [
-                [
-                  "ORDER",
-                  "CUSTOMER",
-                  "PHONE"
-                ],
-                [
-                  "1",
-                  "Ana",
-                  "555"
-                ],
-                [
-                  "2",
-                  "Ana",
-                  "555"
-                ]
-              ]
-            },
-            "result": "Ana/555 repeats"
-          },
-          "explanation": "The same customer fact appears twice."
-        },
-        {
-          "action": "SPLIT",
-          "state": {
-            "tables": {
-              "ORDERS": [
-                [
-                  "ORDER",
-                  "CUSTOMER_ID"
-                ],
-                [
-                  "1",
-                  "A1"
-                ],
-                [
-                  "2",
-                  "A1"
-                ]
-              ],
-              "CUSTOMERS": [
-                [
-                  "CUSTOMER_ID",
-                  "NAME",
-                  "PHONE"
-                ],
-                [
-                  "A1",
-                  "Ana",
-                  "555"
-                ]
-              ]
-            },
-            "result": "separate tables"
-          },
-          "explanation": "Store the customer once and reference it."
-        },
-        {
-          "action": "VERIFY",
-          "state": {
-            "tables": {
-              "ORDERS": [
-                [
-                  "ORDER",
-                  "CUSTOMER_ID"
-                ],
-                [
-                  "1",
-                  "A1"
-                ],
-                [
-                  "2",
-                  "A1"
-                ]
-              ],
-              "CUSTOMERS": [
-                [
-                  "CUSTOMER_ID",
-                  "NAME",
-                  "PHONE"
-                ],
-                [
-                  "A1",
-                  "Ana",
-                  "555"
-                ]
-              ]
-            },
-            "result": "less duplication"
-          },
-          "explanation": "Updating Ana's phone now happens in one place."
-        }
+        { "action": "OBSERVE", "state": ["101 | C10 | Databases", "102 | C10 | Databases"], "explanation": "Databases repeats because two students take C10." },
+        { "action": "IDENTIFY", "state": ["course_id → course_name"], "explanation": "course_id alone determines the course name: this is a partial dependency on the composite key." },
+        { "action": "DECOMPOSE", "state": ["COURSE(course_id, course_name)", "ENROLLMENT(student_id, course_id)"], "explanation": "The course name now has one home while enrollment keeps the relationship." }
       ],
-      "conclusion": "The visual state changes because the concept follows a rule.",
-      "next": {
-        "title": "Now you try.",
-        "content": "Choose the next meaningful action."
-      }
+      "conclusion": "The split is not cosmetic: one course-name update now changes one fact instead of several copies.",
+      "next": { "title": "Now you try.", "content": "Use keys, repeated rows, and dependencies to justify each decision." }
     },
-    "guided_practice": {
-      "action_explanations": {
-        "spot": "duplicate",
-        "split": "split",
-        "verify": "normalized"
-      }
+    "guided_practice": { "action_explanations": {
+      "identify-normal-form": "You checked whether each cell contains one atomic value.",
+      "identify-redundancy": "You found a fact copied into more than one row.",
+      "identify-dependency": "You identified which attribute determines another fact.",
+      "identify-anomaly": "You connected repeated storage to a concrete data-loss or inconsistency risk.",
+      "decompose": "You separated facts according to their determinants while preserving the original key relationship."
+    } },
+    "challenge": {
+      "title": "Department decomposition challenge", "start_message": "Diagnose the employee relation without step-by-step button instructions.", "continue_message": "Challenge complete. The department fact now has one home.",
+      "phases": [{ "title": "Reach 3NF", "instruction": "Identify the transitive dependency and anomaly, then propose a valid decomposition.", "target": { "label": "TARGET", "description": "A structurally valid 3NF design" }, "goal": { "type": "outcome_equals", "expected_outcome": "solved" }, "success": "✓ Normalization challenge complete", "feedback": "Preserve every attribute and keep each dependent fact with its determinant." }]
     }
   },
   "visualization": {
     "type": "normalization",
-    "view": "table",
-    "initial_state": {
-      "tables": {
-        "BEFORE": [
-          [
-            "ORDER",
-            "CUSTOMER",
-            "PHONE"
-          ],
-          [
-            "1",
-            "Ana",
-            "555"
-          ],
-          [
-            "2",
-            "Ana",
-            "555"
-          ]
-        ]
+    "problems": [
+      {
+        "relation": { "name": "CONTACTS", "columns": [{ "name": "contact_id", "type": "number" }, { "name": "contact_name", "type": "string" }, { "name": "phone_numbers", "type": "string" }], "primaryKey": ["contact_id"], "rows": [
+          { "id": "contact-1", "values": { "contact_id": 1, "contact_name": "Asha", "phone_numbers": ["555-0101", "555-0102"] } },
+          { "id": "contact-2", "values": { "contact_id": 2, "contact_name": "Ben", "phone_numbers": ["555-0201", "555-0202"] } }
+        ] },
+        "dependencies": [{ "determinant": ["contact_id"], "dependent": ["contact_name", "phone_numbers"] }],
+        "task": { "kind": "identify-normal-form", "prompt": "Does every CONTACTS cell contain one atomic value? Identify its current normal form.", "targetForm": "1NF" }
       },
-      "result": "customer data repeats"
+      {
+        "relation": { "name": "ENROLLMENT", "columns": [{ "name": "student_id", "type": "number" }, { "name": "student_name", "type": "string" }, { "name": "course_id", "type": "string" }, { "name": "course_name", "type": "string" }, { "name": "instructor", "type": "string" }], "primaryKey": ["student_id", "course_id"], "rows": [
+          { "id": "e1", "values": { "student_id": 101, "student_name": "Asha", "course_id": "C10", "course_name": "Databases", "instructor": "Dr Rao" } },
+          { "id": "e2", "values": { "student_id": 101, "student_name": "Asha", "course_id": "C11", "course_name": "Networks", "instructor": "Dr Lin" } },
+          { "id": "e3", "values": { "student_id": 102, "student_name": "Ben", "course_id": "C10", "course_name": "Databases", "instructor": "Dr Rao" } },
+          { "id": "e4", "values": { "student_id": 103, "student_name": "Chen", "course_id": "C10", "course_name": "Databases", "instructor": "Dr Rao" } }
+        ] },
+        "dependencies": [{ "determinant": ["student_id"], "dependent": ["student_name"] }, { "determinant": ["course_id"], "dependent": ["course_name", "instructor"] }],
+        "task": { "kind": "identify-redundancy", "prompt": "Which course fact is visibly repeated in several enrollment rows?" }
+      },
+      {
+        "relation": { "name": "ENROLLMENT", "columns": [{ "name": "student_id", "type": "number" }, { "name": "student_name", "type": "string" }, { "name": "course_id", "type": "string" }, { "name": "course_name", "type": "string" }, { "name": "instructor", "type": "string" }], "primaryKey": ["student_id", "course_id"], "rows": [
+          { "id": "e1", "values": { "student_id": 101, "student_name": "Asha", "course_id": "C10", "course_name": "Databases", "instructor": "Dr Rao" } },
+          { "id": "e2", "values": { "student_id": 102, "student_name": "Ben", "course_id": "C10", "course_name": "Databases", "instructor": "Dr Rao" } },
+          { "id": "e3", "values": { "student_id": 103, "student_name": "Chen", "course_id": "C11", "course_name": "Networks", "instructor": "Dr Lin" } }
+        ] },
+        "dependencies": [{ "determinant": ["student_id"], "dependent": ["student_name"] }, { "determinant": ["course_id"], "dependent": ["course_name", "instructor"] }],
+        "task": { "kind": "identify-dependency", "dependencyClass": "partial", "prompt": "Enter one partial dependency that explains why a course or student fact repeats." }
+      },
+      {
+        "relation": { "name": "ENROLLMENT", "columns": [{ "name": "student_id", "type": "number" }, { "name": "student_name", "type": "string" }, { "name": "course_id", "type": "string" }, { "name": "course_name", "type": "string" }, { "name": "instructor", "type": "string" }], "primaryKey": ["student_id", "course_id"], "rows": [
+          { "id": "e1", "values": { "student_id": 101, "student_name": "Asha", "course_id": "C10", "course_name": "Databases", "instructor": "Dr Rao" } },
+          { "id": "e2", "values": { "student_id": 102, "student_name": "Ben", "course_id": "C10", "course_name": "Databases", "instructor": "Dr Rao" } },
+          { "id": "e3", "values": { "student_id": 103, "student_name": "Chen", "course_id": "C11", "course_name": "Networks", "instructor": "Dr Lin" } }
+        ] },
+        "dependencies": [{ "determinant": ["student_id"], "dependent": ["student_name"] }, { "determinant": ["course_id"], "dependent": ["course_name", "instructor"] }],
+        "task": { "kind": "identify-anomaly", "anomalyType": "update", "prompt": "If C10 changes its name but only one row is edited, which anomaly occurs?" }
+      },
+      {
+        "relation": { "name": "ENROLLMENT", "columns": [{ "name": "student_id", "type": "number" }, { "name": "student_name", "type": "string" }, { "name": "course_id", "type": "string" }, { "name": "course_name", "type": "string" }, { "name": "instructor", "type": "string" }], "primaryKey": ["student_id", "course_id"], "rows": [
+          { "id": "e1", "values": { "student_id": 101, "student_name": "Asha", "course_id": "C10", "course_name": "Databases", "instructor": "Dr Rao" } },
+          { "id": "e2", "values": { "student_id": 101, "student_name": "Asha", "course_id": "C11", "course_name": "Networks", "instructor": "Dr Lin" } },
+          { "id": "e3", "values": { "student_id": 102, "student_name": "Ben", "course_id": "C10", "course_name": "Databases", "instructor": "Dr Rao" } }
+        ] },
+        "dependencies": [{ "determinant": ["student_id"], "dependent": ["student_name"] }, { "determinant": ["course_id"], "dependent": ["course_name", "instructor"] }],
+        "task": { "kind": "decompose", "targetForm": "3NF", "dependencyClass": "partial", "anomalyType": "delete", "prompt": "Diagnose the relation and decompose it into a valid 3NF design." }
+      }
+    ],
+    "challenge_problem": {
+      "relation": { "name": "EMPLOYEES", "columns": [{ "name": "employee_id", "type": "number" }, { "name": "employee_name", "type": "string" }, { "name": "department_id", "type": "string" }, { "name": "department_name", "type": "string" }, { "name": "office", "type": "string" }], "primaryKey": ["employee_id"], "rows": [
+        { "id": "p1", "values": { "employee_id": 1, "employee_name": "Asha", "department_id": "D1", "department_name": "Engineering", "office": "North" } },
+        { "id": "p2", "values": { "employee_id": 2, "employee_name": "Ben", "department_id": "D1", "department_name": "Engineering", "office": "North" } },
+        { "id": "p3", "values": { "employee_id": 3, "employee_name": "Chen", "department_id": "D2", "department_name": "Support", "office": "South" } }
+      ] },
+      "dependencies": [{ "determinant": ["employee_id"], "dependent": ["employee_name", "department_id"] }, { "determinant": ["department_id"], "dependent": ["department_name", "office"] }],
+      "task": { "kind": "decompose", "targetForm": "3NF", "dependencyClass": "transitive", "anomalyType": "update", "prompt": "Remove the transitive department dependency and reach 3NF." }
     },
-    "guided_steps": [
-      {
-        "operation": "spot",
-        "instruction": "Find repeated information",
-        "next_state": {
-          "tables": {
-            "BEFORE": [
-              [
-                "CUSTOMER",
-                "PHONE"
-              ],
-              [
-                "Ana",
-                "555"
-              ],
-              [
-                "Ana",
-                "555"
-              ]
-            ]
-          },
-          "result": "duplicate"
-        },
-        "evaluation_state": [
-          "SPOT"
-        ]
-      },
-      {
-        "operation": "split",
-        "instruction": "Choose a cleaner split",
-        "next_state": {
-          "tables": {
-            "CUSTOMERS": [
-              [
-                "ID",
-                "NAME",
-                "PHONE"
-              ],
-              [
-                "A1",
-                "Ana",
-                "555"
-              ]
-            ],
-            "ORDERS": [
-              [
-                "ORDER",
-                "CUSTOMER_ID"
-              ],
-              [
-                "1",
-                "A1"
-              ],
-              [
-                "2",
-                "A1"
-              ]
-            ]
-          },
-          "result": "split"
-        },
-        "evaluation_state": [
-          "SPLIT"
-        ]
-      },
-      {
-        "operation": "verify",
-        "instruction": "Check the repaired design",
-        "next_state": {
-          "tables": {
-            "CUSTOMERS": [
-              [
-                "ID",
-                "NAME",
-                "PHONE"
-              ],
-              [
-                "A1",
-                "Ana",
-                "555"
-              ]
-            ]
-          },
-          "result": "normalized"
-        },
-        "evaluation_state": [
-          "VERIFY"
-        ]
-      }
-    ],
-    "controls": [
-      {
-        "id": "spot",
-        "label": "FIND DUPLICATE",
-        "operation": "spot"
-      },
-      {
-        "id": "split",
-        "label": "SPLIT TABLES",
-        "operation": "split"
-      },
-      {
-        "id": "verify",
-        "label": "VERIFY DESIGN",
-        "operation": "verify"
-      }
-    ],
+    "controls": [{ "id": "check-normalization", "label": "CHECK REASONING", "operation": "check-normalization" }],
     "actions": [
-      {
-        "label": "Spot a repeated fact",
-        "operation": "spot",
-        "task": "Spot a repeated fact"
-      },
-      {
-        "label": "Separate related entities",
-        "operation": "split",
-        "task": "Separate related entities"
-      },
-      {
-        "label": "Verify the cleaner schema",
-        "operation": "verify",
-        "task": "Verify the cleaner schema"
-      }
-    ],
-    "instruction": "Choose the next meaningful action.",
-    "wrong_action_message": "Compare the active task with the current state before choosing."
+      { "label": "Check atomic values", "operation": "identify-normal-form" }, { "label": "Find a repeated fact", "operation": "identify-redundancy" },
+      { "label": "Identify its dependency", "operation": "identify-dependency" }, { "label": "Demonstrate an anomaly", "operation": "identify-anomaly" },
+      { "label": "Decompose the relation", "operation": "decompose" }
+    ]
   },
-  "practice": {
-    "challenge": {
-      "title": "Normalization challenge",
-      "start_message": "Apply the concept to the displayed state.",
-      "continue_message": "Challenge complete. Keep experimenting.",
-      "phases": [
-        {
-          "title": "Reach the correct result",
-          "instruction": "Use the controls to reach the target state.",
-          "target": {
-            "label": "TARGET",
-            "items": [
-              "COMPLETE"
-            ]
-          },
-          "goal": {
-            "type": "state_equals",
-            "expected_state": [
-              "COMPLETE"
-            ]
-          },
-          "success": "✓ Challenge complete",
-          "feedback": "Compare your state with the target."
-        }
-      ]
-    }
-  },
+  "practice": { "challenge": {
+    "title": "Department decomposition challenge", "start_message": "Diagnose the relation independently.", "continue_message": "Challenge complete.",
+    "phases": [{ "title": "Reach 3NF", "instruction": "Propose a valid decomposition.", "target": { "label": "TARGET", "description": "Structurally valid 3NF" }, "goal": { "type": "outcome_equals", "expected_outcome": "solved" }, "success": "✓ Challenge complete", "feedback": "Keep every fact with its determinant." }]
+  } },
   "mastery": {
-    "title": "Normalization Mastery",
-    "mastered_label": "Normalization Mastered",
-    "current_state_label": "YOUR STATE",
+    "title": "Normalization Mastery", "mastered_label": "Normalization Mastered", "current_state_label": "YOUR DATABASE DESIGN",
     "levels": [
+      { "id": "learn", "label": "Learn", "completion": { "type": "course_completion" } },
       {
-        "id": "learn",
-        "label": "Learn",
-        "completion": {
-          "type": "course_completion"
-        }
+        "id": "practice", "label": "Practice", "prerequisites": ["learn"],
+        "guidance": { "start_message": "Find one repeated fact or anomaly.", "hints": { "limit": 1, "items": [{ "content": "Look for a dependent value copied under the same determinant." }] } },
+        "controls": [{ "label": "CHECK", "operation": "check-normalization" }],
+        "scenario": { "generator": "normalization", "generator_version": 1, "scenario_rules": { "forms": ["2NF", "3NF"], "taskKinds": ["identify-redundancy", "identify-anomaly"], "anomalyTypes": ["update", "insert", "delete"] } },
+        "challenge": { "phases": [{ "title": "Spot the risk", "instruction": "Identify the model-derived repetition or anomaly.", "target": { "label": "TARGET", "description": "Correct diagnosis" }, "goal": { "type": "outcome_equals", "expected_outcome": "solved" }, "success": "✓ Practice complete", "feedback": "Relate the repeated fact to its determinant." }] }
       },
       {
-        "id": "practice",
-        "label": "Practice",
-        "prerequisites": [
-          "learn"
-        ],
-        "guidance": {
-          "start_message": "Compare the current state with the objective and choose the next action.",
-          "hints": {
-            "limit": 1,
-            "items": [
-              {
-                "content": "Use the operation that moves the state toward the target."
-              }
-            ]
-          }
-        },
-        "controls": [
-          {
-            "id": "spot",
-            "label": "FIND DUPLICATE",
-            "operation": "spot"
-          },
-          {
-            "id": "split",
-            "label": "SPLIT TABLES",
-            "operation": "split"
-          },
-          {
-            "id": "verify",
-            "label": "VERIFY DESIGN",
-            "operation": "verify"
-          }
-        ],
-        "scenario": {
-          "initial_state": {
-            "tables": {
-              "BEFORE": [
-                [
-                  "ORDER",
-                  "CUSTOMER",
-                  "PHONE"
-                ],
-                [
-                  "1",
-                  "Ana",
-                  "555"
-                ],
-                [
-                  "2",
-                  "Ana",
-                  "555"
-                ]
-              ]
-            },
-            "result": "customer data repeats"
-          },
-          "operations": [
-            {
-              "operation": "spot",
-              "instruction": "Find repeated information",
-              "next_state": {
-                "tables": {
-                  "BEFORE": [
-                    [
-                      "CUSTOMER",
-                      "PHONE"
-                    ],
-                    [
-                      "Ana",
-                      "555"
-                    ],
-                    [
-                      "Ana",
-                      "555"
-                    ]
-                  ]
-                },
-                "result": "duplicate"
-              },
-              "evaluation_state": [
-                "SPOT"
-              ]
-            }
-          ]
-        },
-        "challenge": {
-          "phases": [
-            {
-              "title": "Practice task",
-              "instruction": "Reach the target state by making the appropriate decisions.",
-              "target": {
-                "label": "TARGET STATE",
-                "items": [
-                  "COMPLETE"
-                ]
-              },
-              "goal": {
-                "type": "state_equals",
-                "expected_state": [
-                  "COMPLETE"
-                ]
-              },
-              "success": "✓ Practice complete",
-              "feedback": "Compare your current state with the target before choosing again."
-            }
-          ]
-        }
+        "id": "apply", "label": "Apply", "prerequisites": ["practice"],
+        "guidance": { "start_message": "Identify the dependency causing the problem.", "hints": { "limit": 0, "items": [] } },
+        "controls": [{ "label": "CHECK", "operation": "check-normalization" }],
+        "scenario": { "generator": "normalization", "generator_version": 1, "scenario_rules": { "forms": ["2NF", "3NF"], "taskKinds": ["identify-dependency"] } },
+        "challenge": { "phases": [{ "title": "Explain the dependency", "instruction": "Name a determinant and its dependent fact.", "target": { "label": "TARGET", "description": "Correct functional dependency" }, "goal": { "type": "outcome_equals", "expected_outcome": "solved" }, "success": "✓ Apply complete", "feedback": "Ask which attributes uniquely determine the repeated fact." }] }
       },
       {
-        "id": "apply",
-        "label": "Apply",
-        "prerequisites": [
-          "practice"
-        ],
-        "guidance": {
-          "start_message": "Compare the current state with the objective and choose the next action.",
-          "hints": {
-            "limit": 0,
-            "items": []
-          }
-        },
-        "controls": [
-          {
-            "id": "spot",
-            "label": "FIND DUPLICATE",
-            "operation": "spot"
-          },
-          {
-            "id": "split",
-            "label": "SPLIT TABLES",
-            "operation": "split"
-          },
-          {
-            "id": "verify",
-            "label": "VERIFY DESIGN",
-            "operation": "verify"
-          }
-        ],
-        "scenario": {
-          "initial_state": {
-            "tables": {
-              "BEFORE": [
-                [
-                  "ORDER",
-                  "CUSTOMER",
-                  "PHONE"
-                ],
-                [
-                  "1",
-                  "Ana",
-                  "555"
-                ],
-                [
-                  "2",
-                  "Ana",
-                  "555"
-                ]
-              ]
-            },
-            "result": "customer data repeats"
-          },
-          "operations": [
-            {
-              "operation": "spot",
-              "instruction": "Find repeated information",
-              "next_state": {
-                "tables": {
-                  "BEFORE": [
-                    [
-                      "CUSTOMER",
-                      "PHONE"
-                    ],
-                    [
-                      "Ana",
-                      "555"
-                    ],
-                    [
-                      "Ana",
-                      "555"
-                    ]
-                  ]
-                },
-                "result": "duplicate"
-              },
-              "evaluation_state": [
-                "SPOT"
-              ]
-            },
-            {
-              "operation": "split",
-              "instruction": "Choose a cleaner split",
-              "next_state": {
-                "tables": {
-                  "CUSTOMERS": [
-                    [
-                      "ID",
-                      "NAME",
-                      "PHONE"
-                    ],
-                    [
-                      "A1",
-                      "Ana",
-                      "555"
-                    ]
-                  ],
-                  "ORDERS": [
-                    [
-                      "ORDER",
-                      "CUSTOMER_ID"
-                    ],
-                    [
-                      "1",
-                      "A1"
-                    ],
-                    [
-                      "2",
-                      "A1"
-                    ]
-                  ]
-                },
-                "result": "split"
-              },
-              "evaluation_state": [
-                "SPLIT"
-              ]
-            }
-          ]
-        },
-        "challenge": {
-          "phases": [
-            {
-              "title": "Apply task",
-              "instruction": "Reach the target state by making the appropriate decisions.",
-              "target": {
-                "label": "TARGET STATE",
-                "items": [
-                  "COMPLETE"
-                ]
-              },
-              "goal": {
-                "type": "state_equals",
-                "expected_state": [
-                  "COMPLETE"
-                ]
-              },
-              "success": "✓ Apply complete",
-              "feedback": "Compare your current state with the target before choosing again."
-            }
-          ]
-        }
+        "id": "solve", "label": "Solve", "prerequisites": ["apply"], "new_problem": true,
+        "guidance": { "start_message": "Construct a valid decomposition without an authored answer table.", "hints": { "limit": 0, "items": [] } },
+        "controls": [{ "label": "CHECK", "operation": "check-normalization" }],
+        "scenario": { "generator": "normalization", "generator_version": 1, "scenario_rules": { "forms": ["2NF"], "taskKinds": ["decompose"], "anomalyTypes": ["delete"] } },
+        "challenge": { "phases": [{ "title": "Solve a partial dependency", "instruction": "Reach 3NF while preserving every attribute.", "target": { "label": "TARGET", "description": "Valid model-assessed decomposition" }, "goal": { "type": "outcome_equals", "expected_outcome": "solved" }, "success": "✓ Solve complete", "feedback": "Separate facts that depend on only part of the composite key." }] }
       },
       {
-        "id": "solve",
-        "label": "Solve",
-        "prerequisites": [
-          "apply"
-        ],
-        "guidance": {
-          "start_message": "Compare the current state with the objective and choose the next action.",
-          "hints": {
-            "limit": 0,
-            "items": []
-          }
-        },
-        "controls": [
-          {
-            "id": "spot",
-            "label": "FIND DUPLICATE",
-            "operation": "spot"
-          },
-          {
-            "id": "split",
-            "label": "SPLIT TABLES",
-            "operation": "split"
-          },
-          {
-            "id": "verify",
-            "label": "VERIFY DESIGN",
-            "operation": "verify"
-          }
-        ],
-        "scenario": {
-          "initial_state": {
-            "tables": {
-              "BEFORE": [
-                [
-                  "ORDER",
-                  "CUSTOMER",
-                  "PHONE"
-                ],
-                [
-                  "1",
-                  "Ana",
-                  "555"
-                ],
-                [
-                  "2",
-                  "Ana",
-                  "555"
-                ]
-              ]
-            },
-            "result": "customer data repeats"
-          },
-          "operations": [
-            {
-              "operation": "spot",
-              "instruction": "Find repeated information",
-              "next_state": {
-                "tables": {
-                  "BEFORE": [
-                    [
-                      "CUSTOMER",
-                      "PHONE"
-                    ],
-                    [
-                      "Ana",
-                      "555"
-                    ],
-                    [
-                      "Ana",
-                      "555"
-                    ]
-                  ]
-                },
-                "result": "duplicate"
-              },
-              "evaluation_state": [
-                "SPOT"
-              ]
-            },
-            {
-              "operation": "split",
-              "instruction": "Choose a cleaner split",
-              "next_state": {
-                "tables": {
-                  "CUSTOMERS": [
-                    [
-                      "ID",
-                      "NAME",
-                      "PHONE"
-                    ],
-                    [
-                      "A1",
-                      "Ana",
-                      "555"
-                    ]
-                  ],
-                  "ORDERS": [
-                    [
-                      "ORDER",
-                      "CUSTOMER_ID"
-                    ],
-                    [
-                      "1",
-                      "A1"
-                    ],
-                    [
-                      "2",
-                      "A1"
-                    ]
-                  ]
-                },
-                "result": "split"
-              },
-              "evaluation_state": [
-                "SPLIT"
-              ]
-            },
-            {
-              "operation": "verify",
-              "instruction": "Check the repaired design",
-              "next_state": {
-                "tables": {
-                  "CUSTOMERS": [
-                    [
-                      "ID",
-                      "NAME",
-                      "PHONE"
-                    ],
-                    [
-                      "A1",
-                      "Ana",
-                      "555"
-                    ]
-                  ]
-                },
-                "result": "normalized"
-              },
-              "evaluation_state": [
-                "VERIFY"
-              ]
-            }
-          ]
-        },
-        "challenge": {
-          "phases": [
-            {
-              "title": "Solve task",
-              "instruction": "Reach the target state by making the appropriate decisions.",
-              "target": {
-                "label": "TARGET STATE",
-                "items": [
-                  "COMPLETE"
-                ]
-              },
-              "goal": {
-                "type": "state_equals",
-                "expected_state": [
-                  "COMPLETE"
-                ]
-              },
-              "success": "✓ Solve complete",
-              "feedback": "Compare your current state with the target before choosing again."
-            }
-          ]
-        }
-      },
-      {
-        "id": "mastery",
-        "label": "Mastery",
-        "prerequisites": [
-          "solve"
-        ],
-        "guidance": {
-          "start_message": "Compare the current state with the objective and choose the next action.",
-          "hints": {
-            "limit": 0,
-            "items": []
-          }
-        },
-        "controls": [
-          {
-            "id": "spot",
-            "label": "FIND DUPLICATE",
-            "operation": "spot"
-          },
-          {
-            "id": "split",
-            "label": "SPLIT TABLES",
-            "operation": "split"
-          },
-          {
-            "id": "verify",
-            "label": "VERIFY DESIGN",
-            "operation": "verify"
-          }
-        ],
-        "scenario": {
-          "initial_state": {
-            "tables": {
-              "BEFORE": [
-                [
-                  "ORDER",
-                  "CUSTOMER",
-                  "PHONE"
-                ],
-                [
-                  "1",
-                  "Ana",
-                  "555"
-                ],
-                [
-                  "2",
-                  "Ana",
-                  "555"
-                ]
-              ]
-            },
-            "result": "customer data repeats"
-          },
-          "operations": [
-            {
-              "operation": "spot",
-              "instruction": "Find repeated information",
-              "next_state": {
-                "tables": {
-                  "BEFORE": [
-                    [
-                      "CUSTOMER",
-                      "PHONE"
-                    ],
-                    [
-                      "Ana",
-                      "555"
-                    ],
-                    [
-                      "Ana",
-                      "555"
-                    ]
-                  ]
-                },
-                "result": "duplicate"
-              },
-              "evaluation_state": [
-                "SPOT"
-              ]
-            },
-            {
-              "operation": "split",
-              "instruction": "Choose a cleaner split",
-              "next_state": {
-                "tables": {
-                  "CUSTOMERS": [
-                    [
-                      "ID",
-                      "NAME",
-                      "PHONE"
-                    ],
-                    [
-                      "A1",
-                      "Ana",
-                      "555"
-                    ]
-                  ],
-                  "ORDERS": [
-                    [
-                      "ORDER",
-                      "CUSTOMER_ID"
-                    ],
-                    [
-                      "1",
-                      "A1"
-                    ],
-                    [
-                      "2",
-                      "A1"
-                    ]
-                  ]
-                },
-                "result": "split"
-              },
-              "evaluation_state": [
-                "SPLIT"
-              ]
-            },
-            {
-              "operation": "verify",
-              "instruction": "Check the repaired design",
-              "next_state": {
-                "tables": {
-                  "CUSTOMERS": [
-                    [
-                      "ID",
-                      "NAME",
-                      "PHONE"
-                    ],
-                    [
-                      "A1",
-                      "Ana",
-                      "555"
-                    ]
-                  ]
-                },
-                "result": "normalized"
-              },
-              "evaluation_state": [
-                "VERIFY"
-              ]
-            }
-          ]
-        },
-        "challenge": {
-          "phases": [
-            {
-              "title": "Mastery task",
-              "instruction": "Reach the target state by making the appropriate decisions.",
-              "target": {
-                "label": "TARGET STATE",
-                "items": [
-                  "COMPLETE"
-                ]
-              },
-              "goal": {
-                "type": "state_equals",
-                "expected_state": [
-                  "COMPLETE"
-                ]
-              },
-              "success": "✓ Mastery complete",
-              "feedback": "Compare your current state with the target before choosing again."
-            }
-          ]
-        }
+        "id": "mastery", "label": "Mastery", "prerequisites": ["solve"], "new_problem": true,
+        "guidance": { "start_message": "Diagnose form, dependency, anomaly, and decomposition together.", "hints": { "limit": 0, "items": [] } },
+        "controls": [{ "label": "CHECK", "operation": "check-normalization" }],
+        "scenario": { "generator": "normalization", "generator_version": 1, "scenario_rules": { "forms": ["2NF", "3NF"], "taskKinds": ["decompose"], "anomalyTypes": ["update", "insert", "delete"], "rowCounts": [5, 6] } },
+        "challenge": { "phases": [{ "title": "Master the diagnosis", "instruction": "Complete every field and justify a valid 3NF design.", "target": { "label": "TARGET", "description": "Complete executable diagnosis" }, "goal": { "type": "outcome_equals", "expected_outcome": "solved" }, "success": "✓ Mastery complete", "feedback": "Check the key, dependency type, anomaly, and every proposed relation." }] }
       }
     ]
   },
   "expert": {
-    "id": "expert",
-    "label": "Expert",
-    "prerequisites": [
-      "mastery"
-    ],
-    "generator": "phase2-expert",
-    "generator_version": 1,
-    "required_capabilities": [
-      "interactive_state",
-      "target_transformation",
-      "relationship_reasoning"
-    ],
+    "id": "expert", "label": "Expert", "prerequisites": ["mastery"], "generator": "normalization", "generator_version": 1,
+    "assessment_mode": "prediction", "targetVisibility": "hidden", "required_capabilities": ["interactive_state", "prediction", "target_transformation", "relationship_reasoning", "decision_tree"],
     "thinking": {
-      "title": "Predict the sequence",
-      "objective_label": "Think first",
-      "instruction": "Mentally follow the sequence before acting.",
-      "starting_stack_label": "STARTING STATE",
-      "sequence_label": "ACTIONS TO SIMULATE",
-      "do_not_execute": "Do not act yet. Work through the sequence in order.",
-      "prediction_label": "YOUR PREDICTION",
+      "title": "Diagnose before revealing", "objective_label": "Think first", "instruction": "Predict the current form, one relevant dependency, the configured anomaly, and a valid decomposition. Model answers stay hidden.",
+      "sequence_label": "RELATION TO ANALYZE", "do_not_execute": "Use the source rows, primary key, and dependency reasoning.", "prediction_label": "YOUR NORMALIZATION PLAN", "empty_message": "Complete every prediction field before checking.",
       "prediction_fields": [
-        {
-          "id": "finalState",
-          "label": "Final state",
-          "prompt": "What will the final state contain?",
-          "type": "text",
-          "placeholder": "Describe the result"
-        }
+        { "id": "currentForm", "label": "Current normal form", "prompt": "What is the highest normal form currently satisfied?", "type": "choice", "options": [{ "value": "UNNORMALIZED", "label": "Unnormalized" }, { "value": "1NF", "label": "1NF" }, { "value": "2NF", "label": "2NF" }, { "value": "3NF", "label": "3NF" }] },
+        { "id": "determinant", "label": "Determinant", "prompt": "Which attribute(s) determine a violating fact?", "type": "text", "placeholder": "comma-separated attributes" },
+        { "id": "dependent", "label": "Dependent", "prompt": "Which dependent attribute(s) belong with that determinant?", "type": "text", "placeholder": "comma-separated attributes" },
+        { "id": "anomalyType", "label": "Anomaly", "prompt": "Which anomaly is configured?", "type": "choice", "options": [{ "value": "update", "label": "Update anomaly" }, { "value": "insert", "label": "Insertion anomaly" }, { "value": "delete", "label": "Deletion anomaly" }] },
+        { "id": "relations", "label": "Proposed relations", "prompt": "Group attributes into relations separated by |.", "type": "text", "placeholder": "a,b | c,d | a,c" },
+        { "id": "resultingForm", "label": "Resulting form", "prompt": "What normal form should your decomposition reach?", "type": "choice", "options": [{ "value": "1NF", "label": "1NF" }, { "value": "2NF", "label": "2NF" }, { "value": "3NF", "label": "3NF" }] }
       ],
-      "submit_label": "Check my prediction",
-      "continue_label": "Continue to Expert Challenge →",
-      "actual_label": "RESULT",
-      "your_prediction_label": "Your prediction",
-      "actual_result": "Final state: {{final_state}}.",
-      "feedback": {
-        "all_correct": "You tracked the sequence.",
-        "incorrect": "Recheck each transition."
-      }
+      "submit_label": "Check prediction", "feedback": { "all_correct": "Every field agrees with the executable normalization model.", "incorrect": "Use the field-level feedback; no hidden answer was read from lesson JSON." }
     },
-    "solve": {
-      "title": "Expert Normalization",
-      "instruction": "Apply the sequence with no hints.",
-      "target_label": "TARGET STATE",
-      "your_label": "YOUR STATE",
-      "metric_label": "Actions",
-      "hints_label": "Hints: none",
-      "operation_rule": "Each action counts once.",
-      "controls": [
-        {
-          "id": "spot",
-          "label": "FIND DUPLICATE",
-          "operation": "spot"
-        },
-        {
-          "id": "split",
-          "label": "SPLIT TABLES",
-          "operation": "split"
-        },
-        {
-          "id": "verify",
-          "label": "VERIFY DESIGN",
-          "operation": "verify"
-        }
-      ],
-      "perfect_message": "🏆 PERFECT EXPERT",
-      "perfect_result": "You completed the sequence.",
-      "new_challenge_label": "New Expert Challenge"
-    },
-    "scenario_rules": {
-      "initial_state": [
-        "Ana/555 repeated"
-      ],
-      "steps": [
-        {
-          "operation": "spot",
-          "label": "SPOT DUPLICATE"
-        },
-        {
-          "operation": "split",
-          "label": "SPLIT TABLES"
-        },
-        {
-          "operation": "verify",
-          "label": "VERIFY"
-        }
-      ],
-      "final_state": [
-        "CUSTOMER A1 once",
-        "ORDERS reference A1"
-      ],
-      "target_state": [
-        "CUSTOMER A1 once",
-        "ORDERS reference A1"
-      ]
-    }
+    "solve": { "title": "Expert Normalization", "instruction": "Complete the hidden-answer structural assessment.", "controls": [{ "id": "check-normalization", "label": "CHECK", "operation": "check-normalization" }], "perfect_message": "🏆 NORMALIZATION EXPERT", "new_challenge_label": "New Challenge" },
+    "scenario_rules": { "forms": ["2NF", "3NF"], "taskKinds": ["decompose"], "anomalyTypes": ["update", "insert", "delete"], "rowCounts": [4, 5, 6] }
   },
   "assessment": {
-    "quiz": {
-      "question": "Why split repeated customer data?",
-      "options": [
-        "To avoid update anomalies",
-        "To slow queries",
-        "To remove all rows",
-        "To duplicate more"
-      ],
-      "correct": 0
-    },
-    "discovery": {
-      "title": "Normalization discovery",
-      "summary": "Cleaner tables make one fact easier to update consistently."
-    },
-    "notes": {
-      "sections": [
-        {
-          "title": "What?",
-          "content": "Normalization reduces unnecessary repetition by separating related facts."
-        },
-        {
-          "title": "Example",
-          "content": "Store Ana's phone once in Customers and reference her from Orders."
-        },
-        {
-          "title": "Why?",
-          "content": "One update should not require changing many copied rows."
-        },
-        {
-          "title": "Remember",
-          "content": "Find the repeated fact, then store it in one home."
-        }
-      ]
-    },
+    "quiz": { "question": "A table key is student_id + course_id, but course_name depends only on course_id. What is the core problem?", "options": ["A partial dependency", "A missing row id", "A network failure", "An atomic value"], "correct": 0 },
+    "discovery": { "title": "Normalization discovery", "summary": "Normalization follows functional dependencies so each fact has one dependable home, reducing inconsistency and accidental data loss." },
+    "notes": { "sections": [
+      { "title": "WHAT?", "content": "Normalization organizes attributes by what determines them instead of leaving every fact in one wide repeated table." },
+      { "title": "1NF", "content": "Each cell holds one atomic value; repeating groups such as a list of phone numbers are separated into individual values." },
+      { "title": "2NF", "content": "With a composite key, every non-key fact must depend on the whole key—not only one part." },
+      { "title": "3NF", "content": "A non-key fact should not determine another non-key fact. Put that second fact with its true determinant." },
+      { "title": "WHY?", "content": "Repeated storage creates update inconsistencies, blocks independent inserts, and can erase facts during deletion." },
+      { "title": "REMEMBER", "content": "Find what determines each fact, then give that fact one reliable home." }
+    ] },
     "alternate_explanations": [
-      {
-        "title": "Think of a familiar workflow",
-        "type": "analogy",
-        "content": "Imagine Normalization as a small real-world process with visible steps."
-      },
-      {
-        "title": "Walk through the example",
-        "type": "example",
-        "content": "Compare a repeated table with a cleaner split design."
-      }
+      { "title": "Labelled drawers", "type": "analogy", "content": "Store each kind of fact in its own labelled drawer and connect drawers with IDs instead of copying the same label everywhere." },
+      { "title": "Follow C10", "type": "example", "content": "If C10 always means Databases, store C10 → Databases once in COURSE and let ENROLLMENT reference C10." }
     ]
   },
-  "completion": {
-    "recall": {
-      "title": "Recall",
-      "prompt": "In your own words, what problem can repeated data cause when a value changes?",
-      "submit_label": "Submit recall",
-      "empty_message": "Write a short explanation first.",
-      "completion_message": "✓ Recall completed",
-      "model_answer": "Find the repeated fact, then store it in one home."
-    }
-  }
+  "completion": { "recall": {
+    "title": "Recall", "prompt": "In your own words, how do functional dependencies help prevent update, insertion, or deletion anomalies?",
+    "submit_label": "Submit recall", "empty_message": "Write a short explanation first.", "completion_message": "✓ Recall completed",
+    "model_answer": "Dependencies show which attributes belong together. Separating each fact with its determinant removes repeated copies and protects the fact from inconsistent updates or accidental loss."
+  } }
 }
